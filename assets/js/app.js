@@ -159,6 +159,35 @@ try {
   /* localStorage недоступен — все группы просто открыты */
 }
 
+// --- старт оглавления по верху лида -----------------------------------------
+// В CSS отбивка задана под однострочный заголовок. Если заголовок перенесётся
+// или сменится кегль, считаем её от фактического положения лида.
+
+const tocEl = document.querySelector('.toc');
+const leadEl = document.querySelector('.lead');
+
+if (tocEl && leadEl) {
+  const alignToc = () => {
+    // считаем от сетки, а не от окна: приклеенное оглавление своё место
+    // в потоке уже не показывает, а родитель стоит на месте всегда
+    const base = tocEl.parentElement.getBoundingClientRect().top;
+    const shift = Math.round(leadEl.getBoundingClientRect().top - base);
+    tocEl.style.marginTop = Math.max(0, shift) + 'px';
+  };
+  alignToc();
+  // шрифты подъезжают позже разметки и меняют высоту заголовка — пересчитываем
+  if (document.fonts) document.fonts.ready.then(alignToc);
+  let queued = false;
+  window.addEventListener('resize', () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      alignToc();
+    });
+  });
+}
+
 // --- активный пункт оглавления ----------------------------------------------
 
 const links = [...document.querySelectorAll('.toc a')];
