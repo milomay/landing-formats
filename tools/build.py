@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Собирает HTML-страницы лендинга из .refs/content.json."""
 
+import hashlib
 import html
 import json
 import pathlib
@@ -15,6 +16,19 @@ IMG_MAP = json.loads(IMG_MAP_FILE.read_text()) if IMG_MAP_FILE.exists() else {}
 def img_src(node_name):
     """Имя узла → путь к картинке с учётом склейки дубликатов."""
     return f"assets/img/{IMG_MAP.get(node_name, node_name)}.webp"
+
+
+def asset_url(rel):
+    """Путь к стилям/скрипту с версией по содержимому.
+
+    GitHub Pages отдаёт css и js с долгим кешем, поэтому без версии правка
+    может неделю не доезжать до тех, кто уже открывал сайт.
+    """
+    path = ROOT / rel
+    if not path.exists():
+        return rel
+    digest = hashlib.md5(path.read_bytes()).hexdigest()[:8]
+    return f"{rel}?v={digest}"
 
 # какой пункт навигации подсвечен и в какой файл пишем
 PAGES = {
@@ -205,7 +219,7 @@ def render_page(page):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@400&amp;display=swap">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="{asset_url("assets/css/style.css")}">
 </head>
 <body>
   <div class="layout">
@@ -244,7 +258,7 @@ def render_page(page):
       </ol>
     </aside>
   </div>
-  <script src="assets/js/app.js"></script>
+  <script src="{asset_url("assets/js/app.js")}"></script>
 </body>
 </html>
 """
