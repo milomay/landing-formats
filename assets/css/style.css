@@ -200,7 +200,7 @@ img {
   gap: 10px;
   width: 100%;
   padding: 6px 0;
-  margin: 0 0 4px;
+  margin: 0;
   background: none;
   border: 0;
   text-align: left;
@@ -246,6 +246,12 @@ img {
   overflow: hidden;
 }
 
+/* отбивка заголовка от списка живёт внутри списка: при сворачивании она уезжает
+   вместе с ним, иначе свёрнутые группы разъезжаются на лишние 4px */
+.nav-group__body > .nav-list > li:first-child {
+  margin-top: 4px;
+}
+
 .nav-list {
   list-style: none;
   margin: 0;
@@ -266,22 +272,19 @@ img {
   color: var(--text-strong);
 }
 
-/* разделы, которых на сайте пока нет: в макете они все живые, у нас — заглушки,
-   и подсвечивать их как рабочие ссылки нельзя */
-.nav-list a[aria-disabled="true"] {
-  color: var(--text-muted);
-  cursor: default;
-}
-
 .nav-list a:hover,
 .nav-list a[aria-current="page"] {
   background: var(--surface-card-hover); /* Fill/Nine */
-  color: var(--text-strong);
+}
+
+/* разделы, которых на сайте пока нет: цвет как у всех — по макету, но
+   на ховер не отзываются, чтобы не обещать переход */
+.nav-list a[aria-disabled="true"] {
+  cursor: default;
 }
 
 .nav-list a[aria-disabled="true"]:hover {
   background: none;
-  color: var(--text-muted);
 }
 
 /* --- оглавление ------------------------------------------------------ */
@@ -460,7 +463,7 @@ img {
 .section h3 {
   font-size: 18px;
   line-height: 22px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-strong);
   margin: 32px 0 12px;
 }
