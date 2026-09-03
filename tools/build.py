@@ -174,12 +174,12 @@ def render_page(page):
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
-    // тема ставится до первой отрисовки, иначе на светлой теме мигает тёмный фон
+    // по умолчанию тёмная — системную настройку намеренно не слушаем.
+    // Ставим до первой отрисовки, иначе у выбравших светлую мигает тёмный фон.
     (function () {{
       var saved = null;
       try {{ saved = localStorage.getItem('theme'); }} catch (e) {{}}
-      var system = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-      document.documentElement.dataset.theme = saved || system;
+      document.documentElement.dataset.theme = saved === 'light' ? 'light' : 'dark';
     }})();
   </script>
   <title>{esc(intro["title"])} — Лендинг форматов</title>

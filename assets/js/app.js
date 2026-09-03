@@ -1,18 +1,10 @@
 // Тема, мобильное меню и подсветка активного пункта оглавления.
 
 // --- тема ------------------------------------------------------------------
-// Значение уже выставлено инлайн-скриптом в <head>; здесь только переключение.
+// По умолчанию тёмная: системную настройку не слушаем, светлая включается
+// только вручную. Значение уже выставлено инлайн-скриптом в <head>.
 
 const root = document.documentElement;
-const systemLight = matchMedia('(prefers-color-scheme: light)');
-
-function readStored() {
-  try {
-    return localStorage.getItem('theme');
-  } catch (e) {
-    return null;
-  }
-}
 
 function applyTheme(theme) {
   root.dataset.theme = theme;
@@ -20,12 +12,7 @@ function applyTheme(theme) {
   if (label) label.textContent = theme === 'light' ? 'Светлая тема' : 'Тёмная тема';
 }
 
-applyTheme(root.dataset.theme || 'dark');
-
-// пока пользователь не выбрал тему сам, следуем за системной
-systemLight.addEventListener('change', (e) => {
-  if (!readStored()) applyTheme(e.matches ? 'light' : 'dark');
-});
+applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
 
 document.addEventListener('click', (e) => {
   if (!e.target.closest('[data-theme-toggle]')) return;
