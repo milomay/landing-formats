@@ -144,7 +144,13 @@ def render_blocks(blocks):
             while i < len(blocks) and blocks[i]["type"] == "video" and not blocks[i].get("wide"):
                 group.append(blocks[i])
                 i += 1
-            inner = "".join(render_video(v) for v in group)
+            # плитки без ролика не показываем, но обёртку-ряд оставляем всегда:
+            # сетка из трёх колонок держит ширину, иначе оставшийся ролик
+            # растянулся бы на всю ширину контента
+            shown = [v for v in group if video_src(v["img"])]
+            if not shown:
+                continue
+            inner = "".join(render_video(v) for v in shown)
             out.append(f'<div class="video-row">{inner}</div>' if len(group) > 1 else inner)
             continue
 
