@@ -141,6 +141,24 @@ def render_table(rows):
             f'{thead}<tbody>{"".join(body)}</tbody></table></div>')
 
 
+_HERO = {"used": False}
+
+
+def img_tag(src, alt=""):
+    """Тег картинки с подложкой и зарезервированным размером.
+
+    Ленивой загрузки нет намеренно: всех картинок сайта на 740 КБ, зато с
+    `loading="lazy"` они запрашиваются после раскладки и при каждом обновлении
+    страницы на их месте моргает подложка. Первой добавляем приоритет и
+    синхронное декодирование — она в первом экране и должна прийти с версткой.
+    """
+    mode = ""
+    if not _HERO["used"]:
+        _HERO["used"] = True
+        mode = ' fetchpriority="high" decoding="sync"'
+    return f'<img class="media" src="{src}" alt="{alt}"{mode}{img_size(src)}>'
+
+
 def render_video(block):
     cls = "video video--wide" if block.get("wide") else "video"
     cap = f'<figcaption>{esc(block["caption"])}</figcaption>' if block.get("caption") else ""
@@ -152,13 +170,11 @@ def render_video(block):
         return (f'<figure class="{cls}">'
                 f'<button class="video__open" type="button" data-video-open '
                 f'data-src="{esc(src)}" aria-label="Смотреть ролик">'
-                f'<img class="media" src="{src_img}" alt="" '
-                f'loading="lazy" decoding="async"{img_size(src_img)}>'
+                f'{img_tag(src_img)}'
                 f'<span class="video__play" aria-hidden="true"></span>'
                 f'</button>{cap}</figure>')
-    return (f'<figure class="{cls}"><img class="media" src="{src_img}" '
-            f'alt="{esc(block.get("caption") or "Превью видео")}" '
-            f'loading="lazy" decoding="async"{img_size(src_img)}>'
+    alt = esc(block.get("caption") or "Превью видео")
+    return (f'<figure class="{cls}">{img_tag(src_img, alt)}'
             f'<span class="video__play" aria-hidden="true"></span>{cap}</figure>')
 
 
@@ -218,9 +234,7 @@ def render_blocks(blocks):
             out.append(f'<ul><li>{esc(b["text"])}</li></ul>')
         elif t == "figure":
             cap = f'<figcaption>{esc(b["caption"])}</figcaption>' if b.get("caption") else ""
-            src_img = img_src(b["img"])
-            out.append(f'<figure><img class="media" src="{src_img}" alt="" '
-                       f'loading="lazy" decoding="async"{img_size(src_img)}>{cap}</figure>')
+            out.append(f'<figure>{img_tag(img_src(b["img"]))}{cap}</figure>')
         elif t == "bento":
             cards = "".join(
                 f'<div class="bento__card"><p class="bento__title">{esc(c["title"])}</p>'
@@ -264,7 +278,12 @@ def render_nav(groups, current):
 def render_page(page):
     meta = PAGES[page["slug"]]
     used = set()
+    _HERO["used"] = False  # первая картинка считается заново на каждой странице
     intro = page["intro"] or {"breadcrumbs": [], "title": page["title"], "lead": "", "blocks": []}
+
+    # интро собираем до глав: порядок вызовов задаёт, какая картинка на
+    # странице первая, а первая грузится не лениво
+    intro_html = render_blocks(intro["blocks"])
 
     body, toc = [], []
 
@@ -348,7 +367,7 @@ def render_page(page):
       <nav class="breadcrumbs">{crumbs}</nav>
       <h1 class="page-title">{esc(intro["title"])}</h1>
       <p class="lead">{esc(intro["lead"])}</p>
-      {render_blocks(intro["blocks"])}
+      {intro_html}
 
       {"".join(body)}
     </main>
