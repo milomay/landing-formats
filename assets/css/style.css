@@ -481,7 +481,10 @@ img {
   content: "";
   position: absolute;
   left: 4px;
-  top: 11px;
+  /* центр строки считаем от 1lh: при смене интерлиньяжа и на чужих метриках
+     шрифта кружок остаётся на середине, а не съезжает */
+  top: 12px;
+  top: calc((1lh - 4px) / 2);
   width: 4px;
   height: 4px;
   border-radius: 50%;
@@ -785,7 +788,8 @@ figcaption {
   content: "";
   position: absolute;
   left: 2px;
-  top: 7px;
+  top: 11px;
+  top: calc((1lh - 6px) / 2);
   width: 11px;
   height: 6px;
   background: none;
