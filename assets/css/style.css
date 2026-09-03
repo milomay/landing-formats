@@ -3,6 +3,11 @@
 /* Тёмная тема — та, что в макете. Светлая собрана зеркально по той же шкале
    прозрачностей: в коллекции Theme светлого режима нет, есть только эти значения. */
 
+:root {
+  /* вектор `icon / play` из макета, выгружен как есть */
+  --icon-play: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M14 8L4 13.75V2.25L14 8Z" fill="black"/></svg>');
+}
+
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
@@ -13,6 +18,9 @@
   --border: rgba(255, 255, 255, 0.15);
   --border-soft: rgba(255, 255, 255, 0.1);
   --border-media: rgba(255, 255, 255, 0.08); /* Fill/Nine */
+  /* кнопка Play лежит поверх кадра, а не поверх страницы — в светлой теме
+     не зеркалим, иначе бейдж перестанет читаться на тёмном видео */
+  --fill-media-badge: rgba(255, 255, 255, 0.1); /* Fill/Ten */
   --text: rgba(255, 255, 255, 0.8);
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
@@ -407,29 +415,35 @@ figcaption {
   border-radius: 8px;
 }
 
+/* кнопка Play — компонент `card` / `button` из макета (483:19178):
+   32×32, круглая, Fill/Ten и background blur 40 (в CSS вдвое меньше:
+   Figma считает радиус по гауссову ядру, браузер — по стандартному отклонению) */
 .video__play {
   position: absolute;
-  left: 16px;
-  bottom: 16px;
+  left: 8px;
+  bottom: 8px;
   padding: 0;
   border: 0;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: var(--fill-media-badge);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: grid;
   place-items: center;
+  transition: background 0.3s ease;
 }
 
+/* треугольник — вектор `icon / play` 16×16 из макета, маской, чтобы цвет
+   оставался управляемым, а форма — ровно такой, как нарисована */
 .video__play::before {
   content: "";
-  width: 0;
-  height: 0;
-  margin-left: 3px;
-  border-left: 11px solid #fff;
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  -webkit-mask: var(--icon-play) center / 16px 16px no-repeat;
+  mask: var(--icon-play) center / 16px 16px no-repeat;
 }
 
 /* карточка с роликом: кликабельна целиком, по ховеру слегка подрастает */
@@ -449,8 +463,9 @@ figcaption {
   transform: scale(1.02);
 }
 
+/* ховера у компонента в макете нет — подсвечиваем на ступень той же шкалы */
 .video__open:hover .video__play {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 @media (prefers-reduced-motion: reduce) {
