@@ -12,6 +12,7 @@
   --surface-card-hover: rgba(255, 255, 255, 0.08);
   --border: rgba(255, 255, 255, 0.15);
   --border-soft: rgba(255, 255, 255, 0.1);
+  --border-media: rgba(255, 255, 255, 0.08); /* Fill/Nine */
   --text: rgba(255, 255, 255, 0.8);
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
@@ -27,6 +28,7 @@
   --surface-card-hover: rgba(0, 0, 0, 0.06);
   --border: rgba(0, 0, 0, 0.16);
   --border-soft: rgba(0, 0, 0, 0.1);
+  --border-media: rgba(0, 0, 0, 0.08);
   --text: rgba(0, 0, 0, 0.78);
   --text-strong: #0d0d0d;
   /* 0.62 вместо зеркальных 0.6: на белом приглушённый текст теряет контраст
@@ -377,7 +379,7 @@ figcaption {
 .video-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 8px;
   margin: 24px 0;
 }
 
@@ -388,7 +390,8 @@ figcaption {
 
 .video img,
 .video video {
-  border-radius: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border-media);
   width: 100%;
   display: block;
 }
@@ -398,8 +401,10 @@ figcaption {
   background: #000;
 }
 
-.video--wide img {
-  border-radius: 16px;
+/* широкий блок в интро держит ту же рамку и радиус, что плитки в ряду */
+.video--wide img,
+.video--wide video {
+  border-radius: 4px;
 }
 
 .video__play {
