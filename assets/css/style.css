@@ -454,12 +454,15 @@ figcaption {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .video__open {
+  .video__open,
+  .lightbox,
+  .lightbox video {
     transition: none;
   }
 
   .video__open:hover,
-  .video__open:focus-visible {
+  .video__open:focus-visible,
+  .lightbox video {
     transform: none;
   }
 }
@@ -474,10 +477,15 @@ figcaption {
   place-items: center;
   padding: 40px;
   background: rgba(0, 0, 0, 0.9);
+  /* закрытый оверлей прячем через visibility, а не display — иначе анимации нет */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s;
 }
 
-.lightbox[hidden] {
-  display: none;
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
 }
 
 .lightbox video {
@@ -488,6 +496,12 @@ figcaption {
   object-fit: contain;
   border-radius: 8px;
   background: #000;
+  transform: scale(0.96);
+  transition: transform 0.3s ease;
+}
+
+.lightbox.is-open video {
+  transform: scale(1);
 }
 
 .lightbox__close {

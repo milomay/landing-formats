@@ -67,7 +67,6 @@ let openedFrom = null;
 function buildLightbox() {
   lightbox = document.createElement('div');
   lightbox.className = 'lightbox';
-  lightbox.hidden = true;
   lightbox.setAttribute('role', 'dialog');
   lightbox.setAttribute('aria-modal', 'true');
   lightbox.innerHTML =
@@ -86,8 +85,10 @@ function openVideo(src, poster) {
   if (!lightbox) buildLightbox();
   lightboxVideo.src = src;
   lightboxVideo.poster = poster || '';
-  lightbox.hidden = false;
   document.body.style.overflow = 'hidden';
+  // без принудительного пересчёта браузер склеит появление и is-open в один кадр
+  void lightbox.offsetWidth;
+  lightbox.classList.add('is-open');
   lightbox.querySelector('.lightbox__close').focus();
   lightboxVideo.play().catch(() => {
     /* браузер не дал автозапуск — контролы на месте, запустят руками */
@@ -95,13 +96,17 @@ function openVideo(src, poster) {
 }
 
 function closeVideo() {
-  if (!lightbox || lightbox.hidden) return;
+  if (!lightbox || !lightbox.classList.contains('is-open')) return;
+  lightbox.classList.remove('is-open');
   lightboxVideo.pause();
-  lightboxVideo.removeAttribute('src');
-  lightboxVideo.load(); // иначе файл продолжает качаться в фоне
-  lightbox.hidden = true;
   document.body.style.overflow = '';
   if (openedFrom) openedFrom.focus();
+  // ролик выгружаем после анимации, иначе кадр пропадёт прямо на глазах
+  setTimeout(() => {
+    if (lightbox.classList.contains('is-open')) return;
+    lightboxVideo.removeAttribute('src');
+    lightboxVideo.load(); // иначе файл продолжает качаться в фоне
+  }, 300);
 }
 
 document.addEventListener('click', (e) => {
