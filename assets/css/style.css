@@ -337,8 +337,8 @@ img {
 
 .section ul li {
   position: relative;
-  padding-left: 20px;
-  margin-bottom: 8px;
+  padding-left: 24px;
+  margin-bottom: 4px;
 }
 
 .section ul li::before {
