@@ -446,7 +446,7 @@ figcaption {
 
 .video__open:hover,
 .video__open:focus-visible {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .video__open:hover .video__play {
