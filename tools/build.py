@@ -235,6 +235,11 @@ def render_page(page):
                 f'      </section>\n'
                 f'      <hr class="divider">')
 
+    # страница закончилась — закрывающую линию внизу не рисуем,
+    # разделители стоят только между блоками
+    if body and body[-1].endswith('<hr class="divider">'):
+        body[-1] = body[-1][: -len('\n      <hr class="divider">')]
+
     crumbs = "".join(f"<span>{esc(c)}</span>" for c in intro["breadcrumbs"])
     description = (intro["lead"] or "")[:160]
 

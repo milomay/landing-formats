@@ -312,9 +312,9 @@ img {
 .section h2 {
   font-size: 28px;
   line-height: 32px;
-  font-weight: 500;
+  font-weight: 600; /* Semibold */
   color: var(--text-strong);
-  margin: 0 0 20px;
+  margin: 0 0 24px;
 }
 
 .section h3 {
