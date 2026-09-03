@@ -612,6 +612,7 @@ figcaption {
   .nav-group__title::before,
   .nav-group__body,
   .video__open,
+  .theme-switch__knob,
   .lightbox,
   .lightbox video {
     transition: none;
@@ -958,33 +959,69 @@ figcaption {
 
 /* --- переключатель темы -------------------------------------------------- */
 
+/* тумблер: слева название текущей темы, справа сам переключатель.
+   Положение бегунка задаёт тема на <html>, скрипту про него знать нечего. */
 .theme-switch {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
   margin-top: 32px;
-  padding: 8px 12px;
-  background: var(--surface-card);
-  border: 1px solid var(--border-soft);
-  border-radius: 999px;
+  padding: 6px 0;
+  background: none;
+  border: 0;
   color: var(--text-muted);
   font: inherit;
   font-size: 13px;
   line-height: 18px;
+  text-align: left;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .theme-switch:hover {
-  background: var(--surface-card-hover);
-  border-color: var(--border);
   color: var(--text-strong);
 }
 
-.theme-switch svg {
-  width: 16px;
-  height: 16px;
+.theme-switch__track {
+  position: relative;
   flex: none;
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-soft);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-switch:hover .theme-switch__track {
+  background: var(--surface-card-hover);
+  border-color: var(--border);
+}
+
+/* бегунок — плашка цвета текста с иконкой текущей темы навылет */
+.theme-switch__knob {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text-strong);
+  color: var(--surface);
+  display: grid;
+  place-items: center;
+  transition: transform 0.25s ease;
+}
+
+[data-theme="light"] .theme-switch__knob {
+  transform: translateX(20px);
+}
+
+.theme-switch svg {
+  width: 12px;
+  height: 12px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;

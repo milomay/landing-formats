@@ -328,14 +328,18 @@ def render_page(page):
           {render_nav(page["nav"], meta["nav"])}
           <button class="theme-switch" type="button" data-theme-toggle
                   aria-label="Переключить тему">
-            <svg data-icon="dark" viewBox="0 0 16 16" aria-hidden="true">
-              <path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z"/>
-            </svg>
-            <svg data-icon="light" viewBox="0 0 16 16" aria-hidden="true">
-              <circle cx="8" cy="8" r="3.2"/>
-              <path d="M8 1v1.6M8 13.4V15M15 8h-1.6M2.6 8H1M12.9 3.1l-1.1 1.1M4.2 11.8l-1.1 1.1M12.9 12.9l-1.1-1.1M4.2 4.2 3.1 3.1"/>
-            </svg>
             <span data-theme-label>Тёмная тема</span>
+            <span class="theme-switch__track" aria-hidden="true">
+              <span class="theme-switch__knob">
+                <svg data-icon="dark" viewBox="0 0 16 16">
+                  <path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z"/>
+                </svg>
+                <svg data-icon="light" viewBox="0 0 16 16">
+                  <circle cx="8" cy="8" r="3.2"/>
+                  <path d="M8 1v1.6M8 13.4V15M15 8h-1.6M2.6 8H1M12.9 3.1l-1.1 1.1M4.2 11.8l-1.1 1.1M12.9 12.9l-1.1-1.1M4.2 4.2 3.1 3.1"/>
+                </svg>
+              </span>
+            </span>
           </button>
       </div>
     </aside>
