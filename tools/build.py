@@ -230,7 +230,8 @@ def render_page(page):
             toc.append(f'<li><a href="#{sid}">{esc(section["title"])}</a></li>')
             body.append(
                 f'<section class="section" id="{sid}">\n'
-                f'        <h2>{esc(section["title"])}</h2>\n'
+                f'        <h2><a class="anchor" href="#{sid}" '
+                f'aria-label="Ссылка на этот раздел"></a>{esc(section["title"])}</h2>\n'
                 f'        {render_blocks(section["blocks"])}\n'
                 f'      </section>\n'
                 f'      <hr class="divider">')
