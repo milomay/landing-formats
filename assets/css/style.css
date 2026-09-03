@@ -406,6 +406,8 @@ figcaption {
   position: absolute;
   left: 16px;
   bottom: 16px;
+  padding: 0;
+  border: 0;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -423,6 +425,21 @@ figcaption {
   border-left: 11px solid #fff;
   border-top: 7px solid transparent;
   border-bottom: 7px solid transparent;
+}
+
+/* у блоков с настоящим роликом кнопка кликабельная и уступает место
+   нативной панели, как только видео запустили */
+button.video__play {
+  cursor: pointer;
+}
+
+button.video__play:hover,
+button.video__play:focus-visible {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.video.is-playing .video__play {
+  display: none;
 }
 
 /* --- таблицы ----------------------------------------------------------- */

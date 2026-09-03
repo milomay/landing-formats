@@ -119,11 +119,14 @@ def render_video(block):
     cap = f'<figcaption>{esc(block["caption"])}</figcaption>' if block.get("caption") else ""
     src = video_src(block["img"])
     if src:
-        # preload="none" — иначе девять роликов на странице тянут метаданные сразу;
-        # постер из макета показывается до первого клика
+        # preload="none" — иначе девять роликов на странице тянут метаданные сразу.
+        # Контролов в покое нет: в макете поверх постера круглая кнопка play,
+        # нативная панель появляется после первого клика (её включает app.js)
         return (f'<figure class="{cls}"><video src="{esc(src)}" '
-                f'poster="{img_src(block["img"])}" controls playsinline preload="none"'
-                f'></video>{cap}</figure>')
+                f'poster="{img_src(block["img"])}" playsinline preload="none"'
+                f'></video>'
+                f'<button class="video__play" type="button" data-video-play '
+                f'aria-label="Воспроизвести"></button>{cap}</figure>')
     return (f'<figure class="{cls}"><img src="{img_src(block["img"])}" '
             f'alt="{esc(block.get("caption") or "Превью видео")}" loading="lazy">'
             f'<span class="video__play" aria-hidden="true"></span>{cap}</figure>')

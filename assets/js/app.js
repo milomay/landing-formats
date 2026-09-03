@@ -56,6 +56,23 @@ document.addEventListener('click', async (e) => {
   setTimeout(() => button.classList.remove('is-done'), 1500);
 });
 
+// --- запуск ролика ----------------------------------------------------------
+// В покое у видео нет контролов — поверх постера лежит кнопка play из макета.
+// По клику отдаём управление нативной панели браузера.
+
+document.addEventListener('click', (e) => {
+  const button = e.target.closest('[data-video-play]');
+  if (!button) return;
+  const figure = button.closest('.video');
+  const video = figure.querySelector('video');
+  if (!video) return;
+  video.controls = true;
+  figure.classList.add('is-playing');
+  video.play().catch(() => {
+    /* автозапуск мог не разрешиться — контролы уже на месте, запустят руками */
+  });
+});
+
 // --- мобильное меню ---------------------------------------------------------
 
 document.addEventListener('click', (e) => {
