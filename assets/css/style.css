@@ -257,11 +257,12 @@ img {
   color: var(--border);
 }
 
+/* SangBleu — три роли, все по текстовому стилю Header из макета */
 .page-title {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 56px;
-  line-height: 64px;
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 72px;
   color: var(--text-strong);
   margin: 0 0 20px;
 }
@@ -292,9 +293,10 @@ img {
 }
 
 .bento__title {
-  font-size: 28px;
+  font-family: var(--font-display);
+  font-size: 26px;
   line-height: 32px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--text-strong);
   margin: 0 0 8px;
 }
@@ -310,7 +312,7 @@ img {
 
 .chapter__title {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 500;
   font-size: 44px;
   line-height: 54px;
   color: var(--text-strong);
