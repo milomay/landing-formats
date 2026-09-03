@@ -1,0 +1,38 @@
+/* Шрифты макета. local() пробует уже установленный на машине, иначе тянем woff2.
+   Начертания — только те, что встречаются в макете: 400/500/600 и антиква 400. */
+
+@font-face {
+  font-family: "Graphik Kinopoisk LC";
+  src: local("Graphik Kinopoisk LC Regular"),
+    url("../fonts/graphik-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Graphik Kinopoisk LC";
+  src: local("Graphik Kinopoisk LC Medium"),
+    url("../fonts/graphik-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Graphik Kinopoisk LC";
+  src: local("Graphik Kinopoisk LC Semibold"),
+    url("../fonts/graphik-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SangBleu Sunrise";
+  src: local("SangBleu Sunrise Regular"),
+    url("../fonts/sangbleu-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
