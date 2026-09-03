@@ -629,11 +629,34 @@ figcaption {
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* Крупный ролик подрастает так же, как плитки. Ховер вешаем на весь кадр,
+   а не на кнопку: пока файл не залит, кнопки в разметке нет, а карточка
+   всё равно должна отзываться. Внутренний масштаб при этом гасим, иначе
+   кадр с кнопкой увеличится дважды. */
+.video--wide {
+  transition: transform 0.3s ease;
+}
+
+.video--wide:hover,
+.video--wide:focus-within {
+  transform: scale(1.02);
+}
+
+.video--wide .video__open:hover,
+.video--wide .video__open:focus-visible {
+  transform: none;
+}
+
+.video--wide:hover .video__play {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anchor__icon,
   .nav-group__title::before,
   .nav-group__body,
   .video__open,
+  .video--wide,
   .theme-switch__knob,
   .lightbox,
   .lightbox video {
@@ -642,6 +665,8 @@ figcaption {
 
   .video__open:hover,
   .video__open:focus-visible,
+  .video--wide:hover,
+  .video--wide:focus-within,
   .lightbox video {
     transform: none;
   }
@@ -911,18 +936,18 @@ figcaption {
 
 /* --- адаптив ------------------------------------------------------------ */
 
-/* ниже макетных 1440 первыми ужимаются межколонники: колонка с текстом
-   держит свои 740 до последнего, читать её важнее, чем беречь воздух */
+/* ниже макетных 1440 первыми ужимаются межколонники — до минимальных 32:
+   колонка с текстом держит свои 740 до последнего, читать её важнее,
+   чем беречь воздух */
 @media (max-width: 1439px) {
   .layout {
-    --gap: 40px;
+    --gap: 32px;
   }
 }
 
 @media (max-width: 1200px) {
   .layout {
     grid-template-columns: var(--col-nav) minmax(0, 1fr);
-    gap: 40px;
   }
   .toc {
     display: none;
