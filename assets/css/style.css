@@ -16,7 +16,7 @@
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
   --shadow: none;
-  --check: #ffffff;
+  --check: #f2f2f2; /* Fill/Two */
 }
 
 [data-theme="light"] {
@@ -520,8 +520,8 @@ figcaption {
   margin-bottom: 0;
 }
 
-/* галочка вместо буллета — как Checkbox в макете. Белая; в светлой теме белым
-   по белому не видно, поэтому там берётся тёмный аналог из --text-strong.
+/* галочка вместо буллета — как Checkbox в макете. Цвет Fill/Two; в светлой теме
+   этот оттенок на белом не виден, поэтому там берётся тёмный --text-strong.
    Селектор с двумя классами, чтобы перебить круглый буллет .section ul li */
 .checklist .checklist__list li::before {
   content: "";
