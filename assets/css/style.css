@@ -48,7 +48,7 @@
      быстрее, чем на чёрном — так крошки и оглавление остаются читаемыми */
   --text-muted: rgba(0, 0, 0, 0.62);
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --check: var(--text-strong);
+  --check: #1f1f1f; /* Fill/Two светлой темы */
 }
 
 :root {
@@ -788,8 +788,7 @@ figcaption {
   margin-bottom: 0;
 }
 
-/* галочка вместо буллета — как Checkbox в макете. Цвет Fill/Two; в светлой теме
-   этот оттенок на белом не виден, поэтому там берётся тёмный --text-strong.
+/* галочка вместо буллета — как Checkbox в макете, цвет Fill/Two обеих тем.
    Селектор с двумя классами, чтобы перебить круглый буллет .section ul li */
 .checklist .checklist__list li::before {
   content: "";
