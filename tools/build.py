@@ -161,8 +161,10 @@ def render_blocks(blocks):
         if t == "video":
             out.append(render_video(b))
         elif t == "p":
-            cls = ' class="lead"' if b.get("lead") else ""
-            out.append(f"<p{cls}>{render_text(b['text'])}</p>")
+            # внутри разделов абзацы обычные: в макете подзаголовочная строка
+            # набрана тем же Regular, что и остальной текст. Лид — только один,
+            # под заголовком страницы, он ставится в шаблоне.
+            out.append(f"<p>{render_text(b['text'])}</p>")
         elif t == "h3":
             out.append(f"<h3>{esc(b['text'])}</h3>")
         elif t == "ul":
