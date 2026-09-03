@@ -965,7 +965,8 @@ figcaption {
   display: inline-flex;
   align-items: center;
   height: 48px;
-  margin-top: 32px;
+  /* 4 + 4 (нижняя отбивка группы) + 8 (центровка в строке 48) = 16 до дорожки */
+  margin-top: 4px;
   padding: 0;
   background: none;
   border: 0;
