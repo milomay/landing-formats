@@ -433,7 +433,7 @@ figcaption {
 
 .spec-table th {
   text-align: left;
-  font-weight: 600;
+  font-weight: 500; /* Medium */
   color: var(--text-strong);
   padding: 12px 20px 12px 0;
   border-bottom: 2px solid var(--border);
