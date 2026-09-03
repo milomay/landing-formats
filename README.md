@@ -42,8 +42,19 @@ python3 tools/build.py         # content.json → index.html, banner.html
 python3 -m http.server 4173
 ```
 
+## Публикация
+
+```bash
+gh auth login          # один раз
+bash tools/publish.sh  # создаёт публичный репозиторий и включает GitHub Pages
+```
+
+Скрипт идемпотентный: повторный запуск просто пушит изменения. Имя репозитория можно
+задать аргументом — `bash tools/publish.sh my-repo`.
+
 ## Шрифты
 
-В макете — `Graphik Kinopoisk LC` и `SangBleu Sunrise`. Оба лицензионные, в репозитории их нет:
-на машине с установленными шрифтами сайт выглядит как макет, у остальных подставляются
-системные аналоги из `--font` и `--font-display` в `assets/css/style.css`.
+В макете — `Graphik Kinopoisk LC` и `SangBleu Sunrise`. Оба лицензионные, в репозитории
+их нет. Порядок в `--font` / `--font-display`: сначала фирменные (у кого установлены —
+видит макет один в один), дальше открытые аналоги с Google Fonts — `Inter` для текста
+и `Playfair Display` для крупных заголовков.

@@ -11,9 +11,12 @@
   --text-muted: rgba(255, 255, 255, 0.6);
   --accent: #ff5500;
 
-  --font: "Graphik Kinopoisk LC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: "SangBleu Sunrise", "Times New Roman", Georgia, serif;
+  /* лицензионные шрифты макета идут первыми — у кого они стоят, увидит макет
+     один в один; остальным подставляются близкие открытые аналоги */
+  --font: "Graphik Kinopoisk LC", "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "SangBleu Sunrise", "Playfair Display", "Times New Roman",
+    Georgia, serif;
 
   --col-nav: 240px;
   --col-main: 740px;
