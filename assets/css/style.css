@@ -127,8 +127,10 @@ a:hover {
 .main a:focus-visible {
   color: var(--accent);
   text-decoration: underline;
-  text-decoration-thickness: 1px;
+  text-decoration-thickness: 2px;
   text-underline-offset: 3px;
+  /* линия расступается перед выносными элементами букв — «р», «у», «д» */
+  text-decoration-skip-ink: auto;
 }
 
 img {
@@ -489,7 +491,7 @@ img {
 
 .section ul li {
   position: relative;
-  padding-left: 24px;
+  padding-left: 28px;
   margin-bottom: 4px;
 }
 
@@ -499,10 +501,10 @@ img {
   left: 4px;
   /* центр строки считаем от 1lh: при смене интерлиньяжа и на чужих метриках
      шрифта кружок остаётся на середине, а не съезжает */
-  top: 12px;
-  top: calc((1lh - 4px) / 2);
-  width: 4px;
-  height: 4px;
+  top: 11px;
+  top: calc((1lh - 6px) / 2);
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--text-muted);
 }
@@ -804,17 +806,21 @@ figcaption {
   list-style: none;
 }
 
-.spec-table li {
+/* Списки в ячейках таблицы живут по своим числам — более мелкий буллет
+   и своя втяжка. Селектор с .section в начале, потому что иначе его
+   перебивает более специфичное `.section ul li` из основного текста. */
+.section .spec-table li {
   position: relative;
-  padding-left: 16px;
+  padding-left: 24px;
   margin-bottom: 4px;
 }
 
-.spec-table li::before {
+.section .spec-table li::before {
   content: "";
   position: absolute;
-  left: 2px;
-  top: 9px;
+  left: 4px;
+  top: 12px;
+  top: calc((1lh - 4px) / 2);
   width: 4px;
   height: 4px;
   border-radius: 50%;
