@@ -223,7 +223,15 @@ def render_page(page):
     intro = page["intro"] or {"breadcrumbs": [], "title": page["title"], "lead": "", "blocks": []}
 
     body, toc = [], []
+
+    def drop_trailing_divider():
+        """Линию снимаем там, где разделять уже нечего: перед заголовком главы
+        (новый смысловой блок отбит антиквой) и в самом низу страницы."""
+        if body and body[-1].endswith('<hr class="divider">'):
+            body[-1] = body[-1][: -len('\n      <hr class="divider">')]
+
     for chapter in page["chapters"]:
+        drop_trailing_divider()
         body.append(f'<h2 class="chapter__title">{esc(chapter["title"])}</h2>')
         for section in chapter["sections"]:
             sid = slug(section["title"], used)
@@ -236,10 +244,7 @@ def render_page(page):
                 f'      </section>\n'
                 f'      <hr class="divider">')
 
-    # страница закончилась — закрывающую линию внизу не рисуем,
-    # разделители стоят только между блоками
-    if body and body[-1].endswith('<hr class="divider">'):
-        body[-1] = body[-1][: -len('\n      <hr class="divider">')]
+    drop_trailing_divider()
 
     crumbs = "".join(f"<span>{esc(c)}</span>" for c in intro["breadcrumbs"])
     description = (intro["lead"] or "")[:160]
