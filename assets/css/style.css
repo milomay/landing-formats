@@ -476,7 +476,10 @@ figcaption {
   display: grid;
   place-items: center;
   padding: 40px;
-  background: rgba(0, 0, 0, 0.9);
+  /* подложка полупрозрачная: сквозь неё видно размытую страницу */
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   /* закрытый оверлей прячем через visibility, а не display — иначе анимации нет */
   opacity: 0;
   visibility: hidden;
