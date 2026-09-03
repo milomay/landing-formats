@@ -120,6 +120,15 @@ def typography(text):
     return DASH.sub("\u00a0\\1", text)
 
 
+def label(text):
+    """Заголовок, пункт меню или подпись: экранирование плюс типографика.
+
+    Узкие колонки меню и оглавления ломают строку где придётся, поэтому
+    предлоги и тире привязываем и здесь, а не только в основном тексте.
+    """
+    return typography(esc(text))
+
+
 def render_text(value):
     """Текст блока: строка или список кусков (url, text) со ссылками."""
     if isinstance(value, str):
@@ -179,7 +188,7 @@ def img_tag(src, alt=""):
 
 def render_video(block):
     cls = "video video--wide" if block.get("wide") else "video"
-    cap = f'<figcaption>{esc(block["caption"])}</figcaption>' if block.get("caption") else ""
+    cap = f'<figcaption>{label(block["caption"])}</figcaption>' if block.get("caption") else ""
     src = video_src(block["img"])
     src_img = img_src(block["img"])
     if src:
@@ -226,7 +235,7 @@ def render_blocks(blocks):
             # под заголовком страницы, он ставится в шаблоне.
             out.append(f"<p>{render_text(b['text'])}</p>")
         elif t == "h3":
-            out.append(f"<h3>{esc(b['text'])}</h3>")
+            out.append(f"<h3>{label(b['text'])}</h3>")
         elif t == "ul":
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             out.append(f"<ul>{items}</ul>")
@@ -246,17 +255,17 @@ def render_blocks(blocks):
         elif t == "table":
             out.append(render_table(b["rows"]))
         elif t == "note":
-            title = f'<p class="note__title">{esc(b["title"])}</p>' if b.get("title") else ""
+            title = f'<p class="note__title">{label(b["title"])}</p>' if b.get("title") else ""
             out.append(f'<aside class="note">{title}<p>{render_text(b["text"])}</p></aside>')
         elif t == "checkbox":
-            out.append(f'<ul><li>{esc(b["text"])}</li></ul>')
+            out.append(f'<ul><li>{label(b["text"])}</li></ul>')
         elif t == "figure":
-            cap = f'<figcaption>{esc(b["caption"])}</figcaption>' if b.get("caption") else ""
+            cap = f'<figcaption>{label(b["caption"])}</figcaption>' if b.get("caption") else ""
             out.append(f'<figure>{img_tag(img_src(b["img"]))}{cap}</figure>')
         elif t == "bento":
             cards = "".join(
-                f'<div class="bento__card"><p class="bento__title">{esc(c["title"])}</p>'
-                f'<p class="bento__body">{esc(c["body"])}</p></div>'
+                f'<div class="bento__card"><p class="bento__title">{label(c["title"])}</p>'
+                f'<p class="bento__body">{label(c["body"])}</p></div>'
                 for c in b["cards"])
             out.append(f'<div class="bento">{cards}</div>')
         elif t == "hr":
@@ -279,15 +288,15 @@ def render_nav(groups, current):
             href = NAV_LINKS.get(item)
             cur = ' aria-current="page"' if item == current else ""
             if href:
-                rows.append(f'<li><a href="{href}"{cur}>{esc(item)}</a></li>')
+                rows.append(f'<li><a href="{href}"{cur}>{label(item)}</a></li>')
             else:
-                rows.append(f'<li><a href="#" aria-disabled="true">{esc(item)}</a></li>')
+                rows.append(f'<li><a href="#" aria-disabled="true">{label(item)}</a></li>')
         # шеврон в макете не декорация: группа сворачивается и разворачивается
         gid = "nav-" + slug(g["title"], set())
         parts.append(
             f'<div class="nav-group">'
             f'<button class="nav-group__title" type="button" data-nav-group'
-            f' aria-expanded="true" aria-controls="{gid}">{esc(g["title"])}</button>'
+            f' aria-expanded="true" aria-controls="{gid}">{label(g["title"])}</button>'
             f'<div class="nav-group__body" id="{gid}">'
             f'<ul class="nav-list">{"".join(rows)}</ul></div></div>')
     return "\n          ".join(parts)
@@ -313,13 +322,13 @@ def render_page(page):
 
     for chapter in page["chapters"]:
         drop_trailing_divider()
-        body.append(f'<h2 class="chapter__title">{esc(chapter["title"])}</h2>')
+        body.append(f'<h2 class="chapter__title">{label(chapter["title"])}</h2>')
         for section in chapter["sections"]:
             sid = slug(section["title"], used)
-            toc.append(f'<li><a href="#{sid}">{esc(section["title"])}</a></li>')
+            toc.append(f'<li><a href="#{sid}">{label(section["title"])}</a></li>')
             body.append(
                 f'<section class="section" id="{sid}">\n'
-                f'        <h2><a class="anchor" href="#{sid}">{esc(section["title"])}'
+                f'        <h2><a class="anchor" href="#{sid}">{label(section["title"])}'
                 f'<span class="anchor__icon" aria-hidden="true"></span></a></h2>\n'
                 f'        {render_blocks(section["blocks"])}\n'
                 f'      </section>\n'
@@ -382,8 +391,8 @@ def render_page(page):
 
     <main class="main">
       <nav class="breadcrumbs">{crumbs}</nav>
-      <h1 class="page-title">{esc(intro["title"])}</h1>
-      <p class="lead">{esc(intro["lead"])}</p>
+      <h1 class="page-title">{label(intro["title"])}</h1>
+      <p class="lead">{label(intro["lead"])}</p>
       {intro_html}
 
       {"".join(body)}
