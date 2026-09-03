@@ -346,8 +346,7 @@ def render_page(page):
       <div class="nav-groups">
           {render_nav(page["nav"], meta["nav"])}
           <button class="theme-switch" type="button" data-theme-toggle
-                  aria-label="Переключить тему">
-            <span data-theme-label>Тёмная тема</span>
+                  role="switch" aria-checked="false" aria-label="Светлая тема">
             <span class="theme-switch__track" aria-hidden="true">
               <span class="theme-switch__knob">
                 <svg data-icon="dark" viewBox="0 0 16 16">

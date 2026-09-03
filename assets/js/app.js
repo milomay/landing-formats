@@ -9,8 +9,9 @@ const root = document.documentElement;
 
 function applyTheme(theme) {
   root.dataset.theme = theme;
-  const label = document.querySelector('[data-theme-label]');
-  if (label) label.textContent = theme === 'light' ? 'Светлая тема' : 'Тёмная тема';
+  // подписи у тумблера нет, состояние читается с самого переключателя
+  const toggle = document.querySelector('[data-theme-toggle]');
+  if (toggle) toggle.setAttribute('aria-checked', String(theme === 'light'));
 }
 
 applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');

@@ -959,38 +959,24 @@ figcaption {
 
 /* --- переключатель темы -------------------------------------------------- */
 
-/* тумблер: слева название текущей темы, справа сам переключатель.
+/* тумблер темы: только сам переключатель, у левого края колонки.
    Положение бегунка задаёт тема на <html>, скрипту про него знать нечего. */
 .theme-switch {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
   height: 48px;
   margin-top: 32px;
-  /* справа те же 16, что у групп меню: тумблер встаёт по их правому краю */
-  padding: 0 16px 0 0;
+  padding: 0;
   background: none;
   border: 0;
-  color: var(--text-muted);
-  font: inherit;
-  font-size: 13px;
-  line-height: 18px;
-  text-align: left;
   cursor: pointer;
-  transition: color 0.15s ease;
-}
-
-.theme-switch:hover {
-  color: var(--text-strong);
 }
 
 .theme-switch__track {
   position: relative;
   flex: none;
-  width: 88px;
-  height: 48px;
+  width: 56px;
+  height: 32px;
   border-radius: 999px;
   background: var(--surface-card);
   border: 1px solid var(--border-soft);
@@ -1005,10 +991,10 @@ figcaption {
 /* бегунок — плашка цвета текста с иконкой текущей темы навылет */
 .theme-switch__knob {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 40px;
-  height: 40px;
+  top: 2px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--text-strong);
   color: var(--surface);
@@ -1018,12 +1004,12 @@ figcaption {
 }
 
 [data-theme="light"] .theme-switch__knob {
-  transform: translateX(40px);
+  transform: translateX(24px);
 }
 
 .theme-switch svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
