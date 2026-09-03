@@ -1,9 +1,51 @@
-// Мобильное меню и подсветка активного пункта оглавления.
+// Тема, мобильное меню и подсветка активного пункта оглавления.
+
+// --- тема ------------------------------------------------------------------
+// Значение уже выставлено инлайн-скриптом в <head>; здесь только переключение.
+
+const root = document.documentElement;
+const systemLight = matchMedia('(prefers-color-scheme: light)');
+
+function readStored() {
+  try {
+    return localStorage.getItem('theme');
+  } catch (e) {
+    return null;
+  }
+}
+
+function applyTheme(theme) {
+  root.dataset.theme = theme;
+  const label = document.querySelector('[data-theme-label]');
+  if (label) label.textContent = theme === 'light' ? 'Светлая тема' : 'Тёмная тема';
+}
+
+applyTheme(root.dataset.theme || 'dark');
+
+// пока пользователь не выбрал тему сам, следуем за системной
+systemLight.addEventListener('change', (e) => {
+  if (!readStored()) applyTheme(e.matches ? 'light' : 'dark');
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('[data-theme-toggle]')) return;
+  const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+  applyTheme(next);
+  try {
+    localStorage.setItem('theme', next);
+  } catch (err) {
+    /* приватный режим — тема просто не запомнится */
+  }
+});
+
+// --- мобильное меню ---------------------------------------------------------
 
 document.addEventListener('click', (e) => {
   const toggle = e.target.closest('[data-nav-toggle]');
   if (toggle) document.getElementById('sidebar').classList.toggle('is-open');
 });
+
+// --- активный пункт оглавления ----------------------------------------------
 
 const links = [...document.querySelectorAll('.toc a')];
 const sections = links

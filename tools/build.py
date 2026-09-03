@@ -169,12 +169,23 @@ def render_page(page):
     description = (intro["lead"] or "")[:160]
 
     return f"""<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // тема ставится до первой отрисовки, иначе на светлой теме мигает тёмный фон
+    (function () {{
+      var saved = null;
+      try {{ saved = localStorage.getItem('theme'); }} catch (e) {{}}
+      var system = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.dataset.theme = saved || system;
+    }})();
+  </script>
   <title>{esc(intro["title"])} — Лендинг форматов</title>
   <meta name="description" content="{esc(description)}">
+  <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta property="og:title" content="{esc(intro["title"])} — гайд по формату">
   <meta property="og:description" content="{esc(description)}">
   <meta property="og:type" content="article">
@@ -190,6 +201,17 @@ def render_page(page):
       <button class="nav-toggle" type="button" data-nav-toggle>Разделы</button>
       <div class="nav-groups">
           {render_nav(page["nav"], meta["nav"])}
+          <button class="theme-switch" type="button" data-theme-toggle
+                  aria-label="Переключить тему">
+            <svg data-icon="dark" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z"/>
+            </svg>
+            <svg data-icon="light" viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="8" cy="8" r="3.2"/>
+              <path d="M8 1v1.6M8 13.4V15M15 8h-1.6M2.6 8H1M12.9 3.1l-1.1 1.1M4.2 11.8l-1.1 1.1M12.9 12.9l-1.1-1.1M4.2 4.2 3.1 3.1"/>
+            </svg>
+            <span data-theme-label>Тёмная тема</span>
+          </button>
       </div>
     </aside>
 
