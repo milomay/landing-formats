@@ -56,21 +56,63 @@ document.addEventListener('click', async (e) => {
   setTimeout(() => button.classList.remove('is-done'), 1500);
 });
 
-// --- запуск ролика ----------------------------------------------------------
-// В покое у видео нет контролов — поверх постера лежит кнопка play из макета.
-// По клику отдаём управление нативной панели браузера.
+// --- ролик во весь экран ----------------------------------------------------
+// В плитке лежит только постер: смотреть ролик в колонке 229 px нечего,
+// по клику он открывается крупно поверх страницы.
+
+let lightbox = null;
+let lightboxVideo = null;
+let openedFrom = null;
+
+function buildLightbox() {
+  lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  lightbox.hidden = true;
+  lightbox.setAttribute('role', 'dialog');
+  lightbox.setAttribute('aria-modal', 'true');
+  lightbox.innerHTML =
+    '<button class="lightbox__close" type="button" aria-label="Закрыть">×</button>' +
+    '<video controls playsinline></video>';
+  lightboxVideo = lightbox.querySelector('video');
+  document.body.appendChild(lightbox);
+
+  lightbox.addEventListener('click', (e) => {
+    // клик мимо ролика и по крестику закрывают, клик по самому видео — нет
+    if (e.target === lightbox || e.target.closest('.lightbox__close')) closeVideo();
+  });
+}
+
+function openVideo(src, poster) {
+  if (!lightbox) buildLightbox();
+  lightboxVideo.src = src;
+  lightboxVideo.poster = poster || '';
+  lightbox.hidden = false;
+  document.body.style.overflow = 'hidden';
+  lightbox.querySelector('.lightbox__close').focus();
+  lightboxVideo.play().catch(() => {
+    /* браузер не дал автозапуск — контролы на месте, запустят руками */
+  });
+}
+
+function closeVideo() {
+  if (!lightbox || lightbox.hidden) return;
+  lightboxVideo.pause();
+  lightboxVideo.removeAttribute('src');
+  lightboxVideo.load(); // иначе файл продолжает качаться в фоне
+  lightbox.hidden = true;
+  document.body.style.overflow = '';
+  if (openedFrom) openedFrom.focus();
+}
 
 document.addEventListener('click', (e) => {
-  const button = e.target.closest('[data-video-play]');
+  const button = e.target.closest('[data-video-open]');
   if (!button) return;
-  const figure = button.closest('.video');
-  const video = figure.querySelector('video');
-  if (!video) return;
-  video.controls = true;
-  figure.classList.add('is-playing');
-  video.play().catch(() => {
-    /* автозапуск мог не разрешиться — контролы уже на месте, запустят руками */
-  });
+  openedFrom = button;
+  openVideo(button.dataset.src, button.querySelector('img')?.src);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeVideo();
 });
 
 // --- мобильное меню ---------------------------------------------------------

@@ -119,14 +119,14 @@ def render_video(block):
     cap = f'<figcaption>{esc(block["caption"])}</figcaption>' if block.get("caption") else ""
     src = video_src(block["img"])
     if src:
-        # preload="none" — иначе девять роликов на странице тянут метаданные сразу.
-        # Контролов в покое нет: в макете поверх постера круглая кнопка play,
-        # нативная панель появляется после первого клика (её включает app.js)
-        return (f'<figure class="{cls}"><video src="{esc(src)}" '
-                f'poster="{img_src(block["img"])}" playsinline preload="none"'
-                f'></video>'
-                f'<button class="video__play" type="button" data-video-play '
-                f'aria-label="Воспроизвести"></button>{cap}</figure>')
+        # В плитке лежит только постер: ролик открывается крупно в оверлее,
+        # смотреть его в колонке 229 px смысла нет. Кликабельна вся карточка.
+        return (f'<figure class="{cls}">'
+                f'<button class="video__open" type="button" data-video-open '
+                f'data-src="{esc(src)}" aria-label="Смотреть ролик">'
+                f'<img src="{img_src(block["img"])}" alt="" loading="lazy">'
+                f'<span class="video__play" aria-hidden="true"></span>'
+                f'</button>{cap}</figure>')
     return (f'<figure class="{cls}"><img src="{img_src(block["img"])}" '
             f'alt="{esc(block.get("caption") or "Превью видео")}" loading="lazy">'
             f'<span class="video__play" aria-hidden="true"></span>{cap}</figure>')

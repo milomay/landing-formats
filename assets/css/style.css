@@ -432,19 +432,80 @@ figcaption {
   border-bottom: 7px solid transparent;
 }
 
-/* у блоков с настоящим роликом кнопка кликабельная и уступает место
-   нативной панели, как только видео запустили */
-button.video__play {
+/* карточка с роликом: кликабельна целиком, по ховеру слегка подрастает */
+.video__open {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
+  transition: transform 0.3s ease;
 }
 
-button.video__play:hover,
-button.video__play:focus-visible {
+.video__open:hover,
+.video__open:focus-visible {
+  transform: scale(1.03);
+}
+
+.video__open:hover .video__play {
   background: rgba(0, 0, 0, 0.8);
 }
 
-.video.is-playing .video__play {
+@media (prefers-reduced-motion: reduce) {
+  .video__open {
+    transition: none;
+  }
+
+  .video__open:hover,
+  .video__open:focus-visible {
+    transform: none;
+  }
+}
+
+/* --- ролик во весь экран ------------------------------------------------ */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.lightbox[hidden] {
   display: none;
+}
+
+.lightbox video {
+  width: min(1100px, 100%);
+  max-height: calc(100vh - 80px);
+  border-radius: 8px;
+  background: #000;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox__close:hover,
+.lightbox__close:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* --- таблицы ----------------------------------------------------------- */
