@@ -20,7 +20,14 @@ VIDEO_EXT = (".mp4", ".webm")
 
 
 def img_src(node_name):
-    """Имя узла → путь к картинке с учётом склейки дубликатов."""
+    """Имя узла → путь к картинке с учётом склейки дубликатов.
+
+    Кадр, снятый с настоящего ролика (`<id>-poster.webp`), главнее склейки:
+    иначе три разных клипа делят одну картинку из макета. Отдельное имя нужно,
+    чтобы не затирать общий файл — на него опираются соседние блоки.
+    """
+    if (ROOT / "assets" / "img" / f"{node_name}-poster.webp").exists():
+        return f"assets/img/{node_name}-poster.webp"
     return f"assets/img/{IMG_MAP.get(node_name, node_name)}.webp"
 
 
