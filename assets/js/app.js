@@ -127,6 +127,38 @@ document.addEventListener('click', (e) => {
   if (toggle) document.getElementById('sidebar').classList.toggle('is-open');
 });
 
+// --- сворачивание групп в левом меню ----------------------------------------
+// Шеврон у заголовка группы рабочий: сворачивает и разворачивает список.
+
+document.addEventListener('click', (e) => {
+  const title = e.target.closest('[data-nav-group]');
+  if (!title) return;
+  const open = title.getAttribute('aria-expanded') === 'true';
+  title.setAttribute('aria-expanded', String(!open));
+  try {
+    const id = title.getAttribute('aria-controls');
+    const was = JSON.parse(localStorage.getItem('nav-collapsed') || '[]');
+    const now = open ? [...new Set([...was, id])] : was.filter((x) => x !== id);
+    localStorage.setItem('nav-collapsed', JSON.stringify(now));
+  } catch (err) {
+    /* приватный режим — состояние просто не запомнится */
+  }
+});
+
+// то, что свернули, остаётся свёрнутым и на соседней странице
+try {
+  JSON.parse(localStorage.getItem('nav-collapsed') || '[]').forEach((id) => {
+    const title = document.querySelector('[data-nav-group][aria-controls="' + id + '"]');
+    const body = document.getElementById(id);
+    // группу с текущей страницей не сворачиваем — иначе непонятно, где находишься
+    if (title && body && !body.querySelector('[aria-current="page"]')) {
+      title.setAttribute('aria-expanded', 'false');
+    }
+  });
+} catch (err) {
+  /* localStorage недоступен — все группы просто открыты */
+}
+
 // --- активный пункт оглавления ----------------------------------------------
 
 const links = [...document.querySelectorAll('.toc a')];

@@ -173,19 +173,13 @@ img {
   display: block;
   color: var(--text-strong);
   border: 0;
-  margin: 0;
+  margin: 0 0 16px;
 }
 
 .brand svg {
   display: block;
   width: 164px;
   height: 36px;
-}
-
-.sidebar__divider {
-  border: 0;
-  border-top: 1px solid var(--border);
-  margin: 16px 16px 16px 0;
 }
 
 .nav-group {
@@ -200,15 +194,22 @@ img {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 4px 0;
+  width: 100%;
+  padding: 6px 0;
   margin: 0 0 4px;
-  font-size: 18px;
-  line-height: 22px;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 20px;
   font-weight: 600;
   color: var(--text-strong);
 }
 
-/* шеврон — `icon / dropdown` из макета; группа всегда раскрыта, поэтому вниз */
+/* шеврон — `icon / dropdown` из макета; свёрнутая группа поворачивает его
+   вправо, как `icon / dropright` там же */
 .nav-group__title::before {
   content: "";
   flex: none;
@@ -217,6 +218,28 @@ img {
   background: currentColor;
   -webkit-mask: var(--icon-dropdown) center / 12px 12px no-repeat;
   mask: var(--icon-dropdown) center / 12px 12px no-repeat;
+  transition: transform 0.25s ease;
+}
+
+.nav-group__title[aria-expanded="false"]::before {
+  transform: rotate(-90deg);
+}
+
+/* 1fr → 0fr по гриду: единственный способ анимировать сворачивание,
+   не зная высоты списка заранее */
+.nav-group__body {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.nav-group__title[aria-expanded="false"] + .nav-group__body {
+  grid-template-rows: 0fr;
+}
+
+.nav-group__body > .nav-list {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .nav-list {
@@ -575,6 +598,8 @@ figcaption {
 
 @media (prefers-reduced-motion: reduce) {
   .anchor__icon,
+  .nav-group__title::before,
+  .nav-group__body,
   .video__open,
   .lightbox,
   .lightbox video {

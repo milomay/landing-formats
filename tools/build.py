@@ -221,9 +221,14 @@ def render_nav(groups, current):
                 rows.append(f'<li><a href="{href}"{cur}>{esc(item)}</a></li>')
             else:
                 rows.append(f'<li><a href="#" aria-disabled="true">{esc(item)}</a></li>')
+        # шеврон в макете не декорация: группа сворачивается и разворачивается
+        gid = "nav-" + slug(g["title"], set())
         parts.append(
-            f'<div class="nav-group"><p class="nav-group__title">{esc(g["title"])}</p>'
-            f'<ul class="nav-list">{"".join(rows)}</ul></div>')
+            f'<div class="nav-group">'
+            f'<button class="nav-group__title" type="button" data-nav-group'
+            f' aria-expanded="true" aria-controls="{gid}">{esc(g["title"])}</button>'
+            f'<div class="nav-group__body" id="{gid}">'
+            f'<ul class="nav-list">{"".join(rows)}</ul></div></div>')
     return "\n          ".join(parts)
 
 
@@ -289,7 +294,6 @@ def render_page(page):
   <div class="layout">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="index.html" aria-label="Форматы Кинопоиска">{LOGO}</a>
-      <hr class="sidebar__divider">
       <button class="nav-toggle" type="button" data-nav-toggle>Разделы</button>
       <div class="nav-groups">
           {render_nav(page["nav"], meta["nav"])}
