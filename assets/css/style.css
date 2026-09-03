@@ -539,8 +539,8 @@ figcaption {
   width: 100%;
   min-width: 420px;
   border-collapse: collapse;
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 13px;
+  line-height: 18px;
 }
 
 .spec-table th {
