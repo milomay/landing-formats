@@ -61,11 +61,15 @@
   --font-display: "SangBleu Sunrise", "Playfair Display", "Times New Roman",
     Georgia, serif;
 
+  /* сетка макета: 32 + 240 + 88 + 740 + 88 + 220 + 32 = 1440.
+     max-width считается вместе с padding (box-sizing: border-box),
+     поэтому здесь 1440, а не 1376 — иначе центральной колонке
+     не хватает 12px до её 740. */
   --col-nav: 240px;
   --col-main: 740px;
   --col-toc: 220px;
-  --gap: 62px;
-  --layout: 1376px;
+  --gap: 88px;
+  --layout: 1440px;
 }
 
 *,
@@ -172,6 +176,9 @@ img {
 .main {
   padding: 40px 0 120px;
   min-width: 0;
+  /* когда оглавление скрыто, колонка получает всю оставшуюся ширину —
+     ограничиваем её, чтобы строка не разъезжалась шире макетных 740 */
+  max-width: var(--col-main);
 }
 
 /* --- логотип и навигация -------------------------------------------- */
@@ -584,6 +591,22 @@ figcaption {
   mask: var(--icon-play) center / 16px 16px no-repeat;
 }
 
+/* Ролик во всю ширину колонки — свой компонент в макете (488:19298):
+   кнопка крупнее (60 вместо 32), иконка 24 и отбивка 20 от углов кадра. */
+.video--wide .video__play {
+  left: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+}
+
+.video--wide .video__play::before {
+  width: 24px;
+  height: 24px;
+  -webkit-mask: var(--icon-play) center / 24px 24px no-repeat;
+  mask: var(--icon-play) center / 24px 24px no-repeat;
+}
+
 /* карточка с роликом: кликабельна целиком, по ховеру слегка подрастает */
 .video__open {
   position: relative;
@@ -887,6 +910,14 @@ figcaption {
 }
 
 /* --- адаптив ------------------------------------------------------------ */
+
+/* ниже макетных 1440 первыми ужимаются межколонники: колонка с текстом
+   держит свои 740 до последнего, читать её важнее, чем беречь воздух */
+@media (max-width: 1439px) {
+  .layout {
+    --gap: 40px;
+  }
+}
 
 @media (max-width: 1200px) {
   .layout {
