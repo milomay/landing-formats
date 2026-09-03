@@ -565,7 +565,7 @@ figcaption {
    Figma считает радиус по гауссову ядру, браузер — по стандартному отклонению) */
 .video__play {
   position: absolute;
-  left: 8px;
+  right: 8px;
   bottom: 8px;
   padding: 0;
   border: 0;
@@ -594,7 +594,7 @@ figcaption {
 /* Ролик во всю ширину колонки — свой компонент в макете (488:19298):
    кнопка крупнее (60 вместо 32), иконка 24 и отбивка 20 от углов кадра. */
 .video--wide .video__play {
-  left: 20px;
+  right: 20px;
   bottom: 20px;
   width: 60px;
   height: 60px;
