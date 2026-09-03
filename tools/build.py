@@ -336,7 +336,7 @@ def render_page(page):
 
     drop_trailing_divider()
 
-    crumbs = "".join(f"<span>{esc(c)}</span>" for c in intro["breadcrumbs"])
+    crumbs = "".join(f"<span>{label(c)}</span>" for c in intro["breadcrumbs"])
     description = (intro["lead"] or "")[:160]
 
     return f"""<!DOCTYPE html>
