@@ -148,6 +148,9 @@ img {
   grid-template-columns: var(--col-nav) minmax(0, var(--col-main)) var(--col-toc);
   gap: var(--gap);
   align-items: start;
+  /* колонки фиксированной ширины, поэтому остаток ширины окна нужно делить
+     поровну: иначе он целиком копится справа и текст висит у левого края */
+  justify-content: center;
 }
 
 .sidebar,
@@ -943,18 +946,19 @@ figcaption {
 
 /* --- адаптив ------------------------------------------------------------ */
 
-/* ниже 1420 первыми ужимаются межколонники — до минимальных 32:
+/* ниже 1420 первыми ужимаются межколонники — до минимальных 40:
    колонка с текстом держит свои 740 до последнего, читать её важнее,
    чем беречь воздух */
 @media (max-width: 1419px) {
   .layout {
-    --gap: 32px;
+    --gap: 40px;
   }
 }
 
+/* оглавление уходит первым: без него пара «меню + текст» встаёт по центру окна */
 @media (max-width: 1200px) {
   .layout {
-    grid-template-columns: var(--col-nav) minmax(0, 1fr);
+    grid-template-columns: var(--col-nav) minmax(0, var(--col-main));
   }
   .toc {
     display: none;
@@ -963,7 +967,7 @@ figcaption {
 
 @media (max-width: 900px) {
   .layout {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, var(--col-main));
     padding: 0 20px;
   }
   .sidebar {
