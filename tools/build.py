@@ -12,10 +12,30 @@ CONTENT = ROOT / ".refs" / "content.json"
 IMG_MAP_FILE = ROOT / "assets" / "img" / "map.json"
 IMG_MAP = json.loads(IMG_MAP_FILE.read_text()) if IMG_MAP_FILE.exists() else {}
 
+# ролики: файл assets/video/<id блока>.mp4 либо внешняя ссылка в links.json
+VIDEO_DIR = ROOT / "assets" / "video"
+VIDEO_LINKS_FILE = VIDEO_DIR / "links.json"
+VIDEO_LINKS = json.loads(VIDEO_LINKS_FILE.read_text()) if VIDEO_LINKS_FILE.exists() else {}
+VIDEO_EXT = (".mp4", ".webm")
+
 
 def img_src(node_name):
     """Имя узла → путь к картинке с учётом склейки дубликатов."""
     return f"assets/img/{IMG_MAP.get(node_name, node_name)}.webp"
+
+
+def video_src(block_id):
+    """Ролик для блока: локальный файл в assets/video или ссылка из links.json.
+
+    Нет ни того, ни другого — блок остаётся картинкой-постером, как сейчас.
+    """
+    url = VIDEO_LINKS.get(block_id)
+    if url:
+        return url
+    for ext in VIDEO_EXT:
+        if (VIDEO_DIR / f"{block_id}{ext}").exists():
+            return asset_url(f"assets/video/{block_id}{ext}")
+    return None
 
 
 def asset_url(rel):
@@ -90,6 +110,13 @@ def render_table(rows):
 def render_video(block):
     cls = "video video--wide" if block.get("wide") else "video"
     cap = f'<figcaption>{esc(block["caption"])}</figcaption>' if block.get("caption") else ""
+    src = video_src(block["img"])
+    if src:
+        # preload="none" — иначе девять роликов на странице тянут метаданные сразу;
+        # постер из макета показывается до первого клика
+        return (f'<figure class="{cls}"><video src="{esc(src)}" '
+                f'poster="{img_src(block["img"])}" controls playsinline preload="none"'
+                f'></video>{cap}</figure>')
     return (f'<figure class="{cls}"><img src="{img_src(block["img"])}" '
             f'alt="{esc(block.get("caption") or "Превью видео")}" loading="lazy">'
             f'<span class="video__play" aria-hidden="true"></span>{cap}</figure>')

@@ -386,9 +386,16 @@ figcaption {
   margin: 0;
 }
 
-.video img {
+.video img,
+.video video {
   border-radius: 16px;
   width: 100%;
+  display: block;
+}
+
+/* пока ролик не загрузился, за постером виден чёрный кадр, а не фон страницы */
+.video video {
+  background: #000;
 }
 
 .video--wide img {
