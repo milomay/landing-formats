@@ -31,6 +31,29 @@ def img_src(node_name):
     return f"assets/img/{IMG_MAP.get(node_name, node_name)}.webp"
 
 
+_SIZES = {}
+
+
+def img_size(src):
+    """Атрибуты width/height файла — место под картинку резервируется до её
+    загрузки: на медленной сети видна подложка нужного размера, а текст под
+    ней не прыгает, когда файл наконец приезжает."""
+    if src in _SIZES:
+        return _SIZES[src]
+    path = ROOT / src
+    attrs = ""
+    if path.exists():
+        try:
+            from PIL import Image
+
+            with Image.open(path) as im:
+                attrs = f' width="{im.width}" height="{im.height}"'
+        except Exception:
+            pass  # без размеров просто нет резерва места, сборку это не ломает
+    _SIZES[src] = attrs
+    return attrs
+
+
 def video_src(block_id):
     """Ролик для блока: локальный файл в assets/video или ссылка из links.json.
 
@@ -122,17 +145,20 @@ def render_video(block):
     cls = "video video--wide" if block.get("wide") else "video"
     cap = f'<figcaption>{esc(block["caption"])}</figcaption>' if block.get("caption") else ""
     src = video_src(block["img"])
+    src_img = img_src(block["img"])
     if src:
         # В плитке лежит только постер: ролик открывается крупно в оверлее,
         # смотреть его в колонке 229 px смысла нет. Кликабельна вся карточка.
         return (f'<figure class="{cls}">'
                 f'<button class="video__open" type="button" data-video-open '
                 f'data-src="{esc(src)}" aria-label="Смотреть ролик">'
-                f'<img src="{img_src(block["img"])}" alt="" loading="lazy">'
+                f'<img class="media" src="{src_img}" alt="" '
+                f'loading="lazy" decoding="async"{img_size(src_img)}>'
                 f'<span class="video__play" aria-hidden="true"></span>'
                 f'</button>{cap}</figure>')
-    return (f'<figure class="{cls}"><img src="{img_src(block["img"])}" '
-            f'alt="{esc(block.get("caption") or "Превью видео")}" loading="lazy">'
+    return (f'<figure class="{cls}"><img class="media" src="{src_img}" '
+            f'alt="{esc(block.get("caption") or "Превью видео")}" '
+            f'loading="lazy" decoding="async"{img_size(src_img)}>'
             f'<span class="video__play" aria-hidden="true"></span>{cap}</figure>')
 
 
@@ -192,8 +218,9 @@ def render_blocks(blocks):
             out.append(f'<ul><li>{esc(b["text"])}</li></ul>')
         elif t == "figure":
             cap = f'<figcaption>{esc(b["caption"])}</figcaption>' if b.get("caption") else ""
-            out.append(f'<figure><img src="{img_src(b["img"])}" alt="" '
-                       f'loading="lazy">{cap}</figure>')
+            src_img = img_src(b["img"])
+            out.append(f'<figure><img class="media" src="{src_img}" alt="" '
+                       f'loading="lazy" decoding="async"{img_size(src_img)}>{cap}</figure>')
         elif t == "bento":
             cards = "".join(
                 f'<div class="bento__card"><p class="bento__title">{esc(c["title"])}</p>'

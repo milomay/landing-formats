@@ -23,6 +23,7 @@
   /* кнопка Play лежит поверх кадра, а не поверх страницы — в светлой теме
      не зеркалим, иначе бейдж перестанет читаться на тёмном видео */
   --fill-media-badge: rgba(255, 255, 255, 0.1); /* Fill/Ten */
+  --fill-placeholder: rgba(255, 255, 255, 0.08); /* Fill/Nine, как и рамка медиа */
   --icon-faint: rgba(255, 255, 255, 0.7); /* Fill/Four */
   --text: rgba(255, 255, 255, 0.8);
   --text-strong: #f2f2f2;
@@ -41,6 +42,7 @@
   --border-soft: rgba(0, 0, 0, 0.1);
   --border-media: rgba(0, 0, 0, 0.08);
   /* --fill-media-badge не зеркалим — см. комментарий в :root */
+  --fill-placeholder: rgba(0, 0, 0, 0.08);
   --icon-faint: rgba(0, 0, 0, 0.7);
   --text: rgba(0, 0, 0, 0.78);
   --text-strong: #0d0d0d;
@@ -516,6 +518,15 @@ figure {
 figure img {
   border-radius: 16px;
   width: 100%;
+}
+
+/* Плейсхолдер: пока файл едет по плохой сети, на его месте стоит плашка
+   Fill/Nine ровно того размера, что и картинка — место резервируют атрибуты
+   width/height в разметке, поэтому текст ниже не прыгает. Загруженная
+   картинка непрозрачная и подложку собой закрывает. */
+.media {
+  height: auto;
+  background: var(--fill-placeholder);
 }
 
 figcaption {
