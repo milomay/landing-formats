@@ -84,8 +84,8 @@ body {
   background: var(--surface);
   color: var(--text);
   font-family: var(--font);
-  font-size: 16px;
-  line-height: 26px;
+  font-size: 18px;
+  line-height: 28px;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -186,9 +186,9 @@ img {
   height: 36px;
 }
 
-/* 6 + 6 = 12 между группами; внутренний ритм группы это не трогает */
+/* 4 + 4 = 8 между группами; внутренний ритм группы это не трогает */
 .nav-group {
-  padding: 6px 16px 6px 0;
+  padding: 4px 16px 4px 0;
 }
 
 .nav-group:first-child {
