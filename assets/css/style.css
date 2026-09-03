@@ -639,7 +639,9 @@ figcaption {
 
 .video--wide:hover,
 .video--wide:focus-within {
-  transform: scale(1.02);
+  /* 1.01, а не 1.02, как у плиток: кадр втрое шире, и те же проценты
+     дают втрое больший скачок в пикселях */
+  transform: scale(1.01);
 }
 
 .video--wide .video__open:hover,
