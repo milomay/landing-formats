@@ -6,6 +6,7 @@
 :root {
   /* векторы из макета, выгружены как есть и подключаются масками */
   --icon-play: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M14 8L4 13.75V2.25L14 8Z" fill="black"/></svg>');
+  --icon-dropdown: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M10.1748 3.69824L10.5986 4.12402L6.42285 8.27344L6 8.69434L5.57715 8.27344L1.40234 4.12402L2.24805 3.27246L6 7.00195L9.75195 3.27246L10.1748 3.69824Z" fill="black"/></svg>');
   --icon-anchor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.98829 3.41159C9.98235 2.4181 11.5938 2.41814 12.5878 3.41172C13.5814 4.40487 13.582 6.01494 12.5892 7.00884L10.1962 9.40464C9.20342 10.3986 7.59242 10.3992 6.59885 9.40604C6.41992 9.22717 6.29573 9.0597 6.17343 8.83837C6.13637 8.7713 6.09501 8.67777 6.06619 8.61024C6.05096 8.5745 6.03769 8.54237 6.02823 8.51917L6.017 8.49144L6.01389 8.4837L6.01279 8.4809L6.56355 8.26224L6.56431 8.26417L6.56691 8.27064L6.57692 8.29537C6.58553 8.31644 6.59756 8.34557 6.61126 8.3777C6.64028 8.44577 6.67122 8.51404 6.69209 8.5517C6.78882 8.7267 6.87995 8.8491 7.01782 8.9869C7.77982 9.74864 9.01549 9.74817 9.77689 8.98584L12.1699 6.59007C12.9315 5.82764 12.931 4.59266 12.1688 3.83083C11.4062 3.06852 10.1698 3.06852 9.40709 3.83083L8.01389 5.22168L7.59522 4.8023L8.98829 3.41159ZM8.98222 7.01277C8.22022 6.25105 6.98455 6.25153 6.22313 7.01384L3.83013 9.40964C3.06858 10.172 3.06906 11.407 3.83119 12.1688C4.59381 12.9312 5.83032 12.9312 6.59294 12.1688L7.98615 10.778L8.40482 11.1974L7.01189 12.588M7.01189 12.588C6.01785 13.5814 4.40623 13.5815 3.41225 12.588C2.41871 11.5948 2.41809 9.98477 3.41086 8.99084L5.80387 6.59505C6.79662 5.60113 8.40762 5.6005 9.40122 6.59366C9.58015 6.7725 9.70429 6.93997 9.82662 7.1613C9.86369 7.22837 9.90502 7.3219 9.93389 7.38944C9.94909 7.42517 9.96235 7.4573 9.97182 7.4805L9.98302 7.50824L9.98615 7.51597L9.98702 7.5181L9.43649 7.73744L9.43575 7.7355L9.43315 7.72904L9.42315 7.7043C9.41449 7.68324 9.40249 7.6541 9.38875 7.62197C9.35975 7.5539 9.32882 7.48564 9.30795 7.44797C9.21122 7.27297 9.12009 7.15057 8.98222 7.01277" fill="black"/></svg>');
 }
 
@@ -153,6 +154,11 @@ img {
   scrollbar-width: thin;
 }
 
+/* в макете колонка начинается с отбивки 32 — у оглавления справа своя */
+.sidebar {
+  padding-top: 32px;
+}
+
 .main {
   padding: 40px 0 120px;
   min-width: 0;
@@ -160,26 +166,57 @@ img {
 
 /* --- логотип и навигация -------------------------------------------- */
 
+/* Sidebar Left из макета (485:19199). Колонка 240 держит справа отступ 16,
+   поэтому вся её начинка живёт в 224 — по этой ширине идут и разделитель,
+   и подсветка активного пункта. */
 .brand {
   display: block;
+  color: var(--text-strong);
+  border: 0;
+  margin: 0;
+}
+
+.brand svg {
+  display: block;
+  width: 164px;
+  height: 36px;
+}
+
+.sidebar__divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 16px 16px 16px 0;
+}
+
+.nav-group {
+  padding: 8px 16px 8px 0;
+}
+
+.nav-group:first-child {
+  padding-top: 0;
+}
+
+.nav-group__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  margin: 0 0 4px;
   font-size: 18px;
   line-height: 22px;
   font-weight: 600;
   color: var(--text-strong);
-  border: 0;
-  margin-bottom: 40px;
 }
 
-.nav-group + .nav-group {
-  margin-top: 28px;
-}
-
-.nav-group__title {
-  font-size: 15px;
-  line-height: 20px;
-  font-weight: 500;
-  color: var(--text-strong);
-  margin: 0 0 8px;
+/* шеврон — `icon / dropdown` из макета; группа всегда раскрыта, поэтому вниз */
+.nav-group__title::before {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  -webkit-mask: var(--icon-dropdown) center / 12px 12px no-repeat;
+  mask: var(--icon-dropdown) center / 12px 12px no-repeat;
 }
 
 .nav-list {
@@ -188,25 +225,36 @@ img {
   padding: 0;
 }
 
+.nav-list li + li {
+  margin-top: 4px;
+}
+
 .nav-list a {
   display: block;
-  padding: 6px 12px;
-  margin-left: -12px;
+  padding: 6px 12px 6px 20px;
   border-radius: 8px;
   border: 0;
   font-size: 15px;
   line-height: 20px;
+  color: var(--text-strong);
+}
+
+/* разделы, которых на сайте пока нет: в макете они все живые, у нас — заглушки,
+   и подсвечивать их как рабочие ссылки нельзя */
+.nav-list a[aria-disabled="true"] {
   color: var(--text-muted);
+  cursor: default;
 }
 
-.nav-list a:hover {
-  background: var(--surface-card);
-  color: var(--text-strong);
-}
-
+.nav-list a:hover,
 .nav-list a[aria-current="page"] {
-  background: var(--surface-card);
+  background: var(--surface-card-hover); /* Fill/Nine */
   color: var(--text-strong);
+}
+
+.nav-list a[aria-disabled="true"]:hover {
+  background: none;
+  color: var(--text-muted);
 }
 
 /* --- оглавление ------------------------------------------------------ */

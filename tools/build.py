@@ -64,6 +64,10 @@ PAGES = {
 }
 NAV_LINKS = {"Преролл": "index.html", "Баннеры": "banner.html"}
 
+# логотип вставляется в разметку, а не картинкой: так он берёт currentColor
+# и работает в обеих темах одним файлом
+LOGO = (ROOT / "assets" / "img" / "logo-kinopoisk.svg").read_text().strip()
+
 
 def esc(s):
     return html.escape(str(s), quote=False)
@@ -203,17 +207,23 @@ def render_blocks(blocks):
 def render_nav(groups, current):
     parts = []
     for g in groups:
-        items = []
-        for item in g["items"]:
+        # первый пункт группы дублирует её название — в макете это и есть
+        # заголовок группы с шевроном, отдельной строкой он не повторяется
+        items = list(g["items"])
+        if items and items[0] == g["title"]:
+            items = items[1:]
+
+        rows = []
+        for item in items:
             href = NAV_LINKS.get(item)
             cur = ' aria-current="page"' if item == current else ""
             if href:
-                items.append(f'<li><a href="{href}"{cur}>{esc(item)}</a></li>')
+                rows.append(f'<li><a href="{href}"{cur}>{esc(item)}</a></li>')
             else:
-                items.append(f'<li><a href="#" aria-disabled="true">{esc(item)}</a></li>')
+                rows.append(f'<li><a href="#" aria-disabled="true">{esc(item)}</a></li>')
         parts.append(
             f'<div class="nav-group"><p class="nav-group__title">{esc(g["title"])}</p>'
-            f'<ul class="nav-list">{"".join(items)}</ul></div>')
+            f'<ul class="nav-list">{"".join(rows)}</ul></div>')
     return "\n          ".join(parts)
 
 
@@ -278,7 +288,8 @@ def render_page(page):
 <body>
   <div class="layout">
     <aside class="sidebar" id="sidebar">
-      <a class="brand" href="index.html">Форматы Кинопоиска</a>
+      <a class="brand" href="index.html" aria-label="Форматы Кинопоиска">{LOGO}</a>
+      <hr class="sidebar__divider">
       <button class="nav-toggle" type="button" data-nav-toggle>Разделы</button>
       <div class="nav-groups">
           {render_nav(page["nav"], meta["nav"])}
