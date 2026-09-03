@@ -688,7 +688,9 @@ figcaption {
   border-radius: 16px;
 }
 
-.checklist__list {
+/* два класса в селекторе, чтобы перебить `.section ul` — иначе список тащит
+   от него отбивку 16px снизу и низ чек-листа перестаёт совпадать с верхом */
+.checklist .checklist__list {
   margin: 0;
   padding: 0;
   list-style: none;
