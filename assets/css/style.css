@@ -390,7 +390,7 @@ figcaption {
 
 .video img,
 .video video {
-  border-radius: 4px;
+  border-radius: 8px;
   border: 1px solid var(--border-media);
   width: 100%;
   display: block;
@@ -404,7 +404,7 @@ figcaption {
 /* широкий блок в интро держит ту же рамку и радиус, что плитки в ряду */
 .video--wide img,
 .video--wide video {
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .video__play {
