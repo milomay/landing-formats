@@ -348,7 +348,8 @@ img {
 
 .lead {
   font-size: 18px;
-  line-height: 26px;
+  line-height: 28px;
+  font-weight: 600;
   margin: 0 0 40px;
 }
 
