@@ -481,8 +481,11 @@ figcaption {
 }
 
 .lightbox video {
-  width: min(1100px, 100%);
+  width: min(900px, 100%);
+  aspect-ratio: 16 / 9;
   max-height: calc(100vh - 80px);
+  /* кадр не тянем: ролик другой пропорции ляжет в рамку с полями */
+  object-fit: contain;
   border-radius: 8px;
   background: #000;
 }
