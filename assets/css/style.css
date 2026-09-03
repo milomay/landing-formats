@@ -321,11 +321,7 @@ img {
   scroll-margin-top: 32px;
 }
 
-/* Header H2 из макета (483:19192): иконка 16px, зазор 8 — отсюда отбивка 24px.
-   Место под неё держим всегда, поэтому по ховеру заголовок не дёргается. */
 .section h2 {
-  position: relative;
-  padding-left: 24px;
   font-size: 28px;
   line-height: 32px;
   font-weight: 600; /* Semibold */
@@ -333,18 +329,31 @@ img {
   margin: 0 0 24px;
 }
 
-/* якорь на раздел: по правой кнопке копируется ссылка прямо на этот блок */
+/* Header H2 из макета (483:19192): иконка 16px через 8 после текста.
+   Идёт следом за заголовком, поэтому по ховеру ничего не смещается.
+   По правой кнопке копируется ссылка прямо на этот раздел. */
 .anchor {
-  position: absolute;
-  left: 0;
-  top: 8px; /* (32 − 16) / 2 — по центру первой строки, даже если заголовок в две */
+  display: inline-flex;
+  align-items: center;
+  /* высота во всю строку и выключка по её верху: так иконка встаёт ровно
+     по центру строки при любых метриках шрифта — Graphik стоит не у всех */
+  vertical-align: top;
+  height: 32px; /* = line-height заголовка */
+  height: 1lh;
+  width: 16px;
+  margin-left: 8px;
+  border: 0; /* иначе от базового стиля ссылок остаётся подчёркивание под иконкой */
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.anchor::before {
+  content: "";
   width: 16px;
   height: 16px;
   background: var(--icon-faint);
   -webkit-mask: var(--icon-anchor) center / 16px 16px no-repeat;
   mask: var(--icon-anchor) center / 16px 16px no-repeat;
-  opacity: 0;
-  transition: opacity 0.2s ease;
 }
 
 .section h2:hover .anchor,
