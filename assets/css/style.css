@@ -452,8 +452,9 @@ figcaption {
   border-bottom: 0;
 }
 
+/* внутри таблиц только Regular и Medium — Semibold не используем */
 .spec-table td:first-child {
-  font-weight: 600;
+  font-weight: 500; /* Medium */
   color: var(--text-strong);
   padding-right: 24px;
 }
