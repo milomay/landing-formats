@@ -752,6 +752,16 @@ figcaption {
   width: 22%;
 }
 
+/* в четырёхколоночной таблице описание забирало почти половину ширины,
+   а сроки справа переносились по два слова — раздаём ширину ровнее */
+.spec-table--4 td:nth-child(2) {
+  width: 38%;
+}
+
+.spec-table--4 td:nth-child(3) {
+  width: 22%;
+}
+
 .spec-table ul {
   margin: 0;
   padding: 0;
