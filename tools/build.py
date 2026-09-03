@@ -322,8 +322,7 @@ def render_page(page):
       {"".join(body)}
     </main>
 
-    <aside class="toc">
-      <p class="toc__title">Содержание</p>
+    <aside class="toc" aria-label="Содержание">
       <ol>
         {"".join(toc)}
       </ol>
