@@ -123,6 +123,15 @@ def text_nodes(node):
     return out
 
 
+def has_checkbox(node):
+    """Список-чеклист: вместо буллета в макете стоит инстанс Checkbox."""
+    if not visible(node):
+        return False
+    if name(node) == "Checkbox":
+        return True
+    return any(has_checkbox(c) for c in node.get("children", []))
+
+
 def bullet_items(node):
     """Paragraph With Bullet List → список пунктов со ссылками."""
     items = []
@@ -182,13 +191,15 @@ def block(node):
         return [{"type": "p", "text": rich_text(tn), "lead": n == "Subheading"}]
 
     if n == "Paragraph With Bullet List":
-        return [{"type": "ul", "items": bullet_items(node)}]
+        kind = "checklist" if has_checkbox(node) else "ul"
+        return [{"type": kind, "items": bullet_items(node)}]
 
     if n == "BulletList":
-        items = []
+        items, checklist = [], False
         for c in kids(node):
+            checklist = checklist or has_checkbox(c)
             items += bullet_items(c)
-        return [{"type": "ul", "items": items}]
+        return [{"type": "checklist" if checklist else "ul", "items": items}]
 
     if n == "SpecTable":
         rows = [table_row(c) for c in kids(node) if name(c).startswith("Spec Table Row")]

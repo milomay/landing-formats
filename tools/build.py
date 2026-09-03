@@ -107,6 +107,19 @@ def render_blocks(blocks):
         elif t == "ul":
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             out.append(f"<ul>{items}</ul>")
+        elif t == "checklist":
+            items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
+            out.append(
+                '<div class="checklist">'
+                '<button class="checklist__copy" type="button" data-copy-checklist '
+                'aria-label="Скопировать чек-лист">'
+                '<svg viewBox="0 0 20 20" aria-hidden="true">'
+                '<rect x="7.25" y="7.25" width="9.5" height="9.5" rx="2.5"/>'
+                '<path d="M12.75 4.75A1.5 1.5 0 0 0 11.25 3.25h-6.5a1.5 1.5 0 0 0-1.5 1.5v6.5'
+                'a1.5 1.5 0 0 0 1.5 1.5"/>'
+                "</svg></button>"
+                f'<ul class="checklist__list">{items}</ul>'
+                "</div>")
         elif t == "table":
             out.append(render_table(b["rows"]))
         elif t == "note":

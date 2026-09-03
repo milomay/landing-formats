@@ -492,6 +492,95 @@ figcaption {
   background: var(--text-muted);
 }
 
+/* --- чек-лист ------------------------------------------------------------ */
+
+.checklist {
+  position: relative;
+  margin: 24px 0;
+  padding: 24px 56px 24px 24px;
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+}
+
+.checklist__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist .checklist__list li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 10px;
+}
+
+.checklist .checklist__list li:last-child {
+  margin-bottom: 0;
+}
+
+/* галочка вместо буллета — как Checkbox в макете.
+   Селектор с двумя классами, чтобы перебить круглый буллет .section ul li */
+.checklist .checklist__list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 11px;
+  height: 6px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
+}
+
+.checklist__copy {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.checklist__copy:hover {
+  background: var(--surface-card);
+  color: var(--text-strong);
+}
+
+.checklist__copy svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.checklist__copy.is-done {
+  color: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .checklist {
+    padding: 20px 20px 20px 18px;
+  }
+  .checklist__copy {
+    position: static;
+    margin-bottom: 8px;
+  }
+}
+
 /* --- заметка ------------------------------------------------------------ */
 
 .note {

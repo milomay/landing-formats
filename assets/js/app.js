@@ -25,6 +25,37 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// --- копирование чек-листа --------------------------------------------------
+
+document.addEventListener('click', async (e) => {
+  const button = e.target.closest('[data-copy-checklist]');
+  if (!button) return;
+  const items = [...button.closest('.checklist').querySelectorAll('li')];
+  const text = items.map((li) => '- ' + li.textContent.trim()).join('\n');
+  let copied = false;
+  try {
+    await navigator.clipboard.writeText(text);
+    copied = true;
+  } catch (err) {
+    // Clipboard API недоступен — пробуем старый способ через скрытое поле
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.cssText = 'position:fixed;top:-1000px';
+    document.body.appendChild(field);
+    field.select();
+    try {
+      copied = document.execCommand('copy');
+    } catch (e) {
+      /* не вышло — пункты всегда можно выделить руками */
+    }
+    field.remove();
+  }
+  if (!copied) return;
+  button.classList.add('is-done');
+  setTimeout(() => button.classList.remove('is-done'), 1500);
+});
+
 // --- мобильное меню ---------------------------------------------------------
 
 document.addEventListener('click', (e) => {
