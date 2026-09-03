@@ -513,8 +513,9 @@ figure {
   margin: 24px 0;
 }
 
+/* радиус общий для всех картинок — и крупных иллюстраций, и плиток с роликом */
 figure img {
-  border-radius: 16px;
+  border-radius: 8px;
   width: 100%;
 }
 
@@ -546,9 +547,7 @@ figcaption {
   margin: 0;
 }
 
-/* и плитки в ряду, и широкий блок в интро — одна рамка и один радиус */
 .video img {
-  border-radius: 8px;
   border: 1px solid var(--border-media);
   width: 100%;
   display: block;
