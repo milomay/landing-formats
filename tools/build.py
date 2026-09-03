@@ -238,9 +238,8 @@ def render_page(page):
             toc.append(f'<li><a href="#{sid}">{esc(section["title"])}</a></li>')
             body.append(
                 f'<section class="section" id="{sid}">\n'
-                f'        <h2>{esc(section["title"])}'
-                f'<a class="anchor" href="#{sid}" '
-                f'aria-label="Ссылка на этот раздел"></a></h2>\n'
+                f'        <h2><a class="anchor" href="#{sid}">{esc(section["title"])}'
+                f'<span class="anchor__icon" aria-hidden="true"></span></a></h2>\n'
                 f'        {render_blocks(section["blocks"])}\n'
                 f'      </section>\n'
                 f'      <hr class="divider">')

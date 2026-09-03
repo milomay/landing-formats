@@ -330,9 +330,17 @@ img {
 }
 
 /* Header H2 из макета (483:19192), иконка увеличена до 20px: в макете 16px
-   рядом с 28-м кеглем читались мелко. Идёт следом за заголовком, поэтому
-   по ховеру ничего не смещается. По правой кнопке копируется ссылка на раздел. */
-.anchor {
+   рядом с 28-м кеглем читались мелко. Ссылкой сделан весь заголовок целиком —
+   поэтому и курсор на нём становится указателем, и правая кнопка на любом слове
+   отдаёт ссылку на этот раздел. Иконка идёт следом за текстом и место под себя
+   держит всегда, так что по ховеру ничего не смещается. */
+.section h2 .anchor {
+  color: inherit; /* иначе заголовок покрасится в акцент, как ссылки в тексте */
+  border: 0;
+  cursor: pointer;
+}
+
+.anchor__icon {
   display: inline-flex;
   align-items: center;
   /* высота во всю строку и выключка по её верху: так иконка встаёт ровно
@@ -342,12 +350,11 @@ img {
   height: 1lh;
   width: 20px;
   margin-left: 8px;
-  border: 0; /* иначе от базового стиля ссылок остаётся подчёркивание под иконкой */
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
-.anchor::before {
+.anchor__icon::before {
   content: "";
   width: 20px;
   height: 20px;
@@ -356,14 +363,14 @@ img {
   mask: var(--icon-anchor) center / 20px 20px no-repeat;
 }
 
-.section h2:hover .anchor,
-.anchor:focus-visible {
+.section h2:hover .anchor__icon,
+.anchor:focus-visible .anchor__icon {
   opacity: 1;
 }
 
 /* на тач-устройствах ховера нет — показываем сразу, иначе ссылку не достать */
 @media (hover: none) {
-  .anchor {
+  .anchor__icon {
     opacity: 1;
   }
 }
@@ -512,7 +519,7 @@ figcaption {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .anchor,
+  .anchor__icon,
   .video__open,
   .lightbox,
   .lightbox video {
