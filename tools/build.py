@@ -105,30 +105,35 @@ def slug(text, used):
     return s
 
 
-# короткие предлоги и союзы не оставляем висеть в конце строки: в узких
+# Короткие предлоги и союзы не оставляем висеть в конце строки: в узких
 # колонках таблицы «до» отрывалось от «релиза». Привязываем неразрывным
 # пробелом к следующему слову.
 HANGING = re.compile(r"\b([а-яёa-z]{1,2}|для|под|при|над|без|про|или|как)\s+", re.IGNORECASE)
 
+# Тире не переносится на новую строку — оно остаётся в конце строки, за словом.
+# Поэтому пробел перед ним неразрывный, а перенос возможен только после него.
+DASH = re.compile(r"[ \u00a0]+([—–])")
 
-def tie_prepositions(text):
-    return HANGING.sub(lambda m: m.group(1) + "\u00a0", text)
+
+def typography(text):
+    text = HANGING.sub(lambda m: m.group(1) + "\u00a0", text)
+    return DASH.sub("\u00a0\\1", text)
 
 
 def render_text(value):
     """Текст блока: строка или список кусков (url, text) со ссылками."""
     if isinstance(value, str):
-        return tie_prepositions(esc(value))
+        return typography(esc(value))
     out = []
     for part in value:
         url, chunk = part
         if url:
             out.append(
                 f'<a href="{esc(url)}" target="_blank" rel="noopener">'
-                f"{tie_prepositions(esc(chunk))}</a>"
+                f"{typography(esc(chunk))}</a>"
             )
         else:
-            out.append(tie_prepositions(esc(chunk)))
+            out.append(typography(esc(chunk)))
     return "".join(out)
 
 
