@@ -227,18 +227,38 @@ MARKS = {"❌": "deny", "✅": "allow"}
 
 
 def mark_lists(blocks):
-    out, pending = [], None
-    for b in blocks:
+    """Заголовок со значком и блок под ним.
+
+    ❌ — запрет: заголовок и то, что под ним, уезжают на красную плашку,
+    а маркеры списка становятся крестиками. ✅ — только галочки в маркерах:
+    разрешённое и так набрано обычным текстом, подсвечивать его нечем.
+    """
+    out, i = [], 0
+    while i < len(blocks):
+        b = blocks[i]
         text = b.get("text") if isinstance(b.get("text"), str) else None
         mark = next((m for m in MARKS if text and text.startswith(m)), None)
-        if mark:
-            out.append(dict(b, text=text[len(mark):].lstrip()))
-            pending = MARKS[mark]
+        if not mark:
+            out.append(b)
+            i += 1
             continue
-        if pending and b.get("type") == "ul":
-            b = dict(b, variant=pending)
-        pending = None
-        out.append(b)
+
+        title = text[len(mark):].lstrip()
+        kind = MARKS[mark]
+        nxt = blocks[i + 1] if i + 1 < len(blocks) else None
+        if nxt and nxt.get("type") == "ul":
+            nxt = dict(nxt, variant=kind)
+
+        if kind == "deny" and nxt:
+            out.append({"type": "deny", "title": title, "blocks": [nxt]})
+            i += 2
+            continue
+
+        out.append(dict(b, text=title))
+        if nxt:
+            out.append(nxt)
+            i += 1
+        i += 1
     return out
 
 
@@ -300,6 +320,10 @@ def render_blocks(blocks):
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             cls = f' class="{b["variant"]}"' if b.get("variant") else ""
             out.append(f"<ul{cls}>{items}</ul>")
+        elif t == "deny":
+            out.append(f'<aside class="note note--danger">'
+                       f'<h3>{label(b["title"])}</h3>'
+                       f'{render_blocks(b["blocks"])}</aside>')
         elif t == "checklist":
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             out.append(

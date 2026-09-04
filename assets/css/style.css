@@ -63,6 +63,12 @@
   --surface-warning: rgba(255, 85, 0, 0.06);
   --border-warning: rgba(255, 85, 0, 0.4);
 
+  /* System/Error из макета — плашка запретов и её крестики,
+     значения одни на обе темы */
+  --surface-danger: rgba(229, 49, 46, 0.06);
+  --border-danger: rgba(229, 49, 46, 0.2);
+  --icon-danger: rgba(229, 49, 46, 0.8);
+
   /* лицензионные шрифты макета идут первыми — у кого они стоят, увидит макет
      один в один; остальным подставляются близкие открытые аналоги */
   --font: "Graphik Kinopoisk LC", "Inter", -apple-system, BlinkMacSystemFont,
@@ -630,7 +636,7 @@ img {
   width: 16px;
   height: 16px;
   top: calc((1lh - 16px) / 2);
-  background: var(--accent);
+  background: var(--icon-danger);
   -webkit-mask: var(--icon-cross) center / 16px 16px no-repeat;
   mask: var(--icon-cross) center / 16px 16px no-repeat;
 }
@@ -1154,6 +1160,29 @@ figcaption {
 .note--alert {
   background: var(--surface-warning);
   border-color: var(--border-warning);
+}
+
+/* и в запрещающем — Alert из 505:20303 */
+.note--danger {
+  background: var(--surface-danger);
+  border-color: var(--border-danger);
+}
+
+/* заголовок внутри плашки живёт по её правилам, а не по правилам раздела */
+.note h3 {
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--text-strong);
+  margin: 0 0 4px;
+}
+
+.note ul {
+  margin: 0;
+}
+
+.note ul li:last-child {
+  margin-bottom: 0;
 }
 
 /* --- адаптив ------------------------------------------------------------ */
