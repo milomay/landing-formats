@@ -1151,6 +1151,9 @@ figcaption {
   .layout {
     grid-template-columns: minmax(0, var(--col-main));
     padding: 0 20px;
+    /* колонки встали друг под друга: межколонник между ними больше не нужен,
+       расстояние до текста задаёт верхняя отбивка самой колонки */
+    row-gap: 0;
   }
   .sidebar {
     position: static;
@@ -1165,9 +1168,6 @@ figcaption {
   .sidebar.is-open .nav-groups {
     display: block;
     padding-bottom: 24px;
-  }
-  .nav-toggle {
-    display: block;
   }
   /* меню встало сверху отдельной полосой — равняться крошкам больше не на что */
   .breadcrumbs {
@@ -1208,6 +1208,14 @@ figcaption {
   font-size: 15px;
   margin-bottom: 16px;
   cursor: pointer;
+}
+
+/* Показываем кнопку меню там же, где прячем сами группы. Правило стоит после
+   заготовки выше: у них одинаковый вес, и побеждает то, что ниже по файлу. */
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: block;
+  }
 }
 
 /* --- переключатель темы -------------------------------------------------- */
