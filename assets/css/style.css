@@ -1168,6 +1168,25 @@ figcaption {
   border-color: var(--border-danger);
 }
 
+/* Когда запрет один и списка нет, крестик получает сам абзац: метка стоит
+   у запрещённого, а не у заголовка, — как в плашках со списком. */
+.note--danger > p {
+  position: relative;
+  padding-left: 28px;
+}
+
+.note--danger > p::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: calc((1lh - 16px) / 2);
+  width: 16px;
+  height: 16px;
+  background: var(--icon-danger);
+  -webkit-mask: var(--icon-cross) center / 16px 16px no-repeat;
+  mask: var(--icon-cross) center / 16px 16px no-repeat;
+}
+
 /* Заголовок внутри плашки набран так же, как подзаголовок в тексте: 18/22,
    Medium, 8 до содержимого. Верхнюю отбивку снимаем — её даёт сама плашка. */
 .note h3 {
