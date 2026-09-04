@@ -42,7 +42,7 @@ def img_size(src):
     ней не прыгает, когда файл наконец приезжает."""
     if src in _SIZES:
         return _SIZES[src]
-    path = ROOT / src
+    path = ROOT / src.split("?")[0]
     attrs = ""
     if path.exists():
         try:
@@ -194,7 +194,9 @@ def img_tag(src, alt=""):
     if not _HERO["used"]:
         _HERO["used"] = True
         mode = ' fetchpriority="high" decoding="sync"'
-    return f'<img class="media" src="{src}" alt="{alt}"{mode}{img_size(src)}>'
+    # версию по содержимому картинки ставим по той же причине, что стилям:
+    # заменённый постер под тем же именем иначе неделю висит из кеша браузера
+    return f'<img class="media" src="{asset_url(src)}" alt="{alt}"{mode}{img_size(src)}>'
 
 
 def render_video(block):
