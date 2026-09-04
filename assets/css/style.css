@@ -7,6 +7,7 @@
   /* векторы из макета, выгружены как есть и подключаются масками */
   --icon-play: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M14 8L4 13.75V2.25L14 8Z" fill="black"/></svg>');
   --icon-dropdown: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M10.1748 3.69824L10.5986 4.12402L6.42285 8.27344L6 8.69434L5.57715 8.27344L1.40234 4.12402L2.24805 3.27246L6 7.00195L9.75195 3.27246L10.1748 3.69824Z" fill="black"/></svg>');
+  --icon-open-new: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.1338 12.333H11.5332V5.59762L4.06545 13.0654L3.50002 12.499L2.93459 11.9336L10.4024 4.46579H3.66701V2.86618H13.1338V12.333Z" fill="black"/></svg>');
   --icon-anchor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.98829 3.41159C9.98235 2.4181 11.5938 2.41814 12.5878 3.41172C13.5814 4.40487 13.582 6.01494 12.5892 7.00884L10.1962 9.40464C9.20342 10.3986 7.59242 10.3992 6.59885 9.40604C6.41992 9.22717 6.29573 9.0597 6.17343 8.83837C6.13637 8.7713 6.09501 8.67777 6.06619 8.61024C6.05096 8.5745 6.03769 8.54237 6.02823 8.51917L6.017 8.49144L6.01389 8.4837L6.01279 8.4809L6.56355 8.26224L6.56431 8.26417L6.56691 8.27064L6.57692 8.29537C6.58553 8.31644 6.59756 8.34557 6.61126 8.3777C6.64028 8.44577 6.67122 8.51404 6.69209 8.5517C6.78882 8.7267 6.87995 8.8491 7.01782 8.9869C7.77982 9.74864 9.01549 9.74817 9.77689 8.98584L12.1699 6.59007C12.9315 5.82764 12.931 4.59266 12.1688 3.83083C11.4062 3.06852 10.1698 3.06852 9.40709 3.83083L8.01389 5.22168L7.59522 4.8023L8.98829 3.41159ZM8.98222 7.01277C8.22022 6.25105 6.98455 6.25153 6.22313 7.01384L3.83013 9.40964C3.06858 10.172 3.06906 11.407 3.83119 12.1688C4.59381 12.9312 5.83032 12.9312 6.59294 12.1688L7.98615 10.778L8.40482 11.1974L7.01189 12.588M7.01189 12.588C6.01785 13.5814 4.40623 13.5815 3.41225 12.588C2.41871 11.5948 2.41809 9.98477 3.41086 8.99084L5.80387 6.59505C6.79662 5.60113 8.40762 5.6005 9.40122 6.59366C9.58015 6.7725 9.70429 6.93997 9.82662 7.1613C9.86369 7.22837 9.90502 7.3219 9.93389 7.38944C9.94909 7.42517 9.96235 7.4573 9.97182 7.4805L9.98302 7.50824L9.98615 7.51597L9.98702 7.5181L9.43649 7.73744L9.43575 7.7355L9.43315 7.72904L9.42315 7.7043C9.41449 7.68324 9.40249 7.6541 9.38875 7.62197C9.35975 7.5539 9.32882 7.48564 9.30795 7.44797C9.21122 7.27297 9.12009 7.15057 8.98222 7.01277" fill="black"/></svg>');
 }
 
@@ -29,7 +30,7 @@
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
   --check: #f2f2f2; /* Fill/Two */
-  --border-note: rgba(255, 255, 255, 0.3); /* Fill/Seven, рамка плашки */
+  --border-button: rgba(255, 255, 255, 0.09); /* рамка кнопки-пилюли */
 }
 
 [data-theme="light"] {
@@ -52,16 +53,16 @@
      быстрее, чем на чёрном — так крошки и оглавление остаются читаемыми */
   --text-muted: rgba(0, 0, 0, 0.62);
   --check: #1f1f1f; /* Fill/Two светлой темы */
-  --border-note: rgba(0, 0, 0, 0.3);
+  --border-button: rgba(0, 0, 0, 0.09);
 }
 
 :root {
   --accent: #ff5500;
 
-  /* System/Warning и System/Warning-60 из макета — обе темы одинаковые:
+  /* System/Warning и System/Warning-40 из макета — обе темы одинаковые:
      цвет здесь несёт смысл «внимание», а не подстраивается под фон */
   --surface-warning: rgba(255, 85, 0, 0.06);
-  --border-warning: rgba(255, 85, 0, 0.6);
+  --border-warning: rgba(255, 85, 0, 0.4);
 
   /* лицензионные шрифты макета идут первыми — у кого они стоят, увидит макет
      один в один; остальным подставляются близкие открытые аналоги */
@@ -381,6 +382,63 @@ img {
   line-height: 32px;
   font-weight: 600;
   margin: 0 0 40px;
+}
+
+/* Кнопка «в Figma» под заголовком — компонент из макета (497:19382):
+   пилюля с логотипом, подписью и стрелкой «открыть в новом окне».
+   Отбивки внутри несимметричные, как в макете: слева 26, справа 22. */
+.figma-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 32px;
+  padding: 15px 22px 15px 26px;
+  background: var(--surface-card); /* Fill/Ten */
+  border: 1px solid var(--border-button);
+  border-radius: 100px;
+  color: var(--text-strong);
+  font-size: 15px;
+  line-height: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+/* это кнопка, а не ссылка в тексте — базовый стиль ссылок гасим */
+.main a.figma-link,
+.main a.figma-link:hover,
+.main a.figma-link:focus-visible {
+  color: var(--text-strong);
+  text-decoration: none;
+}
+
+.figma-link:hover {
+  background: var(--surface-card-hover);
+  transform: scale(1.005);
+}
+
+.figma-link__logo,
+.figma-link__logo svg {
+  display: block;
+  flex-shrink: 0;
+  width: 15px;
+  height: 22px;
+}
+
+.figma-link__text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* стрелка идёт маской, чтобы брать цвет подписи, а не белый из файла */
+.figma-link__arrow {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  background: currentColor;
+  -webkit-mask: var(--icon-open-new) center / 16px 16px no-repeat;
+  mask: var(--icon-open-new) center / 16px 16px no-repeat;
 }
 
 /* --- бенто ------------------------------------------------------------ */
@@ -718,6 +776,7 @@ figcaption {
   .video__open,
   .video--wide,
   .theme-switch__knob,
+  .figma-link,
   .lightbox,
   .lightbox video {
     transition: none;
@@ -727,6 +786,7 @@ figcaption {
   .video__open:focus-visible,
   .video--wide:hover,
   .video--wide:focus-within,
+  .figma-link:hover,
   .lightbox video {
     transform: none;
   }
@@ -983,7 +1043,7 @@ figcaption {
    читаться плотнее окружающих абзацев. */
 .note {
   background: var(--surface-card); /* Fill/Ten */
-  border: 1px solid var(--border-note); /* Fill/Seven */
+  border: 1px solid var(--border); /* Fill/Eight */
   border-radius: 16px;
   padding: 16px 20px;
   margin: 24px 0;

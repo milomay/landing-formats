@@ -91,6 +91,15 @@ NAV_LINKS = {"Преролл": "index.html", "Баннеры": "banner.html"}
 # и работает в обеих темах одним файлом
 LOGO = (ROOT / "assets" / "img" / "logo-kinopoisk.svg").read_text().strip()
 
+# фирменный знак Figma многоцветный, currentColor ему не нужен — но вставляем
+# так же разметкой, чтобы не тратить отдельный запрос на 1,7 КБ
+FIGMA_LOGO = (ROOT / "assets" / "img" / "figma-logo.svg").read_text().strip()
+
+# Ссылку на макет ещё не дали. Пока её нет, кнопка рисуется, но не кликается —
+# мёртвая ссылка на «#» хуже: она прокручивает страницу наверх.
+# Появится адрес — вписать сюда, разметка сама станет ссылкой.
+FIGMA_LINKS = {"preroll": "", "banner": ""}
+
 
 def esc(s):
     return html.escape(str(s), quote=False)
@@ -366,6 +375,16 @@ def render_page(page):
     crumbs = "".join(f"<span>{label(c)}</span>" for c in intro["breadcrumbs"])
     description = (intro["lead"] or "")[:160]
 
+    href = FIGMA_LINKS.get(page["slug"], "")
+    tag = "a" if href else "span"
+    attrs = f' href="{esc(href)}" target="_blank" rel="noopener"' if href else ""
+    figma_button = (
+        f'<{tag} class="figma-link"{attrs}>'
+        f'<span class="figma-link__logo" aria-hidden="true">{FIGMA_LOGO}</span>'
+        f'<span class="figma-link__text">{label(intro["title"] + " в Figma")}'
+        f'<span class="figma-link__arrow" aria-hidden="true"></span></span>'
+        f'</{tag}>')
+
     return f"""<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
@@ -419,6 +438,7 @@ def render_page(page):
     <main class="main">
       <nav class="breadcrumbs">{crumbs}</nav>
       <h1 class="page-title">{label(intro["title"])}</h1>
+      {figma_button}
       <p class="lead">{label(intro["lead"])}</p>
       {intro_html}
 
