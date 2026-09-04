@@ -350,7 +350,11 @@ def render_page(page):
     # странице первая, а первая грузится не лениво
     intro_html = render_blocks(intro["blocks"])
 
-    body, toc = [], []
+    # Вступление — такой же пункт оглавления, как разделы: id занимаем первым,
+    # чтобы раздел с тем же названием получил номерной, а не наоборот
+    intro_id = slug("Введение", used)
+
+    body, toc = [], [f'<li><a href="#{intro_id}">Введение</a></li>']
 
     def drop_trailing_divider():
         """Линию снимаем там, где разделять уже нечего: перед заголовком главы
@@ -438,10 +442,12 @@ def render_page(page):
 
     <main class="main">
       <nav class="breadcrumbs">{crumbs}</nav>
-      <h1 class="page-title">{label(intro["title"])}</h1>
-      {figma_button}
-      <p class="lead">{label(intro["lead"])}</p>
-      {intro_html}
+      <div class="intro" id="{intro_id}">
+        <h1 class="page-title">{label(intro["title"])}</h1>
+        {figma_button}
+        <p class="lead">{label(intro["lead"])}</p>
+        {intro_html}
+      </div>
 
       {"".join(body)}
     </main>

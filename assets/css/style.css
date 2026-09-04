@@ -504,9 +504,11 @@ img {
   font-size: 44px;
   line-height: 54px;
   color: var(--text-strong);
-  margin: 80px 0 40px;
+  margin: 92px 0 40px;
 }
 
+/* вступление — такая же цель для ссылки из оглавления, как раздел */
+.intro,
 .section {
   scroll-margin-top: 32px;
 }
