@@ -341,11 +341,10 @@ img {
    в колонке размечает сама метка. Отбивка слева осталась — под неё. */
 .toc a {
   display: block;
-  padding: 5px 0 8px 12px;
+  padding: 5px 0 10px 12px;
   border: 0;
   font-size: 13px;
   line-height: 18px;
-  color: var(--text-muted);
   transition: color 0.2s ease-out;
 }
 
