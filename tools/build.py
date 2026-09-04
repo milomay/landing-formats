@@ -455,7 +455,7 @@ def render_page(page):
   </script>
   <title>{esc(intro["title"])} — Лендинг форматов</title>
   <meta name="description" content="{esc(description)}">
-  <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#12110c" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta property="og:title" content="{esc(intro["title"])} — гайд по формату">
   <meta property="og:description" content="{esc(description)}">
