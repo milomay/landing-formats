@@ -32,7 +32,7 @@
   --text: rgba(255, 255, 255, 0.8);
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
-  --border-button: rgba(255, 255, 255, 0.09); /* рамка кнопки-пилюли */
+  --border-button: rgba(255, 255, 255, 0.09); /* рамка кнопки и плашки */
 }
 
 [data-theme="light"] {
@@ -1045,8 +1045,10 @@ figcaption {
    по всему периметру, радиус 16. Текст набирается контрастным — плашка должна
    читаться плотнее окружающих абзацев. */
 .note {
-  background: var(--surface-card); /* Fill/Ten */
-  border: 1px solid var(--border); /* Fill/Eight */
+  /* заливка и рамка те же, что у кнопки «в Figma»: обе плашки лежат
+     на фоне страницы и должны читаться одним материалом */
+  background: var(--surface-card);
+  border: 1px solid var(--border-button);
   border-radius: 16px;
   padding: 16px 20px;
   margin: 24px 0;
