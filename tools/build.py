@@ -220,6 +220,27 @@ def render_video(block):
 
 ALERT_WORDS = {"важно", "внимание"}
 
+# Значок в начале заголовка — это пометка для списка под ним, а не текст.
+# Эмодзи рисуется шрифтом системы: цвет, размер и вид у всех разные, поэтому
+# в разметку он не едет — вместо него вектор из макета в маркерах списка.
+MARKS = {"❌": "deny", "✅": "allow"}
+
+
+def mark_lists(blocks):
+    out, pending = [], None
+    for b in blocks:
+        text = b.get("text") if isinstance(b.get("text"), str) else None
+        mark = next((m for m in MARKS if text and text.startswith(m)), None)
+        if mark:
+            out.append(dict(b, text=text[len(mark):].lstrip()))
+            pending = MARKS[mark]
+            continue
+        if pending and b.get("type") == "ul":
+            b = dict(b, variant=pending)
+        pending = None
+        out.append(b)
+    return out
+
 
 def fold_alerts(blocks):
     """Абзац из одного слова «Важно» и следующий за ним — это плашка Alert.
@@ -245,7 +266,7 @@ def fold_alerts(blocks):
 
 def render_blocks(blocks):
     """Блоки секции в HTML. Подряд идущие video собираются в ряд."""
-    blocks = fold_alerts(blocks)
+    blocks = mark_lists(fold_alerts(blocks))
     out, i = [], 0
     while i < len(blocks):
         b = blocks[i]
@@ -277,7 +298,8 @@ def render_blocks(blocks):
             out.append(f"<h3>{label(b['text'])}</h3>")
         elif t == "ul":
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
-            out.append(f"<ul>{items}</ul>")
+            cls = f' class="{b["variant"]}"' if b.get("variant") else ""
+            out.append(f"<ul{cls}>{items}</ul>")
         elif t == "checklist":
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             out.append(
