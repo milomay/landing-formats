@@ -535,9 +535,12 @@ figure {
   margin: 24px 0;
 }
 
-/* радиус общий для всех картинок — и крупных иллюстраций, и плиток с роликом */
+/* радиус и обводка общие для всех картинок — и крупных иллюстраций, и плиток
+   с роликом: рамка отделяет кадр от фона, когда края картинки светлые
+   в светлой теме или тёмные в тёмной */
 figure img {
   border-radius: 8px;
+  border: 1px solid var(--border-media);
   width: 100%;
 }
 
@@ -567,12 +570,6 @@ figcaption {
 .video {
   position: relative;
   margin: 0;
-}
-
-.video img {
-  border: 1px solid var(--border-media);
-  width: 100%;
-  display: block;
 }
 
 /* кнопка Play — компонент `card` / `button` из макета (483:19178):
