@@ -2,6 +2,7 @@
 """Готовит исходник ролика к вебу: H.264 mp4 под нужный слот лендинга.
 
     python3 tools/encode_video.py <исходник> <id-слота> [--wide]
+                                 [--poster-at СЕК | --poster-file ФАЙЛ]
 
 Кладёт результат в `assets/video/<id-слота>.mp4`. Без `--wide` — превью
 в ряду по три (960×540), с `--wide` — широкий блок в интро (1280×720).
@@ -56,7 +57,7 @@ def duration(path):
     return float(out.strip())
 
 
-def poster(video, slot, wide, at=None):
+def poster(video, slot, wide, at=None, ready=None):
     """Кадр из ролика в постер блока.
 
     В макете у трёх превью одного формата лежит одна и та же картинка — они
@@ -65,11 +66,23 @@ def poster(video, slot, wide, at=None):
     затереть общий файл: на него опираются блоки, где ролика ещё нет.
 
     Секунду можно задать руками: автоматический кадр иногда попадает на моргание
-    или на смазанное движение, а постер — первое, что видит читатель.
+    или на смазанное движение, а постер — первое, что видит читатель. А если
+    заглушку нарисовали отдельно — берём её файлом, кадр из ролика не нужен.
     """
-    at = duration(video) / 3 if at is None else at  # первые кадры часто на затемнении
     width = 1480 if wide else 640
     dest = IMG_DIR / f"{slot}-poster.webp"
+
+    def save(path):
+        im = Image.open(path).convert("RGB")
+        if im.width != width:
+            im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
+        im.save(dest, "WEBP", quality=82, method=6)
+
+    if ready:
+        save(ready)
+        return dest
+
+    at = duration(video) / 3 if at is None else at  # первые кадры часто на затемнении
     # ffmpeg из brew собран без энкодера webp — снимаем кадр в png и жмём Pillow,
     # тем же путём, что и картинки из макета в fetch_images.py
     with tempfile.TemporaryDirectory() as tmp:
@@ -78,7 +91,7 @@ def poster(video, slot, wide, at=None):
             ["ffmpeg", "-y", "-ss", f"{at:.2f}", "-i", str(video), "-frames:v", "1",
              "-vf", f"scale={width}:-2:flags=lanczos", str(frame)],
             check=True, capture_output=True)
-        Image.open(frame).convert("RGB").save(dest, "WEBP", quality=82, method=6)
+        save(frame)
     return dest
 
 
@@ -89,6 +102,8 @@ def main():
     ap.add_argument("--wide", action="store_true")
     ap.add_argument("--poster-at", type=float, default=None,
                     metavar="СЕК", help="секунда, с которой снять постер")
+    ap.add_argument("--poster-file", default=None, metavar="ФАЙЛ",
+                    help="готовая заглушка вместо кадра из ролика")
     args = ap.parse_args()
 
     if not shutil.which("ffmpeg"):
@@ -101,7 +116,7 @@ def main():
     VIDEO_DIR.mkdir(parents=True, exist_ok=True)
     dest = VIDEO_DIR / f"{args.slot}.mp4"
     encode(src, dest, args.wide)
-    shot = poster(dest, args.slot, args.wide, args.poster_at)
+    shot = poster(dest, args.slot, args.wide, args.poster_at, args.poster_file)
 
     before = src.stat().st_size / 1024 / 1024
     after = dest.stat().st_size / 1024 / 1024
