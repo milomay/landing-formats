@@ -20,11 +20,11 @@
   --surface-card-hover: rgba(255, 255, 255, 0.08);
   --border: rgba(255, 255, 255, 0.15);
   --border-soft: rgba(255, 255, 255, 0.1);
-  --border-media: rgba(255, 255, 255, 0.08); /* Fill/Nine */
+  --border-media: rgba(255, 255, 255, 0.06); /* Fill/Ten */
   /* кнопка Play лежит поверх кадра, а не поверх страницы — в светлой теме
      не зеркалим, иначе бейдж перестанет читаться на тёмном видео */
   --fill-media-badge: rgba(255, 255, 255, 0.1); /* Fill/Ten */
-  --fill-placeholder: rgba(255, 255, 255, 0.08); /* Fill/Nine, как и рамка медиа */
+  --fill-placeholder: rgba(255, 255, 255, 0.08); /* Fill/Nine */
   --icon-faint: rgba(255, 255, 255, 0.7); /* Fill/Four */
   --text: rgba(255, 255, 255, 0.8);
   --text-strong: #f2f2f2;
@@ -41,7 +41,7 @@
   --surface-card-hover: rgba(0, 0, 0, 0.06);
   --border: rgba(0, 0, 0, 0.16);
   --border-soft: rgba(0, 0, 0, 0.1);
-  --border-media: rgba(0, 0, 0, 0.08);
+  --border-media: rgba(0, 0, 0, 0.06);
   /* --fill-media-badge не зеркалим — см. комментарий в :root */
   --fill-placeholder: rgba(0, 0, 0, 0.08);
   --icon-faint: rgba(0, 0, 0, 0.7);
