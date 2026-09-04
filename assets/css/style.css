@@ -29,11 +29,9 @@
      не зеркалим, иначе бейдж перестанет читаться на тёмном видео */
   --fill-media-badge: rgba(255, 255, 255, 0.1); /* Fill/Ten */
   --fill-placeholder: rgba(255, 255, 255, 0.08); /* Fill/Nine */
-  --icon-faint: rgba(255, 255, 255, 0.7); /* Fill/Four */
   --text: rgba(255, 255, 255, 0.8);
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
-  --check: #f2f2f2; /* Fill/Two */
   --border-button: rgba(255, 255, 255, 0.09); /* рамка кнопки-пилюли */
 }
 
@@ -48,7 +46,6 @@
   --border-media: rgba(0, 0, 0, 0.06);
   /* --fill-media-badge не зеркалим — см. комментарий в :root */
   --fill-placeholder: rgba(0, 0, 0, 0.08);
-  --icon-faint: rgba(0, 0, 0, 0.7);
   /* плотный чёрный вместо полупрозрачного: на белом текст с альфой выглядит
      вылинявшим. Тот же тон, что у лида и у галочки чек-листа */
   --text: #1f1f1f;
@@ -56,7 +53,6 @@
   /* 0.62 вместо зеркальных 0.6: на белом приглушённый текст теряет контраст
      быстрее, чем на чёрном — так крошки и оглавление остаются читаемыми */
   --text-muted: rgba(0, 0, 0, 0.62);
-  --check: #1f1f1f; /* Fill/Two светлой темы */
   --border-button: rgba(0, 0, 0, 0.09);
 }
 
@@ -125,7 +121,7 @@ a {
 }
 
 a:hover {
-  color: #fff;
+  color: var(--text-strong);
   border-bottom-color: var(--accent);
 }
 
@@ -537,7 +533,7 @@ img {
   content: "";
   width: 24px;
   height: 24px;
-  background: var(--icon-faint);
+  background: var(--text-muted);
   -webkit-mask: var(--icon-anchor) center / 24px 24px no-repeat;
   mask: var(--icon-anchor) center / 24px 24px no-repeat;
 }
@@ -995,8 +991,8 @@ figcaption {
   background: none;
   border: 0;
   border-radius: 0;
-  border-left: 2px solid var(--check);
-  border-bottom: 2px solid var(--check);
+  border-left: 2px solid var(--text-strong);
+  border-bottom: 2px solid var(--text-strong);
   transform: rotate(-45deg);
 }
 
