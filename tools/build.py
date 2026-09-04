@@ -205,8 +205,34 @@ def render_video(block):
             f'<span class="video__play" aria-hidden="true"></span>{cap}</figure>')
 
 
+ALERT_WORDS = {"важно", "внимание"}
+
+
+def fold_alerts(blocks):
+    """Абзац из одного слова «Важно» и следующий за ним — это плашка Alert.
+
+    В макете такие места набраны обычным текстом, а не компонентом, поэтому
+    компонент здесь не за что зацепить — собираем плашку по разметке текста.
+    """
+    out, i = [], 0
+    while i < len(blocks):
+        b = blocks[i]
+        word = b.get("text") if b.get("type") == "p" else None
+        nxt = blocks[i + 1] if i + 1 < len(blocks) else None
+        if (isinstance(word, str) and word.strip().rstrip(":.").lower() in ALERT_WORDS
+                and nxt and nxt.get("type") == "p"):
+            out.append({"type": "note", "variant": "alert",
+                        "title": word.strip().rstrip(":."), "text": nxt["text"]})
+            i += 2
+            continue
+        out.append(b)
+        i += 1
+    return out
+
+
 def render_blocks(blocks):
     """Блоки секции в HTML. Подряд идущие video собираются в ряд."""
+    blocks = fold_alerts(blocks)
     out, i = [], 0
     while i < len(blocks):
         b = blocks[i]
@@ -256,7 +282,8 @@ def render_blocks(blocks):
             out.append(render_table(b["rows"]))
         elif t == "note":
             title = f'<p class="note__title">{label(b["title"])}</p>' if b.get("title") else ""
-            out.append(f'<aside class="note">{title}<p>{render_text(b["text"])}</p></aside>')
+            cls = "note note--alert" if b.get("variant") == "alert" else "note"
+            out.append(f'<aside class="{cls}">{title}<p>{render_text(b["text"])}</p></aside>')
         elif t == "checkbox":
             out.append(f'<ul><li>{label(b["text"])}</li></ul>')
         elif t == "figure":

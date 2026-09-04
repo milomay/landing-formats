@@ -211,13 +211,17 @@ def block(node):
     if n == "Checkbox":
         return [{"type": "checkbox", "text": " ".join(texts(node))}]
 
-    if n == "Note":
+    # Alert — тот же компонент в предупреждающем варианте
+    if n in ("Note", "Alert"):
         tns = text_nodes(node)
         if not tns:
             return []
-        return [{"type": "note",
+        block = {"type": "note",
                  "title": tns[0]["characters"].strip() if len(tns) > 1 else "",
-                 "text": rich_text(tns[-1])}]
+                 "text": rich_text(tns[-1])}
+        if n == "Alert":
+            block["variant"] = "alert"
+        return [block]
 
     if n == "video snippet":
         # кнопку play рисуем в CSS — экспортируем только постер

@@ -29,6 +29,7 @@
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
   --check: #f2f2f2; /* Fill/Two */
+  --border-note: rgba(255, 255, 255, 0.3); /* Fill/Seven, рамка плашки */
 }
 
 [data-theme="light"] {
@@ -51,10 +52,16 @@
      быстрее, чем на чёрном — так крошки и оглавление остаются читаемыми */
   --text-muted: rgba(0, 0, 0, 0.62);
   --check: #1f1f1f; /* Fill/Two светлой темы */
+  --border-note: rgba(0, 0, 0, 0.3);
 }
 
 :root {
   --accent: #ff5500;
+
+  /* System/Warning и System/Warning-60 из макета — обе темы одинаковые:
+     цвет здесь несёт смысл «внимание», а не подстраивается под фон */
+  --surface-warning: rgba(255, 85, 0, 0.06);
+  --border-warning: rgba(255, 85, 0, 0.6);
 
   /* лицензионные шрифты макета идут первыми — у кого они стоят, увидит макет
      один в один; остальным подставляются близкие открытые аналоги */
@@ -971,14 +978,18 @@ figcaption {
 
 /* --- заметка ------------------------------------------------------------ */
 
+/* Компонент Note из макета (497:19371): полоски слева больше нет, рамка идёт
+   по всему периметру, радиус 16. Текст набирается контрастным — плашка должна
+   читаться плотнее окружающих абзацев. */
 .note {
-  border-left: 2px solid var(--accent);
-  background: var(--surface-card);
-  border-radius: 0 12px 12px 0;
+  background: var(--surface-card); /* Fill/Ten */
+  border: 1px solid var(--border-note); /* Fill/Seven */
+  border-radius: 16px;
   padding: 16px 20px;
   margin: 24px 0;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 22px;
+  color: var(--text-strong);
 }
 
 .note p {
@@ -987,8 +998,17 @@ figcaption {
 
 .note__title {
   font-weight: 600;
+  font-size: 16px;
+  line-height: 18px;
   color: var(--text-strong);
   margin-bottom: 4px !important;
+}
+
+/* Тот же компонент в предупреждающем варианте — Alert (497:19372):
+   геометрия и типографика те же, меняются только заливка и рамка */
+.note--alert {
+  background: var(--surface-warning);
+  border-color: var(--border-warning);
 }
 
 /* --- адаптив ------------------------------------------------------------ */
