@@ -212,13 +212,21 @@ img {
    по ней же идёт подсветка активного пункта. */
 /* цвет держим во всех состояниях: логотип не подсвечивается по ховеру,
    иначе базовый стиль ссылок высветляет его до чистого белого */
+/* логотип и переключатель темы стоят одной строкой, по краям колонки */
+.sidebar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
 .brand,
 .brand:hover,
 .brand:focus-visible {
   display: block;
   color: var(--text-strong);
   border: 0;
-  margin: 0 0 16px;
+  margin: 0;
 }
 
 .brand svg {
@@ -846,7 +854,8 @@ figcaption {
   .nav-group__body,
   .video__open,
   .video--wide,
-  .theme-switch__knob,
+  .theme-switch,
+  .theme-switch svg,
   .figma-link,
   .lightbox,
   .lightbox video {
@@ -1299,75 +1308,50 @@ figcaption {
 
 /* --- переключатель темы -------------------------------------------------- */
 
-/* тумблер темы: только сам переключатель, у левого края колонки.
-   Положение бегунка задаёт тема на <html>, скрипту про него знать нечего. */
+/* Кнопка-иконка рядом с логотипом. Иконки не показываются и не прячутся —
+   они едут по вертикали в окне 20×20: текущая стоит в окне, вторая под ним.
+   Переключение темы меняет атрибут на <html>, обе иконки уезжают на шаг. */
 .theme-switch {
-  display: inline-flex;
-  align-items: center;
-  height: 48px;
-  /* 4 + 4 (нижняя отбивка группы) + 8 (центровка в строке 48) = 16 до дорожки */
-  margin-top: 4px;
+  display: block;
+  flex: none;
   padding: 0;
   background: none;
   border: 0;
+  color: var(--text-muted);
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
-.theme-switch__track {
+.theme-switch:hover,
+.theme-switch:focus-visible {
+  color: var(--text-strong);
+}
+
+.theme-switch__window {
+  display: block;
   position: relative;
-  flex: none;
-  width: 64px;
-  height: 32px;
-  border-radius: 999px;
-  background: var(--surface-card);
-  border: 1px solid var(--border-soft);
-  transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-.theme-switch:hover .theme-switch__track {
-  background: var(--surface-card-hover);
-  border-color: var(--border);
-}
-
-/* бегунок — плашка цвета текста с иконкой текущей темы навылет */
-.theme-switch__knob {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--text-strong);
-  color: var(--surface);
-  display: grid;
-  place-items: center;
-  transition: transform 0.25s ease;
-}
-
-[data-theme="light"] .theme-switch__knob {
-  transform: translateX(32px);
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
 }
 
 /* иконки из макета залитые, а не контурные — штрих не задаём */
 .theme-switch svg {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 20px;
   height: 20px;
   fill: currentColor;
-}
-
-/* видима только иконка текущего режима */
-.theme-switch [data-icon] {
-  display: none;
+  transition: transform 0.4s ease-out;
 }
 
 [data-theme="dark"] .theme-switch [data-icon="dark"],
 [data-theme="light"] .theme-switch [data-icon="light"] {
-  display: block;
+  transform: translateY(0);
 }
 
-@media (max-width: 900px) {
-  .theme-switch {
-    margin-top: 16px;
-    margin-bottom: 8px;
-  }
+[data-theme="dark"] .theme-switch [data-icon="light"],
+[data-theme="light"] .theme-switch [data-icon="dark"] {
+  transform: translateY(20px);
 }
