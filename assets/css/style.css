@@ -47,7 +47,7 @@
   /* --fill-media-badge не зеркалим — см. комментарий в :root */
   --fill-placeholder: rgba(0, 0, 0, 0.08);
   /* плотный чёрный вместо полупрозрачного: на белом текст с альфой выглядит
-     вылинявшим. Тот же тон, что у лида и у галочки чек-листа */
+     вылинявшим */
   --text: #1f1f1f;
   --text-strong: #0d0d0d;
   /* 0.62 вместо зеркальных 0.6: на белом приглушённый текст теряет контраст
@@ -1018,14 +1018,11 @@ figcaption {
   color: var(--text-strong);
 }
 
+/* иконки из макета залитые, а не контурные — штрих не задаём */
 .checklist__copy svg {
   width: 20px;
   height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  fill: currentColor;
 }
 
 .checklist__copy.is-done {
@@ -1212,13 +1209,11 @@ figcaption {
   transform: translateX(32px);
 }
 
+/* иконки из макета залитые, а не контурные — штрих не задаём */
 .theme-switch svg {
   width: 20px;
   height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
+  fill: currentColor;
 }
 
 /* видима только иконка текущего режима */
