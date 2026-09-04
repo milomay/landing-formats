@@ -197,6 +197,23 @@ const sections = links
   .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
   .filter(Boolean);
 
+// Метку текущего раздела двигаем по колонке, а не перекрашиваем рамку пункта:
+// переезд видно, и глаз сам находит новое место. Считаем от списка, потому что
+// у пункта своя рамка и собственные отбивки.
+const marker = document.querySelector('.toc__marker');
+const tocList = document.querySelector('.toc ol');
+
+const moveMarker = (link) => {
+  if (!marker || !tocList) return;
+  if (!link) {
+    marker.style.height = '0px';
+    return;
+  }
+  const top = link.getBoundingClientRect().top - tocList.getBoundingClientRect().top;
+  marker.style.top = Math.round(top) + 'px';
+  marker.style.height = Math.round(link.getBoundingClientRect().height) + 'px';
+};
+
 if (sections.length && 'IntersectionObserver' in window) {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -204,10 +221,24 @@ if (sections.length && 'IntersectionObserver' in window) {
         if (!entry.isIntersecting) return;
         links.forEach((a) => a.classList.remove('is-active'));
         const active = links.find((a) => decodeURIComponent(a.hash.slice(1)) === entry.target.id);
-        if (active) active.classList.add('is-active');
+        if (active) {
+          active.classList.add('is-active');
+          moveMarker(active);
+        }
       });
     },
     { rootMargin: '-10% 0px -80% 0px', threshold: 0 }
   );
   sections.forEach((s) => observer.observe(s));
+
+  // пункты переносятся по-разному, поэтому после смены ширины метку пересчитываем
+  let tocQueued = false;
+  window.addEventListener('resize', () => {
+    if (tocQueued) return;
+    tocQueued = true;
+    requestAnimationFrame(() => {
+      tocQueued = false;
+      moveMarker(links.find((a) => a.classList.contains('is-active')));
+    });
+  });
 }

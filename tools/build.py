@@ -448,6 +448,7 @@ def render_page(page):
 
     <aside class="toc" aria-label="Содержание">
       <ol>
+        <span class="toc__marker" aria-hidden="true"></span>
         {"".join(toc)}
       </ol>
     </aside>

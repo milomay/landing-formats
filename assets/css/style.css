@@ -324,6 +324,7 @@ img {
 /* --- оглавление ------------------------------------------------------ */
 
 .toc ol {
+  position: relative;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -337,12 +338,32 @@ img {
   font-size: 13px;
   line-height: 18px;
   color: var(--text-muted);
+  transition: color 0.2s ease-out;
 }
 
 .toc a:hover,
 .toc a.is-active {
   color: var(--text-strong);
-  border-left-color: var(--accent);
+}
+
+/* Метка текущего раздела не перекрашивает рамку пункта, а едет по колонке:
+   так видно не только где ты сейчас, но и куда переехал. Высоту и положение
+   ставит скрипт по активному пункту, здесь только вид и длительность. */
+.toc__marker {
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 0;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: top 0.2s ease-out, height 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc a,
+  .toc__marker {
+    transition: none;
+  }
 }
 
 /* --- интро ----------------------------------------------------------- */
