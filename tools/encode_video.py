@@ -56,15 +56,18 @@ def duration(path):
     return float(out.strip())
 
 
-def poster(video, slot, wide):
+def poster(video, slot, wide, at=None):
     """Кадр из ролика в постер блока.
 
     В макете у трёх превью одного формата лежит одна и та же картинка — они
     склеились по md5. Как только появляется настоящий ролик, постер берём из
     него, иначе три разных клипа выглядят одинаково. Имя с суффиксом, чтобы не
     затереть общий файл: на него опираются блоки, где ролика ещё нет.
+
+    Секунду можно задать руками: автоматический кадр иногда попадает на моргание
+    или на смазанное движение, а постер — первое, что видит читатель.
     """
-    at = duration(video) / 3  # первые кадры часто на затемнении
+    at = duration(video) / 3 if at is None else at  # первые кадры часто на затемнении
     width = 1480 if wide else 640
     dest = IMG_DIR / f"{slot}-poster.webp"
     # ffmpeg из brew собран без энкодера webp — снимаем кадр в png и жмём Pillow,
@@ -84,6 +87,8 @@ def main():
     ap.add_argument("source")
     ap.add_argument("slot")
     ap.add_argument("--wide", action="store_true")
+    ap.add_argument("--poster-at", type=float, default=None,
+                    metavar="СЕК", help="секунда, с которой снять постер")
     args = ap.parse_args()
 
     if not shutil.which("ffmpeg"):
@@ -96,7 +101,7 @@ def main():
     VIDEO_DIR.mkdir(parents=True, exist_ok=True)
     dest = VIDEO_DIR / f"{args.slot}.mp4"
     encode(src, dest, args.wide)
-    shot = poster(dest, args.slot, args.wide)
+    shot = poster(dest, args.slot, args.wide, args.poster_at)
 
     before = src.stat().st_size / 1024 / 1024
     after = dest.stat().st_size / 1024 / 1024

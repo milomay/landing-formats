@@ -7,6 +7,8 @@ import json
 import pathlib
 import re
 
+import palette
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CONTENT = ROOT / ".refs" / "content.json"
 IMG_MAP_FILE = ROOT / "assets" / "img" / "map.json"
@@ -464,6 +466,11 @@ def main():
         dest = ROOT / PAGES[page["slug"]]["file"]
         dest.write_text(render_page(page))
         print(f"собрано: {dest.name} ({dest.stat().st_size // 1024} КБ)")
+
+    # палитру проверяем на каждой сборке: неразличимые оттенки заводятся
+    # незаметно и вылезают уже на сайте
+    for problem in palette.check():
+        print(f"близкие оттенки — {problem}")
 
 
 if __name__ == "__main__":
