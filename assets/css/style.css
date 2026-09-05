@@ -415,7 +415,7 @@ img {
   position: absolute;
   top: 4px;
   left: 4px;
-  width: 4px;
+  width: 3px;
   height: 20px;
   border-radius: 2px;
   background: var(--accent);
@@ -469,7 +469,8 @@ img {
 .toc__marker {
   position: absolute;
   left: 0;
-  width: 2px;
+  /* та же толщина, что у полосы текущей страницы в левом меню */
+  width: 3px;
   height: 0;
   border-radius: 2px;
   background: var(--accent);
