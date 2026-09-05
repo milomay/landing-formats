@@ -533,7 +533,7 @@ img {
   line-height: 32px;
   font-weight: 600; /* Semibold */
   color: var(--text-strong);
-  margin: 0 0 24px;
+  margin: 0 0 20px;
 }
 
 /* Header H2 из макета (483:19192), иконка увеличена до 20px: в макете 16px
@@ -595,10 +595,11 @@ img {
   margin: 32px 0 8px;
 }
 
-/* Сразу под заголовком раздела подзаголовку нечего отбивать: 32 нужны, чтобы
-   отделить его от текста выше. Здесь текста нет, и отступ задаёт сам заголовок —
-   иначе под одними разделами 24, под другими 32. */
-.section h2 + h3 {
+/* Сразу под заголовком раздела верхняя отбивка соседа не нужна: она рассчитана
+   на то, чтобы отделить его от текста выше, а текста здесь нет. Расстояние
+   задаёт сам заголовок — иначе под одними разделами 20, под другими 24 или 32,
+   в зависимости от того, что идёт следом: подзаголовок, кадр или таблица. */
+.section h2 + * {
   margin-top: 0;
 }
 
@@ -656,8 +657,9 @@ img {
   height: 6px;
   top: calc((1lh - 6px) / 2 - 2px);
   background: none;
-  border-left: 2px solid var(--text-strong);
-  border-bottom: 2px solid var(--text-strong);
+  /* тем же тоном, что иконка «скопировать» рядом: галочка — маркер, а не текст */
+  border-left: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
   transform: rotate(-45deg);
 }
 
@@ -1086,8 +1088,9 @@ figcaption {
   background: none;
   border: 0;
   border-radius: 0;
-  border-left: 2px solid var(--text-strong);
-  border-bottom: 2px solid var(--text-strong);
+  /* тем же тоном, что иконка «скопировать» рядом: галочка — маркер, а не текст */
+  border-left: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
   transform: rotate(-45deg);
 }
 
