@@ -81,15 +81,16 @@
   --font-display: "SangBleu Sunrise", "Playfair Display", "Times New Roman",
     Georgia, serif;
 
-  /* сетка: 32 + 220 + 88 + 740 + 88 + 220 + 32 = 1420.
+  /* сетка: 24 + 240 + 88 + 740 + 88 + 220 + 24 = 1424.
      max-width считается вместе с padding (box-sizing: border-box),
      поэтому в --layout входят и боковые отступы — иначе колонкам
      не хватает ширины и центральная не дотягивает до своих 740. */
-  --col-nav: 220px;
+  --col-nav: 240px;
   --col-main: 740px;
   --col-toc: 220px;
   --gap: 88px;
-  --layout: 1420px;
+  --page-pad: 24px;
+  --layout: 1424px;
 }
 
 *,
@@ -163,7 +164,7 @@ img {
 .layout {
   max-width: var(--layout);
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 var(--page-pad);
   display: grid;
   grid-template-columns: var(--col-nav) minmax(0, var(--col-main)) var(--col-toc);
   gap: var(--gap);
@@ -1325,10 +1326,10 @@ figcaption {
 
 /* --- адаптив ------------------------------------------------------------ */
 
-/* ниже 1420 первыми ужимаются межколонники — до минимальных 40:
+/* ниже 1424 первыми ужимаются межколонники — до минимальных 40:
    колонка с текстом держит свои 740 до последнего, читать её важнее,
    чем беречь воздух */
-@media (max-width: 1419px) {
+@media (max-width: 1423px) {
   .layout {
     --gap: 40px;
   }
@@ -1347,7 +1348,8 @@ figcaption {
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: minmax(0, var(--col-main));
-    padding: 0 20px;
+    /* на мобиле поля уже: 20 против 24 на десктопе — ширина строки там дороже */
+    --page-pad: 20px;
     /* колонки встали друг под друга: межколонник между ними больше не нужен,
        расстояние до текста задаёт верхняя отбивка самой колонки */
     row-gap: 0;
