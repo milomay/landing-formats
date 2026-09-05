@@ -227,11 +227,11 @@ MARKS = {"❌": "deny", "✅": "allow"}
 
 
 def mark_lists(blocks):
-    """Заголовок со значком и блок под ним.
+    """Заголовок со значком и блок под ним — одна пометка: ✅ или ❌.
 
-    ❌ — запрет: заголовок и то, что под ним, уезжают на красную плашку,
-    а маркеры списка становятся крестиками. ✅ — только галочки в маркерах:
-    разрешённое и так набрано обычным текстом, подсвечивать его нечем.
+    Собираем их в один блок с заголовком и содержимым: дальше `pair_marks`
+    решит, встанут они рядом или пойдут по одному. Маркеры списка меняем
+    здесь же — галочки у разрешённого, крестики у запрещённого.
     """
     out, i = [], 0
     while i < len(blocks):
@@ -249,15 +249,33 @@ def mark_lists(blocks):
         if nxt and nxt.get("type") == "ul":
             nxt = dict(nxt, variant=kind)
 
-        if kind == "deny" and nxt:
-            out.append({"type": "deny", "title": title, "blocks": [nxt]})
+        if nxt:
+            out.append({"type": kind, "title": title, "blocks": [nxt]})
             i += 2
             continue
 
         out.append(dict(b, text=title))
-        if nxt:
-            out.append(nxt)
-            i += 1
+        i += 1
+    return out
+
+
+def pair_marks(blocks):
+    """✅ и ❌ подряд — это одна мысль, а не два блока.
+
+    Ставим их в две равные колонки, как пары Do / Don't в доке Shopify:
+    разрешённое и запрещённое сравнивают построчно, а не пролистывая одно,
+    чтобы добраться до другого. Одинокий ❌ остаётся плашкой во всю ширину,
+    одинокий ✅ — обычным заголовком со списком: сравнивать ему не с чем.
+    """
+    out, i = [], 0
+    while i < len(blocks):
+        b = blocks[i]
+        nxt = blocks[i + 1] if i + 1 < len(blocks) else None
+        if b.get("type") == "allow" and nxt and nxt.get("type") == "deny":
+            out.append({"type": "do-dont", "cols": [b, nxt]})
+            i += 2
+            continue
+        out.append(b)
         i += 1
     return out
 
@@ -284,9 +302,17 @@ def fold_alerts(blocks):
     return out
 
 
+def render_mark_card(b):
+    """Плашка «можно» или «нельзя»: геометрия одна, отличается только цвет."""
+    kind = "danger" if b["type"] == "deny" else "allow"
+    return (f'<aside class="note note--{kind}">'
+            f'<h3>{label(b["title"])}</h3>'
+            f'{render_blocks(b["blocks"])}</aside>')
+
+
 def render_blocks(blocks):
     """Блоки секции в HTML. Подряд идущие video собираются в ряд."""
-    blocks = mark_lists(fold_alerts(blocks))
+    blocks = pair_marks(mark_lists(fold_alerts(blocks)))
     out, i = [], 0
     while i < len(blocks):
         b = blocks[i]
@@ -320,10 +346,14 @@ def render_blocks(blocks):
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             cls = f' class="{b["variant"]}"' if b.get("variant") else ""
             out.append(f"<ul{cls}>{items}</ul>")
+        elif t == "do-dont":
+            cols = "".join(render_mark_card(c) for c in b["cols"])
+            out.append(f'<div class="do-dont">{cols}</div>')
         elif t == "deny":
-            out.append(f'<aside class="note note--danger">'
-                       f'<h3>{label(b["title"])}</h3>'
-                       f'{render_blocks(b["blocks"])}</aside>')
+            out.append(render_mark_card(b))
+        elif t == "allow":
+            # без пары подсвечивать нечего: разрешённое и так набрано текстом
+            out.append(f'<h3>{label(b["title"])}</h3>{render_blocks(b["blocks"])}')
         elif t == "checklist":
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             out.append(

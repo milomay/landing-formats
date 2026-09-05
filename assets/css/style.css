@@ -188,6 +188,13 @@ img {
    с 7 по 28.3 из 36). Вычитаем их, тогда от верха окна до видимого лого ровно 32. */
 .sidebar {
   padding-top: 25px;
+  /* колонка занимает всё окно, а не высоту своего содержимого: плашка меню
+     тянется вниз до конца страницы, как в доке Shopify. 24 снизу — воздух,
+     чтобы она не упиралась в край окна */
+  height: 100vh;
+  padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* оглавление стартует от верха лида, а при скролле липнет в 32 от верха окна.
@@ -249,6 +256,10 @@ img {
    на эти 8 сдвинуты влево внутренние отступы пунктов, поэтому строки стоят
    там же, где стояли, и длинные названия по-прежнему влезают в одну строку */
 .nav-groups {
+  /* добирает всю свободную высоту колонки и тянется до конца страницы;
+     если пунктов станет больше окна, flex не даст ей сжаться — вместо этого
+     заскроллится сама колонка */
+  flex: 1;
   background: var(--surface-card);
   border-radius: 8px;
   padding: 8px 8px 12px;
@@ -1259,6 +1270,41 @@ figcaption {
   mask: var(--icon-cross) center / 16px 16px no-repeat;
 }
 
+/* Разрешённое и запрещённое стоят рядом, как пары Do / Don't в доке Shopify:
+   их сравнивают построчно, а не пролистывая одно, чтобы добраться до другого.
+   Колонки равной ширины, высоту растягивает сама сетка — плашки заканчиваются
+   на одной линии, даже когда в них разное количество строк. */
+.do-dont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 24px 0;
+}
+
+/* отбивки пары задаёт контейнер: свои у плашек сложились бы с ним */
+.do-dont > .note {
+  margin: 0;
+}
+
+/* Когда разрешение одно и списка нет, галочка достаётся самому абзацу —
+   тем же правилом, что крестик в соседней колонке. */
+.note--allow > p {
+  position: relative;
+  padding-left: 28px;
+}
+
+.note--allow > p::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: calc((1lh - 6px) / 2 - 2px);
+  width: 11px;
+  height: 6px;
+  border-left: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(-45deg);
+}
+
 /* Заголовок внутри плашки набран так же, как подзаголовок в тексте: 18/22,
    Medium, 8 до содержимого. Верхнюю отбивку снимаем — её даёт сама плашка. */
 .note h3 {
@@ -1309,6 +1355,10 @@ figcaption {
   .sidebar {
     position: static;
     max-height: none;
+    /* меню встало полосой сверху: тянуть его на всё окно больше нечего,
+       высоту снова задаёт содержимое */
+    height: auto;
+    display: block;
     /* те же 24 до глифов логотипа, минус 7 его внутреннего воздуха */
     padding: 17px 0 0;
     border-bottom: 1px solid var(--border-soft);
@@ -1345,7 +1395,8 @@ figcaption {
     line-height: 30px;
   }
   .bento,
-  .video-row {
+  .video-row,
+  .do-dont {
     grid-template-columns: 1fr;
   }
   .spec-table td:first-child {
