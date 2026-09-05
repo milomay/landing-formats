@@ -209,9 +209,15 @@ const moveMarker = (link) => {
     marker.style.height = '0px';
     return;
   }
-  const top = link.getBoundingClientRect().top - tocList.getBoundingClientRect().top;
-  marker.style.top = Math.round(top) + 'px';
-  marker.style.height = Math.round(link.getBoundingClientRect().height) + 'px';
+  // Метка идёт по строкам пункта, а не по всей его высоте: отбивки сверху и
+  // снизу разные (5 и 10), и полоса во всю высоту вставала относительно текста
+  // криво — сверху почти вплотную, снизу с хвостом.
+  const style = getComputedStyle(link);
+  const padTop = parseFloat(style.paddingTop);
+  const box = link.getBoundingClientRect();
+  const lines = box.height - padTop - parseFloat(style.paddingBottom);
+  marker.style.top = Math.round(box.top - tocList.getBoundingClientRect().top + padTop) + 'px';
+  marker.style.height = Math.round(lines) + 'px';
 };
 
 if (sections.length && 'IntersectionObserver' in window) {
