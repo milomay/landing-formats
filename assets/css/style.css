@@ -235,24 +235,36 @@ img {
   height: 36px;
 }
 
-/* 4 + 4 = 8 между группами; внутренний ритм группы это не трогает */
+/* Устройство меню взято из доки Shopify (shopify.dev/docs): название раздела
+   с шевроном слева липнет к верху колонки, пункты приглушены и по наведению
+   отзываются только цветом, а текущая страница забирает плашку и полосу-акцент
+   слева. Ритм там же: строка 28, шаг 32, скругление 4. Цвета — наши токены. */
+
+/* 8 между группами */
 .nav-group {
-  padding: 4px 0;
+  margin-top: 8px;
 }
 
 .nav-group:first-child {
-  padding-top: 0;
+  margin-top: 0;
 }
 
+/* название группы липнет к верху колонки: в длинном меню видно, в каком
+   разделе едешь. Липкому нужен непрозрачный фон, иначе пункты просвечивают
+   сквозь него насквозь — берём цвет страницы. */
 .nav-group__title {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  padding: 6px 0;
+  padding: 6px 4px 6px 12px;
   margin: 0;
-  background: none;
+  background: var(--surface);
   border: 0;
+  border-radius: 4px;
   text-align: left;
   cursor: pointer;
   font-family: inherit;
@@ -267,12 +279,12 @@ img {
 .nav-group__title::before {
   content: "";
   flex: none;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   /* тише названия группы: стрелка — служебный знак, а не часть заголовка */
   background: var(--text-muted);
-  -webkit-mask: var(--icon-dropdown) center / 12px 12px no-repeat;
-  mask: var(--icon-dropdown) center / 12px 12px no-repeat;
+  -webkit-mask: var(--icon-dropdown) center / 16px 16px no-repeat;
+  mask: var(--icon-dropdown) center / 16px 16px no-repeat;
   transition: transform 0.25s ease;
 }
 
@@ -313,19 +325,44 @@ img {
   margin-top: 4px;
 }
 
+/* пункт отбит от названия группы на 8 вправо: вложенность видно по левому
+   краю строк, а не по лишней вертикальной линии. 14 вместо 15 — в колонке
+   220 после такой отбивки длинные названия иначе переносятся в две строки */
 .nav-list a {
+  position: relative;
   display: block;
-  padding: 6px 12px 6px 20px;
-  border-radius: 8px;
+  padding: 4px 8px 4px 44px;
+  border-radius: 4px;
   border: 0;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 20px;
+  color: var(--text-muted);
+  transition: color 0.2s linear, background-color 0.2s linear;
+}
+
+/* по наведению меняется только цвет: плашка закреплена за текущей страницей,
+   и если давать её ещё и ховеру, эти два состояния перестанут различаться */
+.nav-list a:hover {
   color: var(--text-strong);
 }
 
-.nav-list a:hover,
 .nav-list a[aria-current="page"] {
   background: var(--surface-card-hover); /* Fill/Nine */
+  color: var(--text-strong);
+  font-weight: 500;
+}
+
+/* полоса слева — единственный акцент в колонке: отмечает страницу, на которой
+   стоишь, и читается даже когда плашка почти сливается с фоном */
+.nav-list a[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--accent);
 }
 
 /* разделы, которых на сайте пока нет: цвет как у всех — по макету, но
@@ -335,7 +372,7 @@ img {
 }
 
 .nav-list a[aria-disabled="true"]:hover {
-  background: none;
+  color: var(--text-muted);
 }
 
 /* --- оглавление ------------------------------------------------------ */
@@ -862,6 +899,7 @@ figcaption {
   .anchor__icon,
   .nav-group__title::before,
   .nav-group__body,
+  .nav-list a,
   .video__open,
   .video--wide,
   .theme-switch,
@@ -1260,6 +1298,11 @@ figcaption {
     /* те же 24 до глифов логотипа, минус 7 его внутреннего воздуха */
     padding: 17px 0 0;
     border-bottom: 1px solid var(--border-soft);
+  }
+  /* меню развёрнуто поверх страницы и само не скроллится: липнуть названию
+     группы не к чему, а к верху окна оно липнуть не должно */
+  .nav-group__title {
+    position: static;
   }
   .nav-groups {
     display: none;
