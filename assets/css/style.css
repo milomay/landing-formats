@@ -678,10 +678,51 @@ img {
   margin: 0 0 16px;
 }
 
-.section ul {
+.section ul,
+.section ol.steps {
   margin: 0 0 16px;
   padding: 0;
   list-style: none;
+}
+
+/* Нумерованный список из доки Shopify: номер сидит в кружке слева от строки.
+   Кружок держим нейтральным, а не фирменным: на #FF5500 белая цифра даёт
+   3:1 — для 13 пикселей мало, а тёмная цифра на оранжевом читается как
+   предупреждение. Здесь номер — порядковый знак, а не акцент. */
+.section ol.steps {
+  counter-reset: step;
+}
+
+.section ol.steps li {
+  position: relative;
+  counter-increment: step;
+  padding-left: 36px;
+  /* кружкам нужен воздух: с буллетными 4 они слипаются в столбик */
+  margin-bottom: 12px;
+}
+
+.section ol.steps li:last-child {
+  margin-bottom: 0;
+}
+
+.section ol.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  /* центр первой строки: при другом интерлиньяже кружок не съедет.
+     Интерлиньяж псевдоэлементу не задаём — иначе 1lh посчитается по нему,
+     а не по строке пункта, и кружок уедет вверх на полстроки. */
+  top: calc((1lh - 24px) / 2);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-card-hover);
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .section ul li {

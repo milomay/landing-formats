@@ -220,6 +220,22 @@ def render_video(block):
 
 ALERT_WORDS = {"важно", "внимание"}
 
+# Секции, где перечисление читается как набор вариантов, а не как россыпь
+# однородных пунктов: там нумерация помогает — на вариант можно сослаться
+# номером. Ключ — заголовок секции из макета; переименуют его — сборка
+# предупредит, а не вернёт молча буллеты.
+NUMBERED_SECTIONS = {"Что можно продвигать"}
+_numbered_seen = set()
+
+
+def numbered(section):
+    """Списки такой секции нумеруем кружками вместо буллетов."""
+    if section["title"] not in NUMBERED_SECTIONS:
+        return section["blocks"]
+    _numbered_seen.add(section["title"])
+    return [dict(b, variant="steps") if b["type"] == "ul" else b
+            for b in section["blocks"]]
+
 # Значок в начале заголовка — это пометка для списка под ним, а не текст.
 # Эмодзи рисуется шрифтом системы: цвет, размер и вид у всех разные, поэтому
 # в разметку он не едет — вместо него вектор из макета в маркерах списка.
@@ -345,7 +361,10 @@ def render_blocks(blocks):
         elif t == "ul":
             items = "".join(f"<li>{render_text(x)}</li>" for x in b["items"])
             cls = f' class="{b["variant"]}"' if b.get("variant") else ""
-            out.append(f"<ul{cls}>{items}</ul>")
+            # нумерованный список — это ol: номера рисует счётчик, а не текст,
+            # и порядок остаётся в разметке, а не только в оформлении
+            tag = "ol" if b.get("variant") == "steps" else "ul"
+            out.append(f"<{tag}{cls}>{items}</{tag}>")
         elif t == "do-dont":
             cols = "".join(render_mark_card(c) for c in b["cols"])
             out.append(f'<div class="do-dont">{cols}</div>')
@@ -450,7 +469,7 @@ def render_page(page):
                 f'<section class="section" id="{sid}">\n'
                 f'        <h2><a class="anchor" href="#{sid}">{label(section["title"])}'
                 f'<span class="anchor__icon" aria-hidden="true"></span></a></h2>\n'
-                f'        {render_blocks(section["blocks"])}\n'
+                f'        {render_blocks(numbered(section))}\n'
                 f'      </section>\n'
                 f'      <hr class="divider">')
 
@@ -552,6 +571,10 @@ def main():
     # незаметно и вылезают уже на сайте
     for problem in palette.check():
         print(f"близкие оттенки — {problem}")
+
+    # секцию могли переименовать в макете — тогда нумерация тихо исчезнет
+    for title in sorted(NUMBERED_SECTIONS - _numbered_seen):
+        print(f"нумерованной секции нет в тексте: «{title}»")
 
 
 if __name__ == "__main__":
