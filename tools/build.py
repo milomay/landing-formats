@@ -350,7 +350,7 @@ def fold_alerts(blocks):
 
 def render_mark_card(b):
     """Плашка «можно» или «нельзя»: геометрия одна, отличается только цвет."""
-    kind = "danger" if b["type"] == "deny" else "allow"
+    kind = b["type"]  # allow | deny — класс плашки совпадает с типом блока
     return (f'<aside class="note note--{kind}">'
             f'<h3>{label(b["title"])}</h3>'
             f'{render_blocks(b["blocks"])}</aside>')

@@ -79,18 +79,15 @@
   --surface-warning: rgba(255, 85, 0, 0.06);
   --border-warning: rgba(255, 85, 0, 0.4);
 
-  /* System/Error из макета — плашка запретов и её крестики,
-     значения одни на обе темы */
-  --surface-danger: rgba(229, 49, 46, 0.06);
-  --border-danger: rgba(229, 49, 46, 0.2);
-  --icon-danger: rgba(229, 49, 46, 0.8);
+  /* System/Error из макета 512:3642 — один красный на все запреты: и на пару
+     «Можно / Нельзя», и на одиночную плашку. Раньше у них расходились рамка
+     (20 против 40%) и знак (80% против полного), и рядом это было заметно.
 
-  /* Пара «Можно / Нельзя» из макета 512:3642. Заливка 6%, рамка 40% —
-     рамка ложится поверх заливки, как штрих поверх фона в Figma, поэтому
-     background-clip здесь не трогаем: складывание слоёв тут и задумано.
-     Красный держим один на обе темы: на белом он даёт 4.4:1 и читается.
-     Зелёный на белом — только 3:1, поэтому у него своё значение в каждой
-     теме, и живёт он не здесь, а в блоках тем. */
+     Рамка 40% ложится поверх заливки 6%, как штрих поверх фона в Figma,
+     поэтому background-clip здесь не трогаем: сложение слоёв тут и задумано.
+     Красный один на обе темы — на белом он даёт 4.4:1 и читается. Зелёный на
+     белом даёт только 3:1, поэтому он свой в каждой теме и живёт в их блоках. */
+  --surface-deny: rgba(229, 49, 46, 0.06);
   --border-deny: rgba(229, 49, 46, 0.4);
   --text-deny: #e5312e;
 
@@ -590,7 +587,8 @@ img {
   font-family: var(--font-display);
   font-size: 26px;
   line-height: 32px;
-  font-weight: 400;
+  /* антиква везде Medium — как в заголовке страницы и названиях глав */
+  font-weight: 500;
   color: var(--text-strong);
   margin: 0 0 8px;
 }
@@ -779,7 +777,7 @@ img {
   width: 16px;
   height: 16px;
   top: calc((1lh - 16px) / 2);
-  background: var(--icon-danger);
+  background: var(--text-deny);
   -webkit-mask: var(--icon-cross) center / 16px 16px no-repeat;
   mask: var(--icon-cross) center / 16px 16px no-repeat;
 }
@@ -1311,26 +1309,26 @@ figcaption {
 }
 
 /* и в запрещающем — Alert из 505:20303 */
-.note--danger {
-  background: var(--surface-danger);
-  border-color: var(--border-danger);
+.note--deny {
+  background: var(--surface-deny);
+  border-color: var(--border-deny);
 }
 
 /* Когда запрет один и списка нет, крестик получает сам абзац: метка стоит
    у запрещённого, а не у заголовка, — как в плашках со списком. */
-.note--danger > p {
+.note--deny > p {
   position: relative;
   padding-left: 28px;
 }
 
-.note--danger > p::before {
+.note--deny > p::before {
   content: "";
   position: absolute;
   left: 2px;
   top: calc((1lh - 16px) / 2);
   width: 16px;
   height: 16px;
-  background: var(--icon-danger);
+  background: var(--text-deny);
   -webkit-mask: var(--icon-cross) center / 16px 16px no-repeat;
   mask: var(--icon-cross) center / 16px 16px no-repeat;
 }
@@ -1361,10 +1359,6 @@ figcaption {
   border-color: var(--border-allow);
 }
 
-.do-dont > .note--danger {
-  border-color: var(--border-deny);
-}
-
 /* Метку всей плашки несёт заголовок: значок 20 и слово одним цветом.
    Поэтому внутри обычные буллеты — повторять метку в каждой строке незачем,
    она уже сказана один раз наверху. */
@@ -1392,11 +1386,11 @@ figcaption {
   color: var(--text-allow);
 }
 
-.do-dont .note--danger h3 {
+.do-dont .note--deny h3 {
   color: var(--text-deny);
 }
 
-.do-dont .note--danger h3::before {
+.do-dont .note--deny h3::before {
   -webkit-mask-image: var(--icon-cross);
   mask-image: var(--icon-cross);
 }
@@ -1411,11 +1405,11 @@ figcaption {
 }
 
 /* метка ушла в заголовок — у одиночного абзаца она больше не нужна */
-.do-dont .note--danger > p {
+.do-dont .note--deny > p {
   padding-left: 0;
 }
 
-.do-dont .note--danger > p::before {
+.do-dont .note--deny > p::before {
   content: none;
 }
 

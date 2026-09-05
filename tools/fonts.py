@@ -2,7 +2,7 @@
 """Готовит веб-версии шрифтов: исходники из fonts/ → woff2 в assets/fonts/.
 
 Берём только начертания, которые реально встречаются в макете:
-Graphik 400/500/600 и SangBleu Sunrise 400.
+Graphik 400/500/600 и SangBleu Sunrise 400/500.
 """
 
 import pathlib
@@ -18,6 +18,7 @@ FACES = [
     ("Graphik Kinopoisk LC-Medium.otf", "graphik-500.woff2"),
     ("Graphik Kinopoisk LC-Semibold.otf", "graphik-600.woff2"),
     ("SangBleuSunrise-Regular.otf", "sangbleu-400.woff2"),
+    ("SangBleuSunrise-Medium.otf", "sangbleu-500.woff2"),
 ]
 
 
