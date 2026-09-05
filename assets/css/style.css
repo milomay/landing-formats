@@ -1301,6 +1301,16 @@ figcaption {
   margin-bottom: 4px !important;
 }
 
+/* Заголовок внутри плашки набран так же, как подзаголовок в тексте: 18/22,
+   Medium, 8 до содержимого. Верхнюю отбивку снимаем — её даёт сама плашка. */
+.note h3 {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 500;
+  color: var(--text-strong);
+  margin: 0 0 8px;
+}
+
 /* Тот же компонент в предупреждающем варианте — Alert (497:19372):
    геометрия и типографика те же, меняются только заливка и рамка */
 .note--alert {
@@ -1360,19 +1370,17 @@ figcaption {
 }
 
 /* Метку всей плашки несёт заголовок: значок 20 и слово одним цветом.
-   Поэтому внутри обычные буллеты — повторять метку в каждой строке незачем,
-   она уже сказана один раз наверху. */
-.do-dont .note h3 {
+   Правило общее для всех плашек разрешений и запретов — и в паре, и когда
+   плашка стоит одна: иначе рядом на странице у них расходится оформление. */
+.note--allow h3,
+.note--deny h3 {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 16px;
-  line-height: 26px;
-  font-weight: 600;
-  margin: 0 0 4px;
 }
 
-.do-dont .note h3::before {
+.note--allow h3::before,
+.note--deny h3::before {
   content: "";
   flex: none;
   width: 20px;
@@ -1382,17 +1390,27 @@ figcaption {
   mask: var(--icon-check) center / 20px 20px no-repeat;
 }
 
-.do-dont .note--allow h3 {
+.note--allow h3 {
   color: var(--text-allow);
 }
 
-.do-dont .note--deny h3 {
+.note--deny h3 {
   color: var(--text-deny);
 }
 
-.do-dont .note--deny h3::before {
+.note--deny h3::before {
   -webkit-mask-image: var(--icon-cross);
   mask-image: var(--icon-cross);
+}
+
+/* В паре заголовок набран по макету 512:3642: 16/26 Semibold и 4 до списка.
+   Одиночная плашка держит прежний размер — он равняется на подзаголовок
+   в тексте, и это отдельное правило. */
+.do-dont .note h3 {
+  font-size: 16px;
+  line-height: 26px;
+  font-weight: 600;
+  margin: 0 0 4px;
 }
 
 /* буллет и текст по макету: точка у самого края, строка на 18 */
@@ -1411,16 +1429,6 @@ figcaption {
 
 .do-dont .note--deny > p::before {
   content: none;
-}
-
-/* Заголовок внутри плашки набран так же, как подзаголовок в тексте: 18/22,
-   Medium, 8 до содержимого. Верхнюю отбивку снимаем — её даёт сама плашка. */
-.note h3 {
-  font-size: 18px;
-  line-height: 22px;
-  font-weight: 500;
-  color: var(--text-strong);
-  margin: 0 0 8px;
 }
 
 .note ul {
