@@ -183,17 +183,18 @@ img {
 
 /* --- каркас --------------------------------------------------------- */
 
+/* Макет прижат к левому краю, а не отцентрован: меню — точка отсчёта страницы,
+   и оно всегда стоит в 20 от края окна, на любой ширине. Остаток ширины копится
+   справа; поэтому же и колонкам внутри сетки центрироваться не даём. */
 .layout {
   max-width: var(--layout);
-  margin: 0 auto;
-  padding: 0 var(--page-pad);
+  margin: 0;
+  padding: 0 var(--page-pad) 0 20px;
   display: grid;
   grid-template-columns: var(--col-nav) minmax(0, var(--col-main)) var(--col-toc);
   gap: var(--gap);
   align-items: start;
-  /* колонки фиксированной ширины, поэтому остаток ширины окна нужно делить
-     поровну: иначе он целиком копится справа и текст висит у левого края */
-  justify-content: center;
+  justify-content: start;
 }
 
 .sidebar,
