@@ -1095,8 +1095,9 @@ figcaption {
   width: 100%;
   min-width: 420px;
   border-collapse: collapse;
-  font-size: 13px;
-  line-height: 18px;
+  /* тот же кегль, что в меню и оглавлении: мелкий текст на странице один */
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .spec-table th {
