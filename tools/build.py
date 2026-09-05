@@ -126,7 +126,16 @@ HANGING = re.compile(r"\b([а-яёa-z]{1,2}|для|под|при|над|без|�
 DASH = re.compile(r"[ \u00a0]+([—–])")
 
 
+# В макете строки ломают руками — Shift+Enter кладёт в текст U+2028, и браузер
+# рвёт по нему строку жёстко. Расставлены такие переносы под ширину колонки в
+# Figma, а у нас она другая: на сайте они рвали фразу посреди мысли. Приводим их
+# и задвоенные пробелы к одному пробелу и даём тексту переноситься самому.
+# Неразрывный пробел не трогаем — он в исходнике поставлен намеренно.
+SOFT_BREAKS = re.compile(r"[\u2028\u2029\t\n\r\f\v ]+")
+
+
 def typography(text):
+    text = SOFT_BREAKS.sub(" ", text)
     text = HANGING.sub(lambda m: m.group(1) + "\u00a0", text)
     return DASH.sub("\u00a0\\1", text)
 
@@ -506,7 +515,9 @@ def render_page(page):
     drop_trailing_divider()
 
     crumbs = "".join(f"<span>{label(c)}</span>" for c in intro["breadcrumbs"])
-    description = (intro["lead"] or "")[:160]
+    # в описании для поиска и соцсетей переносы из макета не нужны тем более:
+    # там строку ломает уже сам сервис
+    description = SOFT_BREAKS.sub(" ", intro["lead"] or "")[:160]
 
     href = FIGMA_LINKS.get(page["slug"], "")
     tag = "a" if href else "span"

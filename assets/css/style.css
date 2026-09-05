@@ -592,7 +592,7 @@ img {
 .bento__card {
   background: var(--surface-card);
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
 }
 
 .bento__card:first-child {
