@@ -269,7 +269,8 @@ img {
   flex: none;
   width: 12px;
   height: 12px;
-  background: currentColor;
+  /* тише названия группы: стрелка — служебный знак, а не часть заголовка */
+  background: var(--text-muted);
   -webkit-mask: var(--icon-dropdown) center / 12px 12px no-repeat;
   mask: var(--icon-dropdown) center / 12px 12px no-repeat;
   transition: transform 0.25s ease;
@@ -354,14 +355,19 @@ img {
   border: 0;
   font-size: 13px;
   line-height: 18px;
-  /* основной текст, а не контрастный: текущий раздел выделяется на их фоне */
-  color: var(--text);
+  /* приглушённый текст: текущий раздел выделяется на его фоне и цветом, и весом */
+  color: var(--text-muted);
   transition: color 0.2s ease-out;
 }
 
 .toc a:hover,
 .toc a.is-active {
   color: var(--text-strong);
+}
+
+/* вес меняем только у активного: по ховеру строка меняла бы ширину и дёргалась */
+.toc a.is-active {
+  font-weight: 500;
 }
 
 /* Метка текущего раздела не перекрашивает рамку пункта, а едет по колонке:
