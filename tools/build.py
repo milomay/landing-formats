@@ -297,6 +297,12 @@ def mark_lists(blocks):
     return out
 
 
+def plain(card):
+    """Тот же блок, но со списками без галочек и крестиков в маркерах."""
+    return dict(card, blocks=[{k: v for k, v in b.items() if k != "variant"}
+                              for b in card["blocks"]])
+
+
 def pair_marks(blocks):
     """✅ и ❌ подряд — это одна мысль, а не два блока.
 
@@ -310,7 +316,9 @@ def pair_marks(blocks):
         b = blocks[i]
         nxt = blocks[i + 1] if i + 1 < len(blocks) else None
         if b.get("type") == "allow" and nxt and nxt.get("type") == "deny":
-            out.append({"type": "do-dont", "cols": [b, nxt]})
+            # в паре метку несёт заголовок плашки, поэтому галочки и крестики
+            # из маркеров списка убираем — иначе она повторяется в каждой строке
+            out.append({"type": "do-dont", "cols": [plain(b), plain(nxt)]})
             i += 2
             continue
         out.append(b)
