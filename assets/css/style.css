@@ -665,8 +665,10 @@ img {
   vertical-align: top;
   height: 32px; /* = line-height заголовка */
   height: 1lh;
-  width: 24px;
-  margin-left: 8px;
+  /* коробка по размеру иконки, а не шире: лишние 2 по бокам добавлялись
+     к отбивке и знак отходил от заголовка дальше, чем задано */
+  width: 20px;
+  margin-left: 6px;
   opacity: 0;
   transition: opacity 0.2s ease;
 }

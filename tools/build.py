@@ -126,16 +126,33 @@ HANGING = re.compile(r"\b([а-яёa-z]{1,2}|для|под|при|над|без|�
 DASH = re.compile(r"[ \u00a0]+([—–])")
 
 
-# В макете строки ломают руками — Shift+Enter кладёт в текст U+2028, и браузер
-# рвёт по нему строку жёстко. Расставлены такие переносы под ширину колонки в
-# Figma, а у нас она другая: на сайте они рвали фразу посреди мысли. Приводим их
-# и задвоенные пробелы к одному пробелу и даём тексту переноситься самому.
-# Неразрывный пробел не трогаем — он в исходнике поставлен намеренно.
-SOFT_BREAKS = re.compile(r"[\u2028\u2029\t\n\r\f\v ]+")
+# Shift+Enter в Figma кладёт в текст U+2028, и браузер рвёт по нему строку
+# насмерть. Такие переносы бывают двух сортов, и обходиться с ними надо
+# по-разному, поэтому смотрим, что идёт следом.
+SOFT_BREAK = re.compile(r"[ \t]*[\u2028\u2029][ \t]*")
+EXTRA_SPACE = re.compile(r"[ \t\n\r\f\v]{2,}")
 
 
-def typography(text):
-    text = SOFT_BREAKS.sub(" ", text)
+def unbreak(text, keep=True):
+    """Жёсткий перенос из макета: где он по делу, а где под ширину колонки.
+
+    Со строчной буквы после переноса — это продолжение фразы, перенос
+    расставлен под макетную колонку. У нас она другая, и посреди фразы такой
+    разрыв читается как ошибка: убираем. С заглавной или цифры — новое
+    предложение или отдельный факт («Размер файла: … ⏎ Количество модулей: …»),
+    его нельзя склеивать в одну строку: оставляем переносом.
+
+    Неразрывный пробел не трогаем — он в исходнике поставлен намеренно.
+    """
+    def repl(m):
+        nxt = m.string[m.end():m.end() + 1]
+        return "<br>" if keep and (nxt.isupper() or nxt.isdigit()) else " "
+
+    return EXTRA_SPACE.sub(" ", SOFT_BREAK.sub(repl, text))
+
+
+def typography(text, breaks=True):
+    text = unbreak(text, breaks)
     text = HANGING.sub(lambda m: m.group(1) + "\u00a0", text)
     return DASH.sub("\u00a0\\1", text)
 
@@ -146,7 +163,7 @@ def label(text):
     Узкие колонки меню и оглавления ломают строку где придётся, поэтому
     предлоги и тире привязываем и здесь, а не только в основном тексте.
     """
-    return typography(esc(text))
+    return typography(esc(text), breaks=False)
 
 
 def render_text(value):
@@ -517,7 +534,7 @@ def render_page(page):
     crumbs = "".join(f"<span>{label(c)}</span>" for c in intro["breadcrumbs"])
     # в описании для поиска и соцсетей переносы из макета не нужны тем более:
     # там строку ломает уже сам сервис
-    description = SOFT_BREAKS.sub(" ", intro["lead"] or "")[:160]
+    description = unbreak(intro["lead"] or "", keep=False)[:160]
 
     href = FIGMA_LINKS.get(page["slug"], "")
     tag = "a" if href else "span"
