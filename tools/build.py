@@ -224,17 +224,39 @@ ALERT_WORDS = {"важно", "внимание"}
 # однородных пунктов: там нумерация помогает — на вариант можно сослаться
 # номером. Ключ — заголовок секции из макета; переименуют его — сборка
 # предупредит, а не вернёт молча буллеты.
-NUMBERED_SECTIONS = {"Что можно продвигать"}
+NUMBERED_SECTIONS = {
+    "Что можно продвигать",
+    "Что можно размещать на баннерах",
+}
 _numbered_seen = set()
+_dropped = []
 
 
 def numbered(section):
-    """Списки такой секции нумеруем кружками вместо буллетов."""
+    """Списки такой секции нумеруем кружками вместо буллетов.
+
+    Заодно убираем строку-подводку перед списком — абзац, который кончается
+    двоеточием и ничего не добавляет к заголовку секции («С помощью баннеров
+    можно:» под заголовком «Что можно размещать на баннерах»). Что выкинули,
+    сборка пишет в лог: молча терять текст из макета нельзя.
+    """
     if section["title"] not in NUMBERED_SECTIONS:
         return section["blocks"]
     _numbered_seen.add(section["title"])
-    return [dict(b, variant="steps") if b["type"] == "ul" else b
-            for b in section["blocks"]]
+
+    blocks = [dict(b, variant="steps") if b["type"] == "ul" else b
+              for b in section["blocks"]]
+    out = []
+    for i, b in enumerate(blocks):
+        nxt = blocks[i + 1] if i + 1 < len(blocks) else None
+        lead_in = (b["type"] == "p" and isinstance(b.get("text"), str)
+                   and b["text"].strip().endswith(":")
+                   and nxt and nxt.get("variant") == "steps")
+        if lead_in:
+            _dropped.append((section["title"], b["text"].strip()))
+            continue
+        out.append(b)
+    return out
 
 # Значок в начале заголовка — это пометка для списка под ним, а не текст.
 # Эмодзи рисуется шрифтом системы: цвет, размер и вид у всех разные, поэтому
@@ -575,6 +597,9 @@ def main():
     # секцию могли переименовать в макете — тогда нумерация тихо исчезнет
     for title in sorted(NUMBERED_SECTIONS - _numbered_seen):
         print(f"нумерованной секции нет в тексте: «{title}»")
+
+    for title, text in _dropped:
+        print(f"убрала подводку в «{title}»: «{text}»")
 
 
 if __name__ == "__main__":
