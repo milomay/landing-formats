@@ -354,6 +354,8 @@ img {
   border: 0;
   font-size: 13px;
   line-height: 18px;
+  /* основной текст, а не контрастный: текущий раздел выделяется на их фоне */
+  color: var(--text);
   transition: color 0.2s ease-out;
 }
 
