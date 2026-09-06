@@ -18,6 +18,12 @@ IMG_MAP = json.loads(IMG_MAP_FILE.read_text()) if IMG_MAP_FILE.exists() else {}
 VIDEO_DIR = ROOT / "assets" / "video"
 VIDEO_LINKS_FILE = VIDEO_DIR / "links.json"
 VIDEO_LINKS = json.loads(VIDEO_LINKS_FILE.read_text()) if VIDEO_LINKS_FILE.exists() else {}
+
+# Подписи к кадрам. В макете у роликов подписей нет, а дописать их туда можно
+# не всегда — поэтому держим отдельным файлом: он переживает перевыгрузку,
+# которая content.json переписывает целиком. Что в макете есть, то главнее.
+CAPTIONS_FILE = VIDEO_DIR / "captions.json"
+CAPTIONS = json.loads(CAPTIONS_FILE.read_text()) if CAPTIONS_FILE.exists() else {}
 VIDEO_EXT = (".mp4", ".webm")
 
 
@@ -257,7 +263,11 @@ def img_tag(src, alt=""):
 
 def render_video(block):
     cls = "video video--wide" if block.get("wide") else "video"
-    cap = f'<figcaption>{label(block["caption"])}</figcaption>' if block.get("caption") else ""
+    _videos.add(block["img"])
+    text = block.get("caption") or CAPTIONS.get(block["img"], "")
+    if text:
+        _captioned.add(block["img"])
+    cap = f'<figcaption>{label(text)}</figcaption>' if text else ""
     src = video_src(block["img"])
     src_img = img_src(block["img"])
     if src:
@@ -287,6 +297,8 @@ NUMBERED_SECTIONS = {
     "Что можно размещать на баннерах",
 }
 _numbered_seen = set()
+_captioned = set()
+_videos = set()
 _dropped = []
 
 
@@ -655,6 +667,11 @@ def main():
 
     for title, text in _dropped:
         print(f"убрала подводку в «{title}»: «{text}»")
+
+    # подпись — часть кадра, без неё непонятно, что за ролик показан
+    empty = _videos - _captioned
+    if empty:
+        print(f"без подписи роликов: {len(empty)} — заполнить {CAPTIONS_FILE.name}")
 
 
 if __name__ == "__main__":
