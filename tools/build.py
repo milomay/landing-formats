@@ -270,8 +270,10 @@ def render_video(block):
                 f'<span class="video__play" aria-hidden="true"></span>'
                 f'</button>{cap}</figure>')
     alt = esc(block.get("caption") or "Превью видео")
-    return (f'<figure class="{cls}">{img_tag(src_img, alt)}'
-            f'<span class="video__play" aria-hidden="true"></span>{cap}</figure>')
+    # кадр в своей обёртке: кнопка Play отсчитывается от него, а не от figure,
+    # иначе с подписью внизу она села бы на её плашку
+    return (f'<figure class="{cls}"><span class="video__frame">{img_tag(src_img, alt)}'
+            f'<span class="video__play" aria-hidden="true"></span></span>{cap}</figure>')
 
 
 ALERT_WORDS = {"важно", "внимание"}

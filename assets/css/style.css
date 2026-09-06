@@ -104,7 +104,7 @@
   /* Общей ширины у макета больше нет: меню закреплено у левого края окна,
      а пара «текст + оглавление» центрируется по окну сама. */
   --col-nav: 240px;
-  --col-main: 740px;
+  --col-main: 760px;
   --col-toc: 220px;
   --gap: 88px;
   /* поля полосы справа от меню — те же 48, что у Shopify */
@@ -861,11 +861,27 @@ figure img {
   background-clip: padding-box;
 }
 
+/* Подпись сидит на плашке, приклеенной к низу кадра, — как в доке Shopify.
+   Кадр и подпись становятся одним блоком, поэтому обводку и скругление
+   переносим на figure, а картинке оставляем прямые углы: иначе её углы
+   просвечивали бы поверх плашки. */
+figure:has(figcaption) {
+  overflow: hidden;
+  border: 1px solid var(--border-media);
+  border-radius: 8px;
+}
+
+figure:has(figcaption) img {
+  border: 0;
+  border-radius: 0;
+}
+
 figcaption {
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--text-muted);
-  margin-top: 8px;
+  padding: 14px 16px;
+  background: var(--surface-card);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text);
 }
 
 .video-row {
@@ -967,6 +983,11 @@ figcaption {
 }
 
 /* карточка с роликом: кликабельна целиком, по ховеру слегка подрастает */
+.video__frame {
+  position: relative;
+  display: block;
+}
+
 .video__open {
   position: relative;
   display: block;
