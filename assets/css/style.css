@@ -1096,9 +1096,16 @@ figcaption {
 
 /* --- таблицы ----------------------------------------------------------- */
 
+/* Таблица собрана в рамку, как в доке Shopify: рамка по периметру, скруглённые
+   углы, залитая шапка и разделители только между строками. Так таблица читается
+   отдельным блоком, а не набором строк, повисших в тексте.
+   overflow нужен вдвойне: он и прячет углы строк под скруглением рамки,
+   и даёт узкой таблице скроллиться внутри себя, а не растягивать страницу. */
 .table-wrap {
   margin: 24px 0;
-  overflow-x: auto;
+  overflow: auto;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
 }
 
 .spec-table {
@@ -1110,30 +1117,27 @@ figcaption {
   line-height: 20px;
 }
 
+/* шапка на заливке плашки — единственный тон, который здесь появляется */
 .spec-table th {
   text-align: left;
   font-weight: 500; /* Medium */
-  color: var(--text-strong);
-  padding: 12px 20px 12px 0;
-  border-bottom: 2px solid var(--border);
+  color: var(--text-muted);
+  background: var(--surface-card);
+  padding: 10px 16px;
 }
 
+/* Разделитель отдаём верхней границе ячейки, а не нижней: тогда линия сама
+   не появляется под последней строкой и не спорит со скруглением рамки. */
 .spec-table td {
-  padding: 16px 20px 16px 0;
-  border-bottom: 1px solid var(--border-soft);
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-soft);
   vertical-align: top;
-}
-
-/* закрывающей линии внизу таблицы нет — разделители только между строками */
-.spec-table tr:last-child td {
-  border-bottom: 0;
 }
 
 /* внутри таблиц только Regular и Medium — Semibold не используем */
 .spec-table td:first-child {
   font-weight: 500; /* Medium */
   color: var(--text-strong);
-  padding-right: 24px;
 }
 
 /* первая колонка держит ярлык строки — ширина зависит от числа колонок */
