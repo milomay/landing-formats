@@ -580,7 +580,7 @@ img {
 
 .pill:hover {
   background: var(--surface-card-hover);
-  transform: scale(1.009);
+  transform: scale(1.015);
 }
 
 .pill__logo,
