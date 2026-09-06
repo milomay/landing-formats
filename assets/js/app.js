@@ -197,6 +197,54 @@ const sections = links
   .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
   .filter(Boolean);
 
+// Активный пункт набран Medium, а он шире Regular: пункт, который влезал
+// в строку, перестаёт влезать, вырастает на строку — и весь список под ним
+// прыгает при каждой прокрутке мимо этого раздела. Поэтому перенос ставим
+// заранее: смотрим, где строку ломает Medium, и закрепляем этот перенос
+// во всех состояниях. Тогда слово сразу стоит на второй строке и никуда
+// не переезжает. Считать надо после загрузки шрифта — на подменном
+// начертании ширина другая и перенос встанет не туда.
+const balanceToc = () => {
+  links.forEach((a) => {
+    if (a.dataset.title === undefined) a.dataset.title = a.textContent;
+    a.textContent = a.dataset.title;
+  });
+
+  links.forEach((a) => {
+    const text = a.dataset.title;
+    const node = a.firstChild;
+    if (!node) return;
+
+    const active = a.classList.contains('is-active');
+    a.classList.add('is-active');
+
+    // начала слов: у первого символа каждого слова смотрим верх строки —
+    // как только он поехал вниз, здесь браузер и перенёс
+    const range = document.createRange();
+    const cuts = [];
+    let prevTop = null;
+    for (let i = 0; i < text.length; i += 1) {
+      if (i !== 0 && !/\s/.test(text[i - 1])) continue;
+      range.setStart(node, i);
+      range.setEnd(node, i + 1);
+      const top = Math.round(range.getBoundingClientRect().top);
+      if (prevTop !== null && top > prevTop) cuts.push(i);
+      prevTop = top;
+    }
+    if (!active) a.classList.remove('is-active');
+    if (!cuts.length) return;
+
+    // собираем заново: вместо пробела в месте переноса — <br>
+    a.textContent = '';
+    let from = 0;
+    cuts.forEach((i) => {
+      a.append(text.slice(from, i - 1), document.createElement('br'));
+      from = i;
+    });
+    a.append(text.slice(from));
+  });
+};
+
 // Метку текущего раздела двигаем по колонке, а не перекрашиваем рамку пункта:
 // переезд видно, и глаз сам находит новое место. Считаем от списка, потому что
 // у пункта своя рамка и собственные отбивки.
@@ -220,6 +268,18 @@ const moveMarker = (link) => {
   marker.style.height = Math.round(lines) + 'px';
 };
 
+const relayoutToc = () => {
+  balanceToc();
+  moveMarker(links.find((a) => a.classList.contains('is-active')));
+};
+
+if (links.length) {
+  // ждём шрифт: до его загрузки ширина строки другая и перенос встанет не туда
+  const ready = document.fonts && document.fonts.ready;
+  if (ready) ready.then(relayoutToc);
+  else window.addEventListener('load', relayoutToc);
+}
+
 if (sections.length && 'IntersectionObserver' in window) {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -237,14 +297,14 @@ if (sections.length && 'IntersectionObserver' in window) {
   );
   sections.forEach((s) => observer.observe(s));
 
-  // пункты переносятся по-разному, поэтому после смены ширины метку пересчитываем
+  // после смены ширины переносы встают иначе — пересчитываем их и метку
   let tocQueued = false;
   window.addEventListener('resize', () => {
     if (tocQueued) return;
     tocQueued = true;
     requestAnimationFrame(() => {
       tocQueued = false;
-      moveMarker(links.find((a) => a.classList.contains('is-active')));
+      relayoutToc();
     });
   });
 }

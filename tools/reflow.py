@@ -33,7 +33,10 @@ STATES = [
 
 PROBE = """
 <script>
-window.addEventListener('load', function(){
+// Ждём шрифт и следующий кадр: скрипт страницы по этому же событию расставляет
+// переносы в оглавлении. Померить раньше — значит померить не то, что увидит
+// читатель, и пропустить настоящий скачок (или найти несуществующий).
+document.fonts.ready.then(function(){ requestAnimationFrame(function(){
   var STATES = %s;
   var bad = [];
   STATES.forEach(function(s){
@@ -60,7 +63,7 @@ window.addEventListener('load', function(){
     had.forEach(on);
   });
   document.title = 'RESULT' + JSON.stringify(bad);
-});
+}); });
 </script>
 """
 
