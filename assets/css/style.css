@@ -867,6 +867,7 @@ figcaption {
   margin-top: 8px;
   font-size: 14px;
   line-height: 20px;
+  font-weight: 500; /* Medium */
   color: var(--text);
 }
 
@@ -878,7 +879,9 @@ figcaption {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: start;
-  gap: 8px;
+  /* между рядами больше, чем между соседями в ряду: сверху под кадром стоит
+     подпись, и с теми же 8 следующий ряд лип бы к ней */
+  gap: 20px 8px;
   margin: 24px 0;
 }
 
