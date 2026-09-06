@@ -885,6 +885,7 @@ figcaption {
 .video {
   position: relative;
   margin: 0;
+  transition: transform 0.3s ease;
 }
 
 /* кнопка Play — компонент `card` / `button` из макета (483:19178):
@@ -987,37 +988,26 @@ figcaption {
   border: 0;
   background: none;
   cursor: pointer;
-  transition: transform 0.3s ease;
 }
 
-.video__open:hover,
-.video__open:focus-visible {
+/* Растёт вся карточка целиком, вместе с подписью: кадр и его название —
+   одно целое, и разъезжаться на ховере они не должны. Поэтому масштаб висит
+   на figure, а не на кнопке. Заодно ховер работает и там, где файла ещё нет
+   и кнопки в разметке не существует. */
+.video:hover,
+.video:focus-within {
   transform: scale(1.02);
 }
 
-/* ховера у компонента в макете нет — подсвечиваем на ступень той же шкалы */
-.video__open:hover .video__play {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Крупный ролик подрастает так же, как плитки, но растёт только кадр:
-   подпись под ним остаётся на месте. Ховер ловим на всей карточке, а не на
-   кнопке: пока файл не залит, кнопки в разметке нет, — а увеличиваем то, что
-   внутри. */
-.video--wide .video__open,
-.video--wide .video__frame {
-  transition: transform 0.3s ease;
-}
-
-.video--wide:hover .video__open,
-.video--wide:focus-within .video__open,
-.video--wide:hover .video__frame {
+.video--wide:hover,
+.video--wide:focus-within {
   /* 1.01, а не 1.02, как у плиток: кадр втрое шире, и те же проценты
      дают втрое больший скачок в пикселях */
   transform: scale(1.01);
 }
 
-.video--wide:hover .video__play {
+/* ховера у компонента в макете нет — подсвечиваем на ступень той же шкалы */
+.video:hover .video__play {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -1026,8 +1016,7 @@ figcaption {
   .nav-group__title::before,
   .nav-group__body,
   .nav-list a,
-  .video__open,
-  .video--wide,
+  .video,
   .theme-switch,
   .theme-switch svg,
   .pill,
@@ -1036,10 +1025,8 @@ figcaption {
     transition: none;
   }
 
-  .video__open:hover,
-  .video__open:focus-visible,
-  .video--wide:hover,
-  .video--wide:focus-within,
+  .video:hover,
+  .video:focus-within,
   .pill:hover,
   .lightbox video {
     transform: none;
