@@ -93,10 +93,6 @@ NAV_LINKS = {"Преролл": "index.html", "Баннеры": "banner.html"}
 # и работает в обеих темах одним файлом
 LOGO = (ROOT / "assets" / "img" / "logo-kinopoisk.svg").read_text().strip()
 
-# фирменный знак Figma многоцветный, currentColor ему не нужен — но вставляем
-# так же разметкой, чтобы не тратить отдельный запрос на 1,7 КБ
-FIGMA_LOGO = (ROOT / "assets" / "img" / "figma-logo.svg").read_text().strip()
-
 # Ссылку на макет ещё не дали. Пока её нет, кнопка рисуется, но не кликается —
 # мёртвая ссылка на «#» хуже: она прокручивает страницу наверх.
 # Появится адрес — вписать сюда, разметка сама станет ссылкой.
@@ -183,21 +179,17 @@ def render_text(value):
     return "".join(out)
 
 
-def render_pill(href, text, logo="", primary=False):
-    """Кнопка-таблетка: подпись и знак, логотип сервиса по желанию.
-
-    Главная кнопка (`primary`) залита градиентом и ведёт к файлу — у неё знак
-    «скачать». Обычная тихая, с 6% заливкой и стрелкой «открыть».
+def render_pill(href, text, file=False):
+    """Кнопка: подпись и знак — стрелка «открыть» или «скачать».
 
     Без адреса кнопка рисуется, но не кликается: мёртвая ссылка на «#» хуже,
     она прокручивает страницу наверх.
     """
     tag = "a" if href else "span"
     attrs = f' href="{esc(href)}" target="_blank" rel="noopener"' if href else ""
-    mark = f'<span class="pill__logo" aria-hidden="true">{logo}</span>' if logo else ""
-    cls = "pill pill--primary" if primary else "pill"
-    icon = "pill__download" if primary else "pill__arrow"
-    return (f'<{tag} class="{cls}"{attrs}>{mark}'
+    cls = "pill pill--file" if file else "pill"
+    icon = "pill__download" if file else "pill__arrow"
+    return (f'<{tag} class="{cls}"{attrs}>'
             f'<span class="pill__text">{label(text)}'
             f'<span class="{icon}" aria-hidden="true"></span></span></{tag}>')
 
@@ -437,7 +429,7 @@ def render_blocks(blocks):
             out.append(render_video(b))
         elif t == "p" and as_button(b):
             href, text = as_button(b)
-            out.append(render_pill(href, text, primary=True))
+            out.append(render_pill(href, text, file=True))
         elif t == "p":
             # внутри разделов абзацы обычные: в макете подзаголовочная строка
             # набрана тем же Regular, что и остальной текст. Лид — только один,
@@ -567,7 +559,7 @@ def render_page(page):
     # там строку ломает уже сам сервис
     description = unbreak(intro["lead"] or "", keep=False)[:160]
 
-    figma_button = render_pill(FIGMA_LINKS.get(page["slug"], ""), "Макеты в Figma", FIGMA_LOGO)
+    figma_button = render_pill(FIGMA_LINKS.get(page["slug"], ""), "Макеты в Figma")
 
     return f"""<!DOCTYPE html>
 <html lang="ru" data-theme="dark">

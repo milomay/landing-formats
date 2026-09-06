@@ -540,28 +540,31 @@ img {
   margin: 0 0 40px;
 }
 
-/* Кнопка «в Figma» под заголовком — компонент из макета (497:19382):
-   пилюля с подписью и стрелкой «открыть в новом окне». Логотип сервиса
-   необязателен: у кнопки в Figma он есть, у ссылки на файл — нет. */
+/* Кнопка — компонент из макетов 522:3997 и 520:3983. Обе кнопки главные:
+   заливка градиентом от брендового оранжевого к золотому, и весь переход
+   уложен в последнюю треть, поэтому золото светится только у нижнего правого
+   угла. Отбивки слева 24, справа 20: знак у правого края и так широкий.
+
+   Высоту держим минимумом, а не вертикальными отбивками: строка внутри бывает
+   и 20, и 24 — от размера знака, — а кнопка всегда 48. */
 .pill {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   margin: 0;
   flex: none;
-  /* высоту строки гасим: у кнопки она своя, от заголовка ей ничего не нужно */
-  line-height: 18px;
-  /* 14 и 20 из макета 518:3856; со строкой 20 это даёт высоту кнопки 48 */
-  padding: 14px 20px;
-  background: var(--surface-card); /* Fill/Ten */
+  min-height: 48px;
+  padding: 0 20px 0 24px;
+  background: linear-gradient(to bottom right, #ff5500 0%, #ff5500 70%, #d6bb00 100%);
   border: 0;
   border-radius: 100px;
-  color: var(--text-strong);
+  color: #ffffff;
   font-size: 15px;
   line-height: 18px;
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 /* в тексте кнопка стоит отдельной строкой и просит воздуха вокруг;
@@ -570,25 +573,19 @@ img {
   margin: 8px 0 16px;
 }
 
-/* это кнопка, а не ссылка в тексте — базовый стиль ссылок гасим */
+/* это кнопка, а не ссылка в тексте — базовый стиль ссылок гасим.
+   Подпись белая в обеих темах: заливка под ней оранжевая всегда. */
 .main a.pill,
 .main a.pill:hover,
 .main a.pill:focus-visible {
-  color: var(--text-strong);
+  color: #ffffff;
   text-decoration: none;
 }
 
+/* заливка градиентная, подсветить её ступенью шкалы нельзя — на ховере
+   кнопка только подрастает */
 .pill:hover {
-  background: var(--surface-card-hover);
-  transform: scale(1.015);
-}
-
-.pill__logo,
-.pill__logo svg {
-  display: block;
-  flex-shrink: 0;
-  width: 13px;
-  height: 20px;
+  transform: scale(1.05);
 }
 
 .pill__text {
@@ -597,52 +594,32 @@ img {
   gap: 6px;
 }
 
-/* стрелка идёт маской, чтобы брать цвет подписи, а не белый из файла.
-   Выключку не правим: строка 18, знак 20, ряд центрирует их сам. */
-/* Главная кнопка — по макету 520:3983: заливка градиентом от брендового
-   оранжевого к золотому, и он весь уложен в последнюю треть, поэтому золото
-   светится только у нижнего правого угла. Отбивки тут свои: слева 24, справа
-   20 — знак у правого края шире подписи и требует меньше воздуха. */
-.pill--primary {
-  padding: 12px 20px 12px 24px;
-  background: linear-gradient(to bottom right, #ff5500 0%, #ff5500 70%, #d6bb00 100%);
-  color: #ffffff;
+/* Кнопка со скачиванием: знак крупнее, поэтому и промежуток до него шире.
+   Высота от этого не меняется — её держит min-height. */
+.pill--file .pill__text {
+  gap: 8px;
   line-height: 20px;
 }
 
-/* знак стоит в одной строке с подписью, поэтому промежуток задаём ей */
-.pill--primary .pill__text {
-  gap: 8px;
-}
-
-.main a.pill--primary,
-.main a.pill--primary:hover,
-.main a.pill--primary:focus-visible {
-  color: #ffffff;
-}
-
-/* заливка градиентная, подсветить её ступенью шкалы нельзя — на ховере
-   кнопка только подрастает */
-.pill--primary:hover {
-  background: linear-gradient(to bottom right, #ff5500 0%, #ff5500 70%, #d6bb00 100%);
-}
-
+/* знаки идут масками, чтобы брать цвет подписи, а не белый из файла */
+.pill__arrow,
 .pill__download {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
   background: currentColor;
-  -webkit-mask: var(--icon-download) center / 24px 24px no-repeat;
-  mask: var(--icon-download) center / 24px 24px no-repeat;
 }
 
 .pill__arrow {
-  flex-shrink: 0;
   width: 20px;
   height: 20px;
-  background: currentColor;
   -webkit-mask: var(--icon-open-new) center / 20px 20px no-repeat;
   mask: var(--icon-open-new) center / 20px 20px no-repeat;
+}
+
+.pill__download {
+  width: 24px;
+  height: 24px;
+  -webkit-mask: var(--icon-download) center / 24px 24px no-repeat;
+  mask: var(--icon-download) center / 24px 24px no-repeat;
 }
 
 /* --- бенто ------------------------------------------------------------ */
