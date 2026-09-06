@@ -584,8 +584,10 @@ def render_page(page):
     <main class="main">
       <nav class="breadcrumbs">{crumbs}</nav>
       <div class="intro" id="{intro_id}">
-        <h1 class="page-title">{label(intro["title"])}</h1>
-        {figma_button}
+        <div class="page-head">
+          <h1 class="page-title">{label(intro["title"])}</h1>
+          {figma_button}
+        </div>
         <p class="lead">{label(intro["lead"])}</p>
         {intro_html}
       </div>
