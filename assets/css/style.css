@@ -861,27 +861,10 @@ figure img {
   background-clip: padding-box;
 }
 
-/* Подпись сидит на плашке, приклеенной к низу кадра, — как в доке Shopify.
-   Кадр и подпись становятся одним блоком, поэтому обводку и скругление
-   переносим на figure, а картинке оставляем прямые углы: иначе её углы
-   просвечивали бы поверх плашки. */
-figure:has(figcaption) {
-  overflow: hidden;
-  border: 1px solid var(--border-media);
-  border-radius: 8px;
-  /* заливка на всей карточке, а не только под подписью: так у Shopify, и так
-     плашка не разъедется, если подпись однажды окажется уже кадра */
-  background: var(--surface-card);
-}
-
-figure:has(figcaption) img {
-  border: 0;
-  border-radius: 0;
-}
-
-/* 16 по кругу — отбивка подписи из их сетки примеров */
+/* Подпись стоит под кадром сама по себе, без плашки: 8 до кадра — столько же,
+   сколько между самими кадрами в ряду, так подпись явно принадлежит своему. */
 figcaption {
-  padding: 16px;
+  margin-top: 8px;
   font-size: 14px;
   line-height: 20px;
   color: var(--text);
