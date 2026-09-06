@@ -109,6 +109,22 @@
   --gap: 88px;
   /* поля полосы справа от меню — те же 48, что у Shopify */
   --rail-pad: 48px;
+
+  /* Скругления: шкала с шагом вдвое, три ступени и две формы. Ступень
+     выбирается не по вкусу, а по роли коробки — чем крупнее и самостоятельнее
+     блок, тем больше радиус:
+       item    — то, что лежит внутри плашки и подсвечивается по наведению;
+       surface — подложки и медиа: они держат фон, но своим блоком не читаются;
+       block   — самостоятельный блок в потоке текста (плашка, таблица, карточка).
+     pill — всё, что должно быть скруглено полностью: кнопка и полоски-метки;
+     радиус заведомо больше половины короткой стороны, браузер сам подрежет.
+     Кружкам (маркеры списков, круглые кнопки) ставим 50% — это форма, а не
+     ступень шкалы, в токен она не выносится. Новых значений не заводим:
+     если что-то не ложится на шкалу — сначала проверяем роль коробки. */
+  --radius-item: 4px;
+  --radius-surface: 8px;
+  --radius-block: 16px;
+  --radius-pill: 100px;
 }
 
 *,
@@ -289,7 +305,7 @@ img {
      заскроллится сама колонка */
   flex: 1;
   background: var(--surface-card);
-  border-radius: 8px;
+  border-radius: var(--radius-surface);
   padding: 8px 8px 12px;
 }
 
@@ -318,7 +334,7 @@ img {
   margin: 0;
   background: var(--surface-card-solid);
   border: 0;
-  border-radius: 4px;
+  border-radius: var(--radius-item);
   text-align: left;
   cursor: pointer;
   font-family: inherit;
@@ -386,7 +402,7 @@ img {
   position: relative;
   display: block;
   padding: 4px 4px 4px 36px;
-  border-radius: 4px;
+  border-radius: var(--radius-item);
   border: 0;
   font-size: 14px;
   line-height: 20px;
@@ -415,7 +431,7 @@ img {
   left: 4px;
   width: 3px;
   height: 20px;
-  border-radius: 2px;
+  border-radius: var(--radius-pill);
   background: var(--accent);
 }
 
@@ -480,7 +496,7 @@ img {
   /* та же толщина, что у полосы текущей страницы в левом меню */
   width: 3px;
   height: 0;
-  border-radius: 2px;
+  border-radius: var(--radius-pill);
   background: var(--accent);
   transition: top 0.2s ease-out, height 0.2s ease-out;
 }
@@ -558,7 +574,7 @@ img {
   padding: 0 20px 0 24px;
   background: linear-gradient(to bottom right, #ff5500 0%, #ff5500 70%, #d6bb00 100%);
   border: 0;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   color: #ffffff;
   font-size: 15px;
   line-height: 18px;
@@ -633,7 +649,7 @@ img {
 
 .bento__card {
   background: var(--surface-card);
-  border-radius: 16px;
+  border-radius: var(--radius-block);
   padding: 20px;
 }
 
@@ -841,7 +857,7 @@ figure {
    с роликом: рамка отделяет кадр от фона, когда края картинки светлые
    в светлой теме или тёмные в тёмной */
 figure img {
-  border-radius: 8px;
+  border-radius: var(--radius-surface);
   border: 1px solid var(--border-media);
   width: 100%;
 }
@@ -1069,7 +1085,7 @@ figcaption {
   max-height: calc(100vh - 80px);
   /* кадр не тянем: ролик другой пропорции ляжет в рамку с полями */
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: var(--radius-surface);
   background: #000;
   transform: scale(0.96);
   transition: transform 0.3s ease;
@@ -1111,7 +1127,7 @@ figcaption {
   margin: 24px 0;
   overflow: auto;
   border: 1px solid var(--border-soft);
-  border-radius: 12px;
+  border-radius: var(--radius-block);
 }
 
 .spec-table {
@@ -1238,7 +1254,7 @@ figcaption {
      и текст не должен заезжать под неё */
   padding: 20px 56px 20px 20px;
   border: 1px solid var(--border-soft);
-  border-radius: 16px;
+  border-radius: var(--radius-block);
 }
 
 /* два класса в селекторе, чтобы перебить `.section ul` — иначе список тащит
@@ -1289,7 +1305,7 @@ figcaption {
   padding: 0;
   background: none;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-surface);
   color: var(--text-muted);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
@@ -1335,7 +1351,7 @@ figcaption {
      материалом */
   background: var(--surface-card);
   border: 0;
-  border-radius: 12px;
+  border-radius: var(--radius-block);
   padding: 16px 20px;
   margin: 24px 0;
   font-size: 16px;
@@ -1523,7 +1539,7 @@ figcaption {
   background: var(--surface-card);
   color: var(--text-strong);
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--radius-surface);
   padding: 10px 14px;
   font: inherit;
   font-size: 15px;
