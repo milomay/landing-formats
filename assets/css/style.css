@@ -869,6 +869,9 @@ figure:has(figcaption) {
   overflow: hidden;
   border: 1px solid var(--border-media);
   border-radius: 8px;
+  /* заливка на всей карточке, а не только под подписью: так у Shopify, и так
+     плашка не разъедется, если подпись однажды окажется уже кадра */
+  background: var(--surface-card);
 }
 
 figure:has(figcaption) img {
@@ -876,18 +879,24 @@ figure:has(figcaption) img {
   border-radius: 0;
 }
 
+/* 16 по кругу — отбивка подписи из их сетки примеров */
 figcaption {
-  padding: 14px 16px;
-  background: var(--surface-card);
+  padding: 16px;
   font-size: 14px;
   line-height: 20px;
   color: var(--text);
 }
 
+/* Кадры идут по двое в ряд, промежуток 20 — как в сетке примеров у Shopify.
+   С подписью под каждым плитка стала выше и содержательнее, и втроём
+   в колонке 760 они мельчали.
+   align-items: start, чтобы плитка без подписи не растягивалась под соседку
+   с подписью и не показывала пустую полосу заливки. */
 .video-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: start;
+  gap: 20px;
   margin: 24px 0;
 }
 
