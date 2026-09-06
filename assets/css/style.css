@@ -1000,24 +1000,21 @@ figcaption {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Крупный ролик подрастает так же, как плитки. Ховер вешаем на весь кадр,
-   а не на кнопку: пока файл не залит, кнопки в разметке нет, а карточка
-   всё равно должна отзываться. Внутренний масштаб при этом гасим, иначе
-   кадр с кнопкой увеличится дважды. */
-.video--wide {
+/* Крупный ролик подрастает так же, как плитки, но растёт только кадр:
+   подпись под ним остаётся на месте. Ховер ловим на всей карточке, а не на
+   кнопке: пока файл не залит, кнопки в разметке нет, — а увеличиваем то, что
+   внутри. */
+.video--wide .video__open,
+.video--wide .video__frame {
   transition: transform 0.3s ease;
 }
 
-.video--wide:hover,
-.video--wide:focus-within {
+.video--wide:hover .video__open,
+.video--wide:focus-within .video__open,
+.video--wide:hover .video__frame {
   /* 1.01, а не 1.02, как у плиток: кадр втрое шире, и те же проценты
      дают втрое больший скачок в пикселях */
   transform: scale(1.01);
-}
-
-.video--wide .video__open:hover,
-.video--wide .video__open:focus-visible {
-  transform: none;
 }
 
 .video--wide:hover .video__play {
