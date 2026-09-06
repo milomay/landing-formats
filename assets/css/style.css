@@ -8,6 +8,7 @@
   --icon-play: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M14 8L4 13.75V2.25L14 8Z" fill="black"/></svg>');
   --icon-dropdown: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><path d="M10.1748 3.69824L10.5986 4.12402L6.42285 8.27344L6 8.69434L5.57715 8.27344L1.40234 4.12402L2.24805 3.27246L6 7.00195L9.75195 3.27246L10.1748 3.69824Z" fill="black"/></svg>');
   --icon-open-new: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M16.3325 15.5078H14.3325V7.08887L4.9975 16.4238L3.58344 15.0098L12.9184 5.6748H4.49847V3.6748L16.3325 3.6748V15.5078Z" fill="black"/></svg>');
+  --icon-download: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.4999 20.7002H3.49988V18.2998H20.4999V20.7002ZM13.2001 9H18.9999L11.9999 15.75L4.99988 9H10.7997V1.5H13.2001V9Z" fill="black"/></svg>');
   --icon-anchor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M11.8652 8.16699C13.9502 10.252 13.951 13.6336 11.8662 15.7188L11.6152 15.9688L11.415 16.1592C9.31909 18.0524 6.08326 17.9885 4.06348 15.9688L3.87402 15.7705C1.98516 13.6799 2.04397 10.4546 4.04883 8.43359L5.46289 9.84766C4.17434 11.1528 4.17897 13.2558 5.47754 14.5547C6.78159 15.8587 8.89712 15.8587 10.2012 14.5547L10.4512 14.3037C11.7548 12.9998 11.7547 10.886 10.4512 9.58203C10.4266 9.5575 10.4011 9.53337 10.376 9.50977L11.791 8.09473C11.8158 8.11862 11.8408 8.14253 11.8652 8.16699ZM8.40625 3.87402C10.502 1.98061 13.7379 2.04402 15.7578 4.06348L15.9473 4.2627C17.8362 6.35334 17.7775 9.57866 15.7725 11.5996L14.3584 10.1855C15.6471 8.88041 15.6424 6.7775 14.3438 5.47852C13.0397 4.17446 10.9251 4.17446 9.62109 5.47852L9.37012 5.72852C8.06633 7.03259 8.06713 9.14721 9.37109 10.4512C9.3956 10.4757 9.42024 10.4999 9.44531 10.5234L8.03027 11.9385C8.00545 11.9146 7.9815 11.8897 7.95703 11.8652C5.87202 9.78022 5.87121 6.39958 7.95605 4.31445L8.20703 4.06348L8.40625 3.87402Z" fill="black"/></svg>');
 }
 
@@ -540,14 +541,16 @@ img {
 }
 
 /* Кнопка «в Figma» под заголовком — компонент из макета (497:19382):
-   пилюля с логотипом, подписью и стрелкой «открыть в новом окне».
-   Отбивки внутри несимметричные, как в макете: слева 26, справа 22. */
-.figma-link {
+   пилюля с подписью и стрелкой «открыть в новом окне». Логотип сервиса
+   необязателен: у кнопки в Figma он есть, у ссылки на файл — нет. */
+.pill {
   display: inline-flex;
   align-items: center;
   gap: 12px;
   margin: 0;
   flex: none;
+  /* высоту строки гасим: у кнопки она своя, от заголовка ей ничего не нужно */
+  line-height: 18px;
   /* 14 и 20 из макета 518:3856; со строкой 20 это даёт высоту кнопки 48 */
   padding: 14px 20px;
   background: var(--surface-card); /* Fill/Ten */
@@ -561,28 +564,34 @@ img {
   transition: background 0.3s ease, transform 0.3s ease;
 }
 
+/* в тексте кнопка стоит отдельной строкой и просит воздуха вокруг;
+   в шапке страницы отбивки ей задаёт ряд с заголовком */
+.section .pill {
+  margin: 8px 0 16px;
+}
+
 /* это кнопка, а не ссылка в тексте — базовый стиль ссылок гасим */
-.main a.figma-link,
-.main a.figma-link:hover,
-.main a.figma-link:focus-visible {
+.main a.pill,
+.main a.pill:hover,
+.main a.pill:focus-visible {
   color: var(--text-strong);
   text-decoration: none;
 }
 
-.figma-link:hover {
+.pill:hover {
   background: var(--surface-card-hover);
-  transform: scale(1.005);
+  transform: scale(1.009);
 }
 
-.figma-link__logo,
-.figma-link__logo svg {
+.pill__logo,
+.pill__logo svg {
   display: block;
   flex-shrink: 0;
   width: 13px;
   height: 20px;
 }
 
-.figma-link__text {
+.pill__text {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -590,7 +599,44 @@ img {
 
 /* стрелка идёт маской, чтобы брать цвет подписи, а не белый из файла.
    Выключку не правим: строка 18, знак 20, ряд центрирует их сам. */
-.figma-link__arrow {
+/* Главная кнопка — по макету 520:3983: заливка градиентом от брендового
+   оранжевого к золотому, и он весь уложен в последнюю треть, поэтому золото
+   светится только у нижнего правого угла. Отбивки тут свои: слева 24, справа
+   20 — знак у правого края шире подписи и требует меньше воздуха. */
+.pill--primary {
+  padding: 12px 20px 12px 24px;
+  background: linear-gradient(to bottom right, #ff5500 0%, #ff5500 70%, #d6bb00 100%);
+  color: #ffffff;
+  line-height: 20px;
+}
+
+/* знак стоит в одной строке с подписью, поэтому промежуток задаём ей */
+.pill--primary .pill__text {
+  gap: 8px;
+}
+
+.main a.pill--primary,
+.main a.pill--primary:hover,
+.main a.pill--primary:focus-visible {
+  color: #ffffff;
+}
+
+/* заливка градиентная, подсветить её ступенью шкалы нельзя — на ховере
+   кнопка только подрастает */
+.pill--primary:hover {
+  background: linear-gradient(to bottom right, #ff5500 0%, #ff5500 70%, #d6bb00 100%);
+}
+
+.pill__download {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background: currentColor;
+  -webkit-mask: var(--icon-download) center / 24px 24px no-repeat;
+  mask: var(--icon-download) center / 24px 24px no-repeat;
+}
+
+.pill__arrow {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
@@ -998,7 +1044,7 @@ figcaption {
   .video--wide,
   .theme-switch,
   .theme-switch svg,
-  .figma-link,
+  .pill,
   .lightbox,
   .lightbox video {
     transition: none;
@@ -1008,7 +1054,7 @@ figcaption {
   .video__open:focus-visible,
   .video--wide:hover,
   .video--wide:focus-within,
-  .figma-link:hover,
+  .pill:hover,
   .lightbox video {
     transform: none;
   }
