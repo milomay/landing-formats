@@ -532,7 +532,7 @@ def render_page(page):
     figma_button = (
         f'<{tag} class="figma-link"{attrs}>'
         f'<span class="figma-link__logo" aria-hidden="true">{FIGMA_LOGO}</span>'
-        f'<span class="figma-link__text">{label(intro["title"] + " в Figma")}'
+        f'<span class="figma-link__text">{label("Макеты в Figma")}'
         f'<span class="figma-link__arrow" aria-hidden="true"></span></span>'
         f'</{tag}>')
 
