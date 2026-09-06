@@ -1384,9 +1384,12 @@ figcaption {
   border-color: var(--border-allow);
 }
 
-/* Метку всей плашки несёт заголовок: значок 20 и слово одним цветом.
-   Правило общее для всех плашек разрешений и запретов — и в паре, и когда
-   плашка стоит одна: иначе рядом на странице у них расходится оформление. */
+/* Метку всей плашки несёт значок перед заголовком. Само слово белое, как
+   в любой другой плашке: цветными остаются только знак, заливка и рамка —
+   их достаточно, чтобы отличить разрешение от запрета, а цветной заголовок
+   выбивался из ряда заголовков на странице.
+   Правило общее и для пары, и для одиночной плашки: иначе рядом на странице
+   у них расходится оформление. */
 .note--allow h3,
 .note--deny h3 {
   display: flex;
@@ -1400,20 +1403,16 @@ figcaption {
   flex: none;
   width: 20px;
   height: 20px;
-  background: currentColor;
   -webkit-mask: var(--icon-check) center / 20px 20px no-repeat;
   mask: var(--icon-check) center / 20px 20px no-repeat;
 }
 
-.note--allow h3 {
-  color: var(--text-allow);
-}
-
-.note--deny h3 {
-  color: var(--text-deny);
+.note--allow h3::before {
+  background: var(--text-allow);
 }
 
 .note--deny h3::before {
+  background: var(--text-deny);
   -webkit-mask-image: var(--icon-cross);
   mask-image: var(--icon-cross);
 }
