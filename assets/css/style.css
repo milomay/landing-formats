@@ -790,36 +790,6 @@ img {
   background: var(--text-muted);
 }
 
-/* Список запретов и разрешений: вместо кружка — крестик или галочка. Признак
-   приходит из макета значком в начале заголовка, сам значок в текст не идёт. */
-.section ul.deny li::before,
-.section ul.allow li::before {
-  border-radius: 0;
-}
-
-.section ul.deny li::before {
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  top: calc((1lh - 16px) / 2);
-  background: var(--text-deny);
-  -webkit-mask: var(--icon-cross) center / 16px 16px no-repeat;
-  mask: var(--icon-cross) center / 16px 16px no-repeat;
-}
-
-/* галочка та же, что в чек-листе: рисуем двумя гранями, отдельного вектора нет */
-.section ul.allow li::before {
-  left: 4px;
-  width: 11px;
-  height: 6px;
-  top: calc((1lh - 6px) / 2 - 2px);
-  background: none;
-  /* тем же тоном, что иконка «скопировать» рядом: галочка — маркер, а не текст */
-  border-left: 2px solid var(--text-muted);
-  border-bottom: 2px solid var(--text-muted);
-  transform: rotate(-45deg);
-}
-
 .divider {
   border: 0;
   border-top: 1px solid var(--border-soft);
@@ -1421,12 +1391,6 @@ figcaption {
 
 .note ul li::before {
   left: 0;
-}
-
-/* крестик шире точки втрое — этой строке нужна своя втяжка,
-   иначе знак упирается в первую букву */
-.note ul.deny li {
-  padding-left: 24px;
 }
 
 .note ul {

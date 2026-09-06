@@ -294,8 +294,9 @@ def mark_lists(blocks):
     """Заголовок со значком и блок под ним — одна пометка: ✅ или ❌.
 
     Собираем их в один блок с заголовком и содержимым: дальше `pair_marks`
-    решит, встанут они рядом или пойдут по одному. Маркеры списка меняем
-    здесь же — галочки у разрешённого, крестики у запрещённого.
+    решит, встанут они рядом или пойдут по одному. Маркеры пунктов при этом
+    остаются обычными: метку несёт значок в заголовке плашки, повторять её
+    в каждой строке незачем.
     """
     out, i = [], 0
     while i < len(blocks):
@@ -310,9 +311,6 @@ def mark_lists(blocks):
         title = text[len(mark):].lstrip()
         kind = MARKS[mark]
         nxt = blocks[i + 1] if i + 1 < len(blocks) else None
-        if nxt and nxt.get("type") == "ul":
-            nxt = dict(nxt, variant=kind)
-
         if nxt:
             out.append({"type": kind, "title": title, "blocks": [nxt]})
             i += 2
@@ -321,12 +319,6 @@ def mark_lists(blocks):
         out.append(dict(b, text=title))
         i += 1
     return out
-
-
-def plain(card):
-    """Тот же блок, но со списками без галочек и крестиков в маркерах."""
-    return dict(card, blocks=[{k: v for k, v in b.items() if k != "variant"}
-                              for b in card["blocks"]])
 
 
 def pair_marks(blocks):
@@ -342,9 +334,7 @@ def pair_marks(blocks):
         b = blocks[i]
         nxt = blocks[i + 1] if i + 1 < len(blocks) else None
         if b.get("type") == "allow" and nxt and nxt.get("type") == "deny":
-            # в паре метку несёт заголовок плашки, поэтому галочки и крестики
-            # из маркеров списка убираем — иначе она повторяется в каждой строке
-            out.append({"type": "do-dont", "cols": [plain(b), plain(nxt)]})
+            out.append({"type": "do-dont", "cols": [b, nxt]})
             i += 2
             continue
         out.append(b)
