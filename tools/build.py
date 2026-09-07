@@ -119,6 +119,14 @@ DROPPED_CARDS = {
     "В центре внимания",
 }
 
+# Переписанные подписи карточек — ключ по числу из макета, каким оно там
+# записано. Тоже здесь, а не в content.json, по той же причине: он
+# перевыгружается целиком.
+CARD_BODIES = {
+    "25 730 000": "уникальных пользователей",
+    "8 819 000": "Пользователей стали ждать проекты после просмотра прероллов",
+}
+
 
 def esc(s):
     return html.escape(str(s), quote=False)
@@ -537,7 +545,7 @@ def render_blocks(blocks):
             if kept:
                 cards = "".join(
                     f'<div class="bento__card"><p class="bento__title">{label(millions(c["title"]))}</p>'
-                    f'<p class="bento__body">{label(c["body"])}</p></div>'
+                    f'<p class="bento__body">{label(CARD_BODIES.get(c["title"], c["body"]))}</p></div>'
                     for c in kept)
                 out.append(f'<div class="bento">{cards}</div>')
                 # подпись идёт с блоком всегда: нижнюю отбивку карточек
