@@ -591,11 +591,19 @@ def render_page(page):
   </script>
   <title>{esc(intro["title"])} — Лендинг форматов</title>
   <meta name="description" content="{esc(description)}">
-  <meta name="theme-color" content="#12110c" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta property="og:title" content="{esc(intro["title"])} — гайд по формату">
   <meta property="og:description" content="{esc(description)}">
   <meta property="og:type" content="article">
+  <!-- Иконка вкладки. Вектор понимают все актуальные браузеры, ico оставлен
+       запасным для старых, apple-touch-icon — для плитки на домашнем экране
+       iOS. Порядок важен: из подходящих ему rel="icon" браузер берёт
+       последний, поэтому ico идёт раньше svg. Версия по содержимому нужна
+       и здесь — иконку браузеры кешируют особенно упрямо. -->
+  <link rel="icon" href="{asset_url("assets/img/favicon.ico")}" sizes="48x48">
+  <link rel="icon" href="{asset_url("assets/img/favicon.svg")}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{asset_url("assets/img/apple-touch-icon.png")}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@400;500&amp;display=swap">
