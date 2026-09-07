@@ -32,8 +32,10 @@ CONTEXT = {
     "--border-soft": "page",
     "--border-media": "page",
     "--border-button": "card",
+    "--surface-button": "page",
 }
-FAMILY = {"--surface-card": "заливка", "--surface-card-hover": "заливка"}
+FAMILY = {"--surface-card": "заливка", "--surface-card-hover": "заливка",
+          "--surface-button": "заливка"}
 
 
 def parse(block):
