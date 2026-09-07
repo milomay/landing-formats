@@ -159,6 +159,30 @@ def typography(text, breaks=True):
     return DASH.sub("\u00a0\\1", text)
 
 
+# Крупное число на карточке читается по цифрам: «25 730 000» глаз разбирает
+# разряд за разрядом, «25,7 млн» схватывает целиком. Округляем до десятых —
+# точность до единиц в таком показателе всё равно ничего не значит.
+# Хвост вроде «+» сохраняем: он часть утверждения, а не оформление.
+MILLION = re.compile(r"^(\d[\d\s  ]*\d)\s*(\+?)$")
+
+
+def millions(text):
+    """«2 000 000+» → «2 млн+». Не число или меньше миллиона — вернём как есть."""
+    m = MILLION.match(str(text).strip())
+    if not m:
+        return text
+    digits = re.sub(r"[\s  ]", "", m.group(1))
+    if int(digits) < 1_000_000:
+        return text
+    num = f"{int(digits) / 1_000_000:.1f}"
+    # ноль в дробной части не пишем, но обрезаем именно его: у «20.0»
+    # простой rstrip('0') съел бы и значащий ноль целой части
+    if num.endswith(".0"):
+        num = num[:-2]
+    # неразрывный пробел: «млн» не должен уезжать от числа на другую строку
+    return f'{num.replace(".", ",")} млн{m.group(2)}'
+
+
 def label(text):
     """Заголовок, пункт меню или подпись: экранирование плюс типографика.
 
@@ -492,7 +516,7 @@ def render_blocks(blocks):
             out.append(f'<figure>{img_tag(img_src(b["img"]))}{cap}</figure>')
         elif t == "bento":
             cards = "".join(
-                f'<div class="bento__card"><p class="bento__title">{label(c["title"])}</p>'
+                f'<div class="bento__card"><p class="bento__title">{label(millions(c["title"]))}</p>'
                 f'<p class="bento__body">{label(c["body"])}</p></div>'
                 for c in b["cards"])
             out.append(f'<div class="bento">{cards}</div>')
