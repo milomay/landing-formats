@@ -15,6 +15,7 @@ SVG-иконку понимают все актуальные браузеры, 
 """
 
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -70,8 +71,13 @@ def main():
     print(f"собрано: {ico.relative_to(ROOT)} ({', '.join(str(s) for s in ICO_SIZES)})")
 
     touch = render(svg, TOUCH_SIZE, square=True)
-    # прозрачность iOS не поддерживает и подкладывает чёрное — кладём фон сами
-    flat = Image.new("RGB", touch.size, "#FF5500")
+    # прозрачность iOS не поддерживает и подкладывает своё — кладём фон сами.
+    # Цвет не дублируем: берём заливку плитки из самого вектора, иначе при
+    # смене цвета иконки плитка для iOS осталась бы прежней
+    tile = re.search(r'<rect[^>]*fill="(#[0-9A-Fa-f]{3,8})"', svg)
+    if not tile:
+        sys.exit("не нашла заливку плитки в favicon.svg")
+    flat = Image.new("RGB", touch.size, tile.group(1))
     flat.paste(touch, mask=touch.split()[3])
     png = ROOT / "assets" / "img" / "apple-touch-icon.png"
     flat.save(png, format="PNG")
