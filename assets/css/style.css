@@ -664,7 +664,19 @@ img {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin: 40px 0;
+  /* снизу только 12 — до подписи с периодом. Отбивку от следующего блока
+     держит она, и генератор ставит её после каждого набора карточек */
+  margin: 40px 0 12px;
+}
+
+/* Период относится ко всем карточкам сразу, поэтому стоит под блоком,
+   а не в каждой. Кегль подписи внутри карточки — она того же порядка,
+   служебное уточнение, а не содержание. */
+.bento__period {
+  margin: 0 0 40px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-muted);
 }
 
 .bento__card {
@@ -673,18 +685,25 @@ img {
   padding: 20px;
 }
 
+/* Число в карточке — не заголовок, а показатель: набираем его гротеском
+   и крупно, чтобы читалось цифрой, а не фразой. Антиква тут была бы
+   заголовочной интонацией, а карточки теперь про цифры.
+   14 у подписи против 40 у числа: разрыв должен быть очевидным, иначе
+   подпись спорит с показателем за внимание. */
 .bento__title {
-  font-family: var(--font-display);
-  font-size: 26px;
-  line-height: 32px;
-  /* антиква везде Medium — как в заголовке страницы и названиях глав */
-  font-weight: 500;
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 600;
+  /* цифры одной ширины: иначе соседние карточки выглядят набранными
+     по-разному, хотя кегль у них общий */
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
   color: var(--text-strong);
-  margin: 0 0 8px;
+  margin: 0 0 12px;
 }
 
 .bento__body {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 20px;
   color: var(--text-muted);
   margin: 0;
