@@ -30,6 +30,7 @@ CONTEXT = {
     "--surface-card-hover": "page",
     "--border": "page",
     "--border-soft": "page",
+    "--border-table-head": "page",
     "--border-media": "page",
     "--border-button": "card",
     "--surface-button": "page",
