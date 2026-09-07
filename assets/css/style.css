@@ -41,7 +41,7 @@
   --text: rgba(255, 255, 255, 0.8);
   --text-strong: #f2f2f2;
   --text-muted: rgba(255, 255, 255, 0.6);
-  --border-button: rgba(255, 255, 255, 0.09); /* рамка кнопки и плашки */
+  --border-button: rgba(255, 255, 255, 0.09); /* верх градиентной рамки карточки */
   /* заливка кнопки из макета 520:3983 — 10% белого, без градиента */
   --surface-button: rgba(255, 255, 255, 0.1);
   /* заголовки цветных плашек — тон в полную силу, как в макете 512:3642 */
@@ -660,13 +660,25 @@ img {
    поэтому две карточки делят ряд поровну, три — тоже, и дырки справа не
    остаётся. Раньше число было зашито тройкой, а первая карточка тянулась
    во всю ширину — это работало ровно для одного набора карточек. */
+/* Раскладка из макета 523:6229: первая карточка крупная и занимает всю
+   высоту блока, остальные встают справа стопкой. Ряды считаются сами —
+   карточек может быть и две (тогда ряд один), и три. */
 .bento {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  /* Ряды объявлены явно, иначе первой карточке не на что растянуться:
+     grid-row: 1 / -1 считает только заданные ряды, а по неявным «-1»
+     схлопывается в единицу и растяжка молча не срабатывает.
+     Сколько рядов — знает генератор: их на одну меньше, чем карточек. */
+  grid-template-rows: repeat(var(--bento-rows, 1), 1fr);
+  gap: 8px;
   /* снизу только 12 — до подписи с периодом. Отбивку от следующего блока
      держит она, и генератор ставит её после каждого набора карточек */
   margin: 40px 0 12px;
+}
+
+.bento__card:first-child {
+  grid-row: 1 / -1;
 }
 
 /* Период относится ко всем карточкам сразу, поэтому стоит под блоком,
@@ -680,31 +692,69 @@ img {
 }
 
 .bento__card {
+  position: relative;
   background: var(--surface-card);
   border-radius: var(--radius-block);
-  padding: 20px;
+  padding: 16px;
 }
 
-/* Число в карточке — не заголовок, а показатель: набираем его гротеском
-   и крупно, чтобы читалось цифрой, а не фразой. Антиква тут была бы
-   заголовочной интонацией, а карточки теперь про цифры.
-   14 у подписи против 40 у числа: разрыв должен быть очевидным, иначе
-   подпись спорит с показателем за внимание. */
+/* Обводка карточки из макета — не ровная линия, а градиент: сверху 9%
+   светлого, книзу в ноль, будто на грань падает свет. Градиентную рамку
+   CSS не умеет задать напрямую, поэтому рисуем слой поверх и вырезаем
+   из него середину маской: остаётся ровно рамка в 1px по тому же радиусу. */
+.bento__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to bottom, var(--border-button), transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Число и его единица — разного кегля, но на одной базовой линии: в макете
+   они лежат в ряду, выровненном по низу, а разница интерлиньяжей и даёт
+   ту самую посадку. Поэтому интерлиньяж здесь не оформление, а механика —
+   менять только парой с единицей. */
 .bento__title {
-  font-size: 40px;
-  line-height: 44px;
-  font-weight: 600;
-  /* цифры одной ширины: иначе соседние карточки выглядят набранными
-     по-разному, хотя кегль у них общий */
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 54px;
+  font-weight: 500;
   color: var(--text-strong);
-  margin: 0 0 12px;
+  margin: 0 0 8px;
+}
+
+.bento__unit {
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+/* Крупная карточка: то же самое, но вдвое больше. Единица держит свой
+   кегль 26 — растёт только само число. Отбивки под числом нет: её заменяет
+   собственный интерлиньяж строки в 96. */
+.bento__card:first-child .bento__title {
+  font-size: 80px;
+  line-height: 96px;
+  gap: 0;
+  margin-bottom: 0;
+}
+
+.bento__card:first-child .bento__unit {
+  line-height: 58px;
 }
 
 .bento__body {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 15px;
+  line-height: 18px;
   color: var(--text-muted);
   margin: 0;
 }
@@ -1574,6 +1624,10 @@ figcaption {
   .video-row,
   .do-dont {
     grid-template-columns: 1fr;
+  }
+  /* в одну колонку тянуть первую карточку не на что */
+  .bento__card:first-child {
+    grid-row: auto;
   }
   .spec-table td:first-child {
     width: 40%;

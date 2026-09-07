@@ -207,6 +207,21 @@ def millions(text):
     return f'{num.replace(".", ",")} млн{m.group(2)}'
 
 
+# Единица при числе набирается мельче и на общей с ним базовой линии, поэтому
+# её надо отделить от самого числа. Отделяем только там, где строка с цифры
+# и начинается: «CTR >1%» — это подпись, а не показатель с единицей, её
+# оставляем целиком.
+NUM_UNIT = re.compile(r"^([\d.,\u00a0 ]*\d)[\u00a0 ]*(.*)$")
+
+
+def split_unit(text):
+    """«25,7 млн» → («25,7», «млн»). Не показатель — вся строка числом."""
+    m = NUM_UNIT.match(text)
+    if not m or not text[:1].isdigit():
+        return text, ""
+    return m.group(1), m.group(2)
+
+
 def label(text):
     """Заголовок, пункт меню или подпись: экранирование плюс типографика.
 
@@ -545,10 +560,11 @@ def render_blocks(blocks):
                     print(f'  убрала карточку «{c["title"]}»')
             if kept:
                 cards = "".join(
-                    f'<div class="bento__card"><p class="bento__title">{label(millions(c["title"]))}</p>'
-                    f'<p class="bento__body">{label(CARD_BODIES.get(c["title"], c["body"]))}</p></div>'
-                    for c in kept)
-                out.append(f'<div class="bento">{cards}</div>')
+                    render_card(c) for c in kept)
+                # рядов на один меньше, чем карточек: первая занимает всю
+                # высоту, остальные встают справа стопкой
+                rows = max(1, len(kept) - 1)
+                out.append(f'<div class="bento" style="--bento-rows: {rows}">{cards}</div>')
                 # подпись идёт с блоком всегда: нижнюю отбивку карточек
                 # держит она, а не сам .bento — см. комментарий в стилях
                 out.append(f'<p class="bento__period">{label(BENTO_PERIOD)}</p>')
@@ -557,6 +573,16 @@ def render_blocks(blocks):
             pass
         i += 1
     return "\n        ".join(out)
+
+
+def render_card(card):
+    """Карточка показателя: число, единица помельче и подпись под ними."""
+    num, unit = split_unit(millions(card["title"]))
+    unit_html = f'<span class="bento__unit">{label(unit)}</span>' if unit else ""
+    body = CARD_BODIES.get(card["title"], card["body"])
+    return (f'<div class="bento__card">'
+            f'<p class="bento__title"><span>{label(num)}</span>{unit_html}</p>'
+            f'<p class="bento__body">{label(body)}</p></div>')
 
 
 def render_nav(groups, current):
