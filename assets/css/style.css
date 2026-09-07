@@ -681,7 +681,10 @@ img {
   margin: 40px 0 12px;
 }
 
-.bento__card:first-child {
+/* Ведущая карточка есть только там, где рядом стоит стопка: её помечает
+   генератор. Когда карточек всего две, они равны — и по высоте, и по кеглю
+   числа, растягивать первую не на что. */
+.bento__card--lead {
   grid-row: 1 / -1;
 }
 
@@ -742,17 +745,17 @@ img {
   font-weight: 400;
 }
 
-/* Крупная карточка: то же самое, но вдвое больше. Единица держит свой
+/* Ведущая карточка: то же самое, но вдвое больше. Единица держит свой
    кегль 26 — растёт только само число. Отбивки под числом нет: её заменяет
    собственный интерлиньяж строки в 96. */
-.bento__card:first-child .bento__title {
+.bento__card--lead .bento__title {
   font-size: 80px;
   line-height: 96px;
   gap: 0;
   margin-bottom: 0;
 }
 
-.bento__card:first-child .bento__unit {
+.bento__card--lead .bento__unit {
   line-height: 58px;
 }
 
@@ -1634,8 +1637,8 @@ figcaption {
   .do-dont {
     grid-template-columns: 1fr;
   }
-  /* в одну колонку тянуть первую карточку не на что */
-  .bento__card:first-child {
+  /* в одну колонку тянуть ведущую карточку не на что */
+  .bento__card--lead {
     grid-row: auto;
   }
   .spec-table td:first-child {

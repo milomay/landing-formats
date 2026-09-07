@@ -566,11 +566,13 @@ def render_blocks(blocks):
                 if c["title"] in DROPPED_CARDS:
                     print(f'  убрала карточку «{c["title"]}»')
             if kept:
-                cards = "".join(
-                    render_card(c) for c in kept)
                 # рядов на один меньше, чем карточек: первая занимает всю
-                # высоту, остальные встают справа стопкой
+                # высоту, остальные встают справа стопкой. Пока карточек две,
+                # тянуться не на что — и ведущей среди них тоже нет
                 rows = max(1, len(kept) - 1)
+                cards = "".join(
+                    render_card(c, lead=(i == 0 and rows > 1))
+                    for i, c in enumerate(kept))
                 out.append(f'<div class="bento" style="--bento-rows: {rows}">{cards}</div>')
                 # подпись идёт с блоком всегда: нижнюю отбивку карточек
                 # держит она, а не сам .bento — см. комментарий в стилях
@@ -582,12 +584,18 @@ def render_blocks(blocks):
     return "\n        ".join(out)
 
 
-def render_card(card):
-    """Карточка показателя: число, единица помельче и подпись под ними."""
+def render_card(card, lead=False):
+    """Карточка показателя: число, единица помельче и подпись под ними.
+
+    lead — та самая крупная карточка слева во всю высоту блока. Крупной
+    её делает не место в разметке, а то, что рядом стоит стопка: когда
+    карточек всего две, они равны и по высоте, и по кеглю числа.
+    """
     num, unit = split_unit(millions(CARD_TITLES.get(card["title"], card["title"])))
     unit_html = f'<span class="bento__unit">{label(unit)}</span>' if unit else ""
     body = CARD_BODIES.get(card["title"], card["body"])
-    return (f'<div class="bento__card">'
+    cls = "bento__card bento__card--lead" if lead else "bento__card"
+    return (f'<div class="{cls}">'
             f'<p class="bento__title"><span>{label(num)}</span>{unit_html}</p>'
             f'<p class="bento__body">{label(body)}</p></div>')
 
