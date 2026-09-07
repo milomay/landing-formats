@@ -14,12 +14,30 @@ function applyTheme(theme) {
   if (toggle) toggle.setAttribute('aria-checked', String(theme === 'light'));
 }
 
+// Смена темы идёт дольше, чем отклик на наведение: цвет обслуживает оба
+// события, а двух длительностей у одного свойства не бывает. Поэтому на время
+// переключения вешаем на <html> признак — он удлиняет --fade сразу всем
+// переходам, — и снимаем его, когда цвета доехали, иначе следом замедлится и
+// ховер. Длительность берём из самого CSS: число живёт в одном месте, и в
+// режиме «меньше движения», где --fade нулевая, признак снимается сразу.
+let fadeTimer;
+
+function fadeThrough(change) {
+  root.dataset.themeSwitching = '';
+  const ms = (parseFloat(getComputedStyle(root).getPropertyValue('--fade')) || 0) * 1000;
+  change();
+  clearTimeout(fadeTimer);
+  fadeTimer = setTimeout(() => {
+    delete root.dataset.themeSwitching;
+  }, ms);
+}
+
 applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
 
 document.addEventListener('click', (e) => {
   if (!e.target.closest('[data-theme-toggle]')) return;
   const next = root.dataset.theme === 'light' ? 'dark' : 'light';
-  applyTheme(next);
+  fadeThrough(() => applyTheme(next));
   try {
     localStorage.setItem('theme', next);
   } catch (err) {

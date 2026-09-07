@@ -151,6 +151,20 @@
   --radius-surface: 8px;
   --radius-block: 16px;
   --radius-pill: 100px;
+
+  /* Длительность цветовых переходов. Одно и то же свойство — цвет — обслуживает
+     два разных события: отклик на наведение и смену темы. Отклику нужна
+     быстрота, смене темы — плавность, а двух длительностей у одного свойства
+     не бывает. Поэтому длительность держим переменной: пока идёт смена темы,
+     скрипт вешает на <html> признак, и она удлиняется — для всех переходов
+     разом. Ховер при этом остаётся прежним: в момент переключения по элементам
+     не водят мышью. */
+  --fade: 0.2s;
+}
+
+/* признак ставит и снимает applyTheme в assets/js/app.js */
+html[data-theme-switching] {
+  --fade: 0.4s;
 }
 
 *,
@@ -172,12 +186,17 @@ body {
   font-size: 18px;
   line-height: 28px;
   -webkit-font-smoothing: antialiased;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color var(--fade) ease, color var(--fade) ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  /* цветовые переходы гасим одним значением — их длительность вся отсюда */
+  html,
+  html[data-theme-switching] {
+    --fade: 0s;
   }
   /* плашку меню и приклеенный заголовок снимаем с перехода только парой:
      если поедет одна из них, заголовок снова проявится */
@@ -318,6 +337,11 @@ img {
   color: var(--text-strong);
   border: 0;
   margin: 0;
+  /* Своя длительность, а не общая ссылочная: у ссылок 0.15 — это отклик на
+     наведение, а логотип на наведение не отзывается вовсе. Единственное, что
+     меняет его цвет, — смена темы, и уезжать он должен вместе с меню, а не
+     на четверть секунды раньше. */
+  transition: color var(--fade) ease;
 }
 
 .brand svg {
@@ -349,7 +373,7 @@ img {
      поэтому совпадение держится само, без подгонки. Значение снято с
      отрисованной плашки пипеткой, а не посчитано: слои округляют альфу. */
   background: var(--surface-card-solid);
-  transition: background-color 0.2s ease;
+  transition: background-color var(--fade) ease;
   border-radius: var(--radius-surface);
   padding: 8px 8px 12px;
 }
@@ -385,7 +409,7 @@ img {
      прямоугольником. Любая правка цвета или перехода — только парой с
      .nav-groups. */
   background: var(--surface-card-solid);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color var(--fade) ease, color var(--fade) ease;
   border-radius: var(--radius-item);
   font-size: 15px;
   line-height: 20px;
@@ -422,7 +446,7 @@ img {
   font-size: 14px;
   line-height: 20px;
   color: var(--text-muted);
-  transition: color 0.2s linear, background-color 0.2s linear;
+  transition: color var(--fade) linear, background-color var(--fade) linear;
 }
 
 /* по наведению меняется только цвет: плашка закреплена за текущей страницей,
@@ -1686,6 +1710,9 @@ figcaption {
   font-size: 15px;
   margin-bottom: 16px;
   cursor: pointer;
+  /* единственный кусок меню, который менял цвет мгновенно, пока остальное
+     переезжало плавно */
+  transition: background-color var(--fade) ease, color var(--fade) ease;
 }
 
 /* Показываем кнопку меню там же, где прячем сами группы. Правило стоит после
@@ -1716,7 +1743,7 @@ figcaption {
   border: 0;
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color var(--fade) ease;
 }
 
 .theme-switch:hover,
