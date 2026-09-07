@@ -638,14 +638,15 @@ def render_nav(groups, current):
                 rows.append(f'<li><a href="{href}"{cur}>{label(item)}</a></li>')
             else:
                 rows.append(f'<li><a href="#" aria-disabled="true">{label(item)}</a></li>')
-        # шеврон в макете не декорация: группа сворачивается и разворачивается
+        # Список плоский: группы не сворачиваются, названия групп — просто
+        # ярлыки. Кнопки и aria-controls здесь больше нет, поэтому связь
+        # «название → его пункты» держит aria-labelledby: без неё для читалки
+        # это был бы один общий список без деления на разделы.
         gid = "nav-" + slug(g["title"], set())
         parts.append(
             f'<div class="nav-group">'
-            f'<button class="nav-group__title" type="button" data-nav-group'
-            f' aria-expanded="true" aria-controls="{gid}">{label(g["title"])}</button>'
-            f'<div class="nav-group__body" id="{gid}">'
-            f'<ul class="nav-list">{"".join(rows)}</ul></div></div>')
+            f'<p class="nav-group__title" id="{gid}">{label(g["title"])}</p>'
+            f'<ul class="nav-list" aria-labelledby="{gid}">{"".join(rows)}</ul></div>')
     return "\n          ".join(parts)
 
 
