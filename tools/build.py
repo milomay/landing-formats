@@ -497,7 +497,8 @@ def render_blocks(blocks):
                 for c in b["cards"])
             out.append(f'<div class="bento">{cards}</div>')
         elif t == "hr":
-            out.append('<hr class="divider">')
+            # линии-разделители из макета не переносим: разделы разводит воздух
+            pass
         i += 1
     return "\n        ".join(out)
 
@@ -546,14 +547,7 @@ def render_page(page):
 
     body, toc = [], [f'<li><a href="#{intro_id}">Введение</a></li>']
 
-    def drop_trailing_divider():
-        """Линию снимаем там, где разделять уже нечего: перед заголовком главы
-        (новый смысловой блок отбит антиквой) и в самом низу страницы."""
-        if body and body[-1].endswith('<hr class="divider">'):
-            body[-1] = body[-1][: -len('\n      <hr class="divider">')]
-
     for chapter in page["chapters"]:
-        drop_trailing_divider()
         body.append(f'<h2 class="chapter__title">{label(chapter["title"])}</h2>')
         for section in chapter["sections"]:
             sid = slug(section["title"], used)
@@ -563,12 +557,8 @@ def render_page(page):
                 f'        <h2><a class="anchor" href="#{sid}">{label(section["title"])}'
                 f'<span class="anchor__icon" aria-hidden="true"></span></a></h2>\n'
                 f'        {render_blocks(numbered(section))}\n'
-                f'      </section>\n'
-                f'      <hr class="divider">')
+                f'      </section>')
 
-    drop_trailing_divider()
-
-    crumbs = "".join(f"<span>{label(c)}</span>" for c in intro["breadcrumbs"])
     # в описании для поиска и соцсетей переносы из макета не нужны тем более:
     # там строку ломает уже сам сервис
     description = unbreak(intro["lead"] or "", keep=False)[:160]
@@ -629,7 +619,6 @@ def render_page(page):
     </aside>
 
     <main class="main">
-      <nav class="breadcrumbs">{crumbs}</nav>
       <div class="intro" id="{intro_id}">
         <div class="page-head">
           <h1 class="page-title">{label(intro["title"])}</h1>
