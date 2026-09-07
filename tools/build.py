@@ -548,6 +548,9 @@ def render_page(page):
     body, toc = [], [f'<li><a href="#{intro_id}">Введение</a></li>']
 
     for chapter in page["chapters"]:
+        # Линия только здесь, перед заголовком главы: она отбивает крупные
+        # смысловые куски. Разделы внутри главы разводит воздух.
+        body.append('<hr class="divider">')
         body.append(f'<h2 class="chapter__title">{label(chapter["title"])}</h2>')
         for section in chapter["sections"]:
             sid = slug(section["title"], used)
