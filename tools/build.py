@@ -104,6 +104,16 @@ LOGO = (ROOT / "assets" / "img" / "logo-kinopoisk.svg").read_text().strip()
 # Появится адрес — вписать сюда, разметка сама станет ссылкой.
 FIGMA_LINKS = {"preroll": "", "banner": ""}
 
+# Карточки, которые на сайт не идут. Держим списком здесь, а не правкой
+# content.json: он перевыгружается из макета целиком, и правка бы затёрлась.
+# Это карточки-лозунги без числа — рядом с цифрами они читались как заголовок
+# к ним, хотя относятся к разделу целиком.
+DROPPED_CARDS = {
+    "Рост интереса",
+    "Из искателей в зрители",
+    "В центре внимания",
+}
+
 
 def esc(s):
     return html.escape(str(s), quote=False)
@@ -515,11 +525,16 @@ def render_blocks(blocks):
             cap = f'<figcaption>{label(b["caption"])}</figcaption>' if b.get("caption") else ""
             out.append(f'<figure>{img_tag(img_src(b["img"]))}{cap}</figure>')
         elif t == "bento":
-            cards = "".join(
-                f'<div class="bento__card"><p class="bento__title">{label(millions(c["title"]))}</p>'
-                f'<p class="bento__body">{label(c["body"])}</p></div>'
-                for c in b["cards"])
-            out.append(f'<div class="bento">{cards}</div>')
+            kept = [c for c in b["cards"] if c["title"] not in DROPPED_CARDS]
+            for c in b["cards"]:
+                if c["title"] in DROPPED_CARDS:
+                    print(f'  убрала карточку «{c["title"]}»')
+            if kept:
+                cards = "".join(
+                    f'<div class="bento__card"><p class="bento__title">{label(millions(c["title"]))}</p>'
+                    f'<p class="bento__body">{label(c["body"])}</p></div>'
+                    for c in kept)
+                out.append(f'<div class="bento">{cards}</div>')
         elif t == "hr":
             # линии-разделители из макета не переносим: разделы разводит воздух
             pass
