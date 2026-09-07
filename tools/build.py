@@ -587,6 +587,24 @@ def render_blocks(blocks):
     return "\n        ".join(out)
 
 
+# Подпись под числом — не предложение, а продолжение самого показателя:
+# «25,7 млн уникальных пользователей». Поэтому она всегда со строчной буквы,
+# даже если в макете написана с прописной.
+# Исключения: аббревиатуры (CTR, PSD) и имена собственные — их не трогаем.
+PROPER_NOUNS = {"Кинопоиск", "Кинопоиска", "Кинопоиске", "Figma", "Яндекс"}
+
+
+def lower_first(text):
+    """Первую букву — в строчную, если это обычное слово с прописной."""
+    word = text.split(" ", 1)[0].strip("«»\"'(")
+    if word in PROPER_NOUNS:
+        return text
+    # СTR, PSD и прочие аббревиатуры узнаём по второй прописной подряд
+    if len(word) > 1 and word[1].isupper():
+        return text
+    return text[:1].lower() + text[1:]
+
+
 def render_card(card, lead=False):
     """Карточка показателя: число, единица помельче и подпись под ними.
 
@@ -596,7 +614,7 @@ def render_card(card, lead=False):
     """
     num, unit = split_unit(millions(CARD_TITLES.get(card["title"], card["title"])))
     unit_html = f'<span class="bento__unit">{label(unit)}</span>' if unit else ""
-    body = CARD_BODIES.get(card["title"], card["body"])
+    body = lower_first(CARD_BODIES.get(card["title"], card["body"]))
     cls = "bento__card bento__card--lead" if lead else "bento__card"
     return (f'<div class="{cls}">'
             f'<p class="bento__title"><span>{label(num)}</span>{unit_html}</p>'
