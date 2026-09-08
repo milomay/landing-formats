@@ -95,6 +95,11 @@ PAGES = {
 }
 NAV_LINKS = {"Преролл": "index.html", "Баннеры": "banner.html"}
 
+# Пункты, вынесенные из своих групп: стоят в меню сами по себе, без раздела.
+# Правится здесь, а не в content.json: он перевыгружается из макета целиком,
+# и правка в нём пропала бы на первой же выгрузке.
+NAV_STANDALONE = {"Витрина партнёра"}
+
 # логотип вставляется в разметку, а не картинкой: так он берёт currentColor
 # и работает в обеих темах одним файлом
 LOGO = (ROOT / "assets" / "img" / "logo-kinopoisk.svg").read_text().strip()
@@ -621,6 +626,14 @@ def render_card(card, lead=False):
             f'<p class="bento__body">{label(body)}</p></div>')
 
 
+def nav_row(item, current):
+    href = NAV_LINKS.get(item)
+    cur = ' aria-current="page"' if item == current else ""
+    if href:
+        return f'<li><a href="{href}"{cur}>{label(item)}</a></li>'
+    return f'<li><a href="#" aria-disabled="true">{label(item)}</a></li>'
+
+
 def render_nav(groups, current):
     parts = []
     for g in groups:
@@ -630,14 +643,11 @@ def render_nav(groups, current):
         if items and items[0] == g["title"]:
             items = items[1:]
 
-        rows = []
-        for item in items:
-            href = NAV_LINKS.get(item)
-            cur = ' aria-current="page"' if item == current else ""
-            if href:
-                rows.append(f'<li><a href="{href}"{cur}>{label(item)}</a></li>')
-            else:
-                rows.append(f'<li><a href="#" aria-disabled="true">{label(item)}</a></li>')
+        # вынесенные пункты забираем из группы и ставим следом за ней
+        solo = [i for i in items if i in NAV_STANDALONE]
+        items = [i for i in items if i not in NAV_STANDALONE]
+
+        rows = "".join(nav_row(item, current) for item in items)
         # Список плоский: группы не сворачиваются, названия групп — просто
         # ярлыки. Кнопки и aria-controls здесь больше нет, поэтому связь
         # «название → его пункты» держит aria-labelledby: без неё для читалки
@@ -646,7 +656,12 @@ def render_nav(groups, current):
         parts.append(
             f'<div class="nav-group">'
             f'<p class="nav-group__title" id="{gid}">{label(g["title"])}</p>'
-            f'<ul class="nav-list" aria-labelledby="{gid}">{"".join(rows)}</ul></div>')
+            f'<ul class="nav-list" aria-labelledby="{gid}">{rows}</ul></div>')
+        for item in solo:
+            print(f"  {item} вынесена из «{g['title']}» отдельным пунктом")
+            parts.append(
+                f'<div class="nav-group">'
+                f'<ul class="nav-list nav-list--solo">{nav_row(item, current)}</ul></div>')
     return "\n          ".join(parts)
 
 
