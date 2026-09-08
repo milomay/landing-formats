@@ -95,10 +95,11 @@ PAGES = {
 }
 NAV_LINKS = {"Преролл": "index.html", "Баннеры": "banner.html"}
 
-# Пункты, вынесенные из своих групп: стоят в меню сами по себе, без раздела.
-# Правится здесь, а не в content.json: он перевыгружается из макета целиком,
-# и правка в нём пропала бы на первой же выгрузке.
-NAV_STANDALONE = {"Витрина партнёра"}
+# Разделы меню, которых нет в макете: пункт вынут из своей группы и сам стал
+# разделом со своими пунктами. Правится здесь, а не в content.json: он
+# перевыгружается из макета целиком, и правка в нём пропала бы на первой
+# же выгрузке.
+NAV_PROMOTED = {"Витрина партнёра": ("Промоблок", "Подборка", "Редформат")}
 
 # логотип вставляется в разметку, а не картинкой: так он берёт currentColor
 # и работает в обеих темах одним файлом
@@ -634,6 +635,21 @@ def nav_row(item, current):
     return f'<li><a href="#" aria-disabled="true">{label(item)}</a></li>'
 
 
+def nav_group(title, items, current):
+    """Раздел меню: название-ярлык и его пункты.
+
+    Список плоский: группы не сворачиваются, названия групп — просто ярлыки.
+    Кнопок и aria-controls здесь больше нет, поэтому связь «название → его
+    пункты» держит aria-labelledby: без неё для читалки это был бы один
+    общий список без деления на разделы.
+    """
+    gid = "nav-" + slug(title, set())
+    rows = "".join(nav_row(item, current) for item in items)
+    return (f'<div class="nav-group">'
+            f'<p class="nav-group__title" id="{gid}">{label(title)}</p>'
+            f'<ul class="nav-list" aria-labelledby="{gid}">{rows}</ul></div>')
+
+
 def render_nav(groups, current):
     parts = []
     for g in groups:
@@ -643,25 +659,14 @@ def render_nav(groups, current):
         if items and items[0] == g["title"]:
             items = items[1:]
 
-        # вынесенные пункты забираем из группы и ставим следом за ней
-        solo = [i for i in items if i in NAV_STANDALONE]
-        items = [i for i in items if i not in NAV_STANDALONE]
+        # поднятые пункты забираем из группы и ставим следом за ней своим разделом
+        promoted = [i for i in items if i in NAV_PROMOTED]
+        items = [i for i in items if i not in NAV_PROMOTED]
 
-        rows = "".join(nav_row(item, current) for item in items)
-        # Список плоский: группы не сворачиваются, названия групп — просто
-        # ярлыки. Кнопки и aria-controls здесь больше нет, поэтому связь
-        # «название → его пункты» держит aria-labelledby: без неё для читалки
-        # это был бы один общий список без деления на разделы.
-        gid = "nav-" + slug(g["title"], set())
-        parts.append(
-            f'<div class="nav-group">'
-            f'<p class="nav-group__title" id="{gid}">{label(g["title"])}</p>'
-            f'<ul class="nav-list" aria-labelledby="{gid}">{rows}</ul></div>')
-        for item in solo:
-            print(f"  {item} вынесена из «{g['title']}» отдельным пунктом")
-            parts.append(
-                f'<div class="nav-group">'
-                f'<ul class="nav-list nav-list--solo">{nav_row(item, current)}</ul></div>')
+        parts.append(nav_group(g["title"], items, current))
+        for item in promoted:
+            print(f"  {item} вынесена из «{g['title']}» своим разделом")
+            parts.append(nav_group(item, NAV_PROMOTED[item], current))
     return "\n          ".join(parts)
 
 
