@@ -24,6 +24,11 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PAGES = ("index.html", "banner.html")
 WIDTHS = (1800, 1300, 1000)
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+BUDGET_MS = 3000
+# Один повтор — страховка от холодного старта Chrome, не лечение. Когда проба
+# висела на requestAnimationFrame (см. PROBE), повтор лишь уменьшал долю
+# промахов и маскировал причину; сейчас замер доезжает с первого раза.
+ATTEMPTS = 2
 
 # состояния, которые ставятся классом или атрибутом и не должны менять размеры
 STATES = [
@@ -33,10 +38,17 @@ STATES = [
 
 PROBE = """
 <script>
-// Ждём шрифт и следующий кадр: скрипт страницы по этому же событию расставляет
-// переносы в оглавлении. Померить раньше — значит померить не то, что увидит
-// читатель, и пропустить настоящий скачок (или найти несуществующий).
-document.fonts.ready.then(function(){ requestAnimationFrame(function(){
+// Ждём шрифт: скрипт страницы по этому же событию расставляет переносы в
+// оглавлении. Померить раньше — значит померить не то, что увидит читатель,
+// и пропустить настоящий скачок (или найти несуществующий).
+//
+// Дальше — таймер, а не requestAnimationFrame. Колбэк кадра вызывается только
+// когда страница этот кадр рисует, а под `--dump-dom` Chrome часто не рисует
+// ничего: замер показал, что rAF доезжает три раза из восьми, и сторож на
+// ровном месте объявлял вёрстку сломанной. Таймер под виртуальным временем
+// срабатывает всегда и, как макрозадача, всё равно встаёт после обработчика
+// самой страницы.
+document.fonts.ready.then(function(){ setTimeout(function(){
   var STATES = %s;
   var bad = [];
   STATES.forEach(function(s){
@@ -63,18 +75,35 @@ document.fonts.ready.then(function(){ requestAnimationFrame(function(){
     had.forEach(on);
   });
   document.title = 'RESULT' + JSON.stringify(bad);
-}); });
+}, 50); });
 </script>
 """
+
+
+def measure(copy, width):
+    """Замеры одной страницы на одной ширине. None — проба не доехала."""
+    for _ in range(ATTEMPTS):
+        out = subprocess.run(
+            [CHROME, "--headless", "--disable-gpu", f"--window-size={width},900",
+             f"--virtual-time-budget={BUDGET_MS}", "--dump-dom", copy.as_uri()],
+            capture_output=True, text=True).stdout
+        found = re.search(r"<title>RESULT(.*?)</title>", out, re.S)
+        if found:
+            return json.loads(found[1])
+    return None
 
 
 def check(verbose=False):
     if not pathlib.Path(CHROME).exists():
         print("нет Chrome — проверку пропускаю")
-        return []
+        return [], []
 
     probe = PROBE % json.dumps(STATES, ensure_ascii=False)
     problems = []
+    # Замер, который не доехал, держим отдельно от находок: он ничего не
+    # доказывает ни в одну сторону, а в общем списке читался приговором
+    # «состояние двигает вёрстку», хотя сторож никакого прыжка не видел.
+    missed = []
     # копию кладём рядом с оригиналом, а не в подпапку: пути к стилям в разметке
     # относительные, и на уровень глубже страница грузится вообще без CSS —
     # тогда проверка «ничего не сдвинулось» проходит всегда и ничего не значит
@@ -90,29 +119,33 @@ def check(verbose=False):
                 src.read_text(encoding="utf-8").replace("</body>", probe + "</body>"),
                 encoding="utf-8")
             for width in WIDTHS:
-                out = subprocess.run(
-                    [CHROME, "--headless", "--disable-gpu", f"--window-size={width},900",
-                     "--virtual-time-budget=3000", "--dump-dom", copy.as_uri()],
-                    capture_output=True, text=True).stdout
-                m = re.search(r"<title>RESULT(.*?)</title>", out, re.S)
-                if not m:
-                    problems.append(f"{page} @{width}: страница не отдала замеры")
+                bad_list = measure(copy, width)
+                if bad_list is None:
+                    missed.append(f"{page} @{width}")
+                    if verbose:
+                        print(f"  {page} @{width}: замер не доехал")
                     continue
-                for bad in json.loads(m[1]):
+                for bad in bad_list:
                     problems.append(f"{page} @{width}: {bad}")
                 if verbose:
                     print(f"  {page} @{width}: проверено")
     finally:
         for copy in copies:
             copy.unlink(missing_ok=True)
-    return problems
+    return problems, missed
 
 
 if __name__ == "__main__":
-    found = check(verbose=True)
+    found, missed = check(verbose=True)
     if found:
         print("\nсостояние двигает вёрстку:")
         for p in found:
             print("  " + p)
         sys.exit(1)
+    if missed:
+        # Не приговор вёрстке, но и не «всё хорошо»: часть страниц осталась
+        # непроверенной, и сказать об этом надо прямо.
+        print("\nвёрстку не двигает там, где удалось померить;"
+              f" не померили: {', '.join(missed)}")
+        sys.exit(2)
     print("\nсостояние вёрстку не двигает")
